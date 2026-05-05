@@ -5,9 +5,9 @@ updated: 2026-05-05
 draft: false
 tags:
   - rag
-  - llm-ops
-  - workflow
-description: "RAG 품질을 검색기보다 문서 파싱, 구조 보존, 평가 루프로 보는 관점"
+  - document-parsing
+  - evaluation
+description: "RAG 품질을 문서 파싱, 구조 보존, 평가 루프로 보는 관점"
 ---
 
 # RAG는 검색기가 아니라 문서 운영 파이프라인이다

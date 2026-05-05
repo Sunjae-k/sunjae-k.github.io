@@ -4,10 +4,10 @@ date: 2026-05-05
 updated: 2026-05-05
 draft: false
 tags:
-  - rag
+  - ai-agent
+  - harness
   - llm-ops
-  - workflow
-description: "모델보다 workspace, permission, trace, checkpoint 같은 하네스 레이어가 중요한 이유"
+description: "AI 에이전트 운영에서 모델보다 하네스 레이어가 중요한 이유"
 ---
 
 # AI 에이전트의 승부처는 모델이 아니라 작업장이다

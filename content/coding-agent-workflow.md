@@ -5,9 +5,9 @@ updated: 2026-05-05
 draft: false
 tags:
   - ai-agent
-  - llm-ops
+  - coding-agent
   - workflow
-description: "자동완성이 아니라 작업 루프를 위임하는 방식으로 코딩 에이전트를 이해하기"
+description: "AI 코딩 에이전트를 자동완성이 아니라 작업 루프 위임으로 이해하기"
 ---
 
 # 코딩 에이전트는 IDE 기능이 아니라 작업 방식이다
