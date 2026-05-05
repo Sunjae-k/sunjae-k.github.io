@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="788" viewBox="0 0 1400 788" role="img">
+<title>AI Coding Agent Workflow Diagram</title>
+<defs>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" class="grid"/></pattern>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#cbd5e1"/></marker>
+  <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<style>
+  .bg{fill:#050816}.grid{stroke:#1d2842;stroke-width:1;opacity:.55}.title{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#f8fafc}.sub{font:500 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#94a3b8}.label{font:700 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#e2e8f0}.small{font:500 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#cbd5e1}.tiny{font:500 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#94a3b8}.cyan{fill:#0e7490;stroke:#22d3ee}.green{fill:#047857;stroke:#34d399}.violet{fill:#6d28d9;stroke:#a78bfa}.amber{fill:#92400e;stroke:#fbbf24}.rose{fill:#9f1239;stroke:#fb7185}.slate{fill:#1e293b;stroke:#94a3b8}.box{stroke-width:2;rx:18;opacity:.92}.arrow{stroke:#cbd5e1;stroke-width:3;fill:none;marker-end:url(#arrow)}.dash{stroke-dasharray:8 7}.muted{opacity:.35}.note{font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#f8fafc}
+</style>
+<rect width="100%" height="100%" class="bg"/><rect width="100%" height="100%" fill="url(#grid)"/>
+
+<text x="70" y="85" class="title">실무 조직에 적용하면 무엇이 달라지나</text>
+<text x="70" y="120" class="sub">코딩 에이전트를 “개발자 대체재”가 아니라 운영 레일로 본다</text>
+<rect x="90" y="205" width="275" height="125" class="box amber"/><text x="130" y="260" class="label">Flow 개발</text><text x="130" y="292" class="small">UI·API 변경 요청</text>
+<rect x="410" y="205" width="275" height="125" class="box cyan"/><text x="450" y="260" class="label">Agent 작업 큐</text><text x="450" y="292" class="small">작게 쪼개고 실행</text>
+<rect x="730" y="205" width="275" height="125" class="box violet"/><text x="770" y="260" class="label">검증 하네스</text><text x="770" y="292" class="small">테스트·로그·재현</text>
+<rect x="1050" y="205" width="275" height="125" class="box green"/><text x="1090" y="260" class="label">PR / 문서</text><text x="1090" y="292" class="small">승인 가능한 산출물</text>
+<path d="M365 267 L410 267" class="arrow"/><path d="M685 267 L730 267" class="arrow"/><path d="M1005 267 L1050 267" class="arrow"/>
+<rect x="220" y="455" width="960" height="110" class="box slate"/>
+<text x="280" y="510" class="note">사람이 봐야 하는 것은 “코드를 잘 썼나”보다 “검증 가능한 산출물로 남았나”다.</text>
+<text x="280" y="542" class="tiny">patch, test result, failure log, reviewer note, rollback path</text>
+
+</svg>

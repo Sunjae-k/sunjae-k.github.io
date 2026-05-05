@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="788" viewBox="0 0 1400 788" role="img">
+<title>AI Coding Agent Workflow Diagram</title>
+<defs>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" class="grid"/></pattern>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#cbd5e1"/></marker>
+  <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<style>
+  .bg{fill:#050816}.grid{stroke:#1d2842;stroke-width:1;opacity:.55}.title{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#f8fafc}.sub{font:500 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#94a3b8}.label{font:700 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#e2e8f0}.small{font:500 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#cbd5e1}.tiny{font:500 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#94a3b8}.cyan{fill:#0e7490;stroke:#22d3ee}.green{fill:#047857;stroke:#34d399}.violet{fill:#6d28d9;stroke:#a78bfa}.amber{fill:#92400e;stroke:#fbbf24}.rose{fill:#9f1239;stroke:#fb7185}.slate{fill:#1e293b;stroke:#94a3b8}.box{stroke-width:2;rx:18;opacity:.92}.arrow{stroke:#cbd5e1;stroke-width:3;fill:none;marker-end:url(#arrow)}.dash{stroke-dasharray:8 7}.muted{opacity:.35}.note{font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#f8fafc}
+</style>
+<rect width="100%" height="100%" class="bg"/><rect width="100%" height="100%" fill="url(#grid)"/>
+
+<text x="70" y="85" class="title">한 에이전트가 모든 일을 하면 금방 흐려진다</text>
+<text x="70" y="120" class="sub">Planner / Generator / Evaluator를 분리하면 실패 지점이 보인다</text>
+<rect x="90" y="210" width="350" height="270" class="box cyan"/>
+<text x="145" y="270" class="label">Planner</text><text x="145" y="315" class="small">작업을 자르고 순서를 정한다</text><text x="145" y="345" class="small">애매한 요구사항을 질문으로 바꾼다</text>
+<rect x="525" y="210" width="350" height="270" class="box green"/>
+<text x="580" y="270" class="label">Generator</text><text x="580" y="315" class="small">패치와 테스트를 만든다</text><text x="580" y="345" class="small">작은 단위로 실제 변경을 수행한다</text>
+<rect x="960" y="210" width="350" height="270" class="box rose"/>
+<text x="1015" y="270" class="label">Evaluator</text><text x="1015" y="315" class="small">테스트·리뷰·회귀를 본다</text><text x="1015" y="345" class="small">멋진 설명보다 증거를 요구한다</text>
+<path d="M440 345 L525 345" class="arrow"/><path d="M875 345 L960 345" class="arrow"/>
+<path d="M1135 505 C1040 640, 350 640, 265 505" class="arrow dash"/>
+<text x="430" y="615" class="note">에이전트 운영의 핵심은 역할 분리다. 똑똑한 하나보다 검증되는 셋이 낫다.</text>
+
+</svg>

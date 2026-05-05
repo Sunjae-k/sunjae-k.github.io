@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="788" viewBox="0 0 1400 788" role="img">
+<title>AI Coding Agent Workflow Diagram</title>
+<defs>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" class="grid"/></pattern>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#cbd5e1"/></marker>
+  <filter id="glow"><feGaussianBlur stdDeviation="3" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<style>
+  .bg{fill:#050816}.grid{stroke:#1d2842;stroke-width:1;opacity:.55}.title{font:700 34px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#f8fafc}.sub{font:500 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#94a3b8}.label{font:700 18px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#e2e8f0}.small{font:500 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#cbd5e1}.tiny{font:500 11px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#94a3b8}.cyan{fill:#0e7490;stroke:#22d3ee}.green{fill:#047857;stroke:#34d399}.violet{fill:#6d28d9;stroke:#a78bfa}.amber{fill:#92400e;stroke:#fbbf24}.rose{fill:#9f1239;stroke:#fb7185}.slate{fill:#1e293b;stroke:#94a3b8}.box{stroke-width:2;rx:18;opacity:.92}.arrow{stroke:#cbd5e1;stroke-width:3;fill:none;marker-end:url(#arrow)}.dash{stroke-dasharray:8 7}.muted{opacity:.35}.note{font:600 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#f8fafc}
+</style>
+<rect width="100%" height="100%" class="bg"/><rect width="100%" height="100%" fill="url(#grid)"/>
+
+<text x="70" y="85" class="title">일을 맡긴다는 것은 루프를 맡긴다는 뜻</text>
+<text x="70" y="120" class="sub">좋은 코딩 에이전트 워크플로는 생성기가 아니라 검증 장치에 가깝다</text>
+<rect x="90" y="245" width="180" height="90" class="box slate"/><text x="128" y="297" class="label">요구사항</text>
+<rect x="340" y="245" width="180" height="90" class="box cyan"/><text x="385" y="297" class="label">계획</text>
+<rect x="590" y="245" width="180" height="90" class="box green"/><text x="635" y="297" class="label">수정</text>
+<rect x="840" y="245" width="180" height="90" class="box violet"/><text x="885" y="297" class="label">테스트</text>
+<rect x="1090" y="245" width="180" height="90" class="box rose"/><text x="1135" y="297" class="label">리뷰</text>
+<path d="M270 290 L340 290" class="arrow"/><path d="M520 290 L590 290" class="arrow"/><path d="M770 290 L840 290" class="arrow"/><path d="M1020 290 L1090 290" class="arrow"/>
+<path d="M1180 350 C1120 520, 430 520, 430 355" class="arrow dash"/>
+<text x="535" y="565" class="note">실패하면 계획으로 되돌아간다. 이 되먹임이 없으면 그냥 비싼 자동완성이다.</text>
+
+</svg>
