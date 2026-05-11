@@ -1,7 +1,7 @@
 ---
 title: "Sunjae blog"
 date: 2026-05-05
-updated: 2026-05-05
+updated: 2026-05-11
 draft: false
 tags:
   - home
@@ -16,6 +16,7 @@ AI Agent, RAG, local-first AI를 다룹니다.
 
 ## Posts
 
+- [[domain-ai-agent-is-workflow-package|AI 에이전트는 프롬프트가 아니라 업무 패키지다]]
 - [[coding-agent-workflow|코딩 에이전트는 IDE 기능이 아니라 작업 방식이다]]
 - [[agent-harness-workplace|AI 에이전트의 승부처는 모델이 아니라 작업장이다]]
 - [[ai-agent-security-governance|AI 에이전트 보안은 체크리스트가 아니라 실행 회로다]]
