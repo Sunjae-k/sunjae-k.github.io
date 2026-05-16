@@ -359,10 +359,6 @@ Agent Harness는 모델이 실제 업무를 수행하도록 감싸는 실행 구
 
 아니다. MCP는 데이터 접점이면서 권한 경계다. 읽기/쓰기 권한, source trace, prompt injection 방어, human approval을 같이 설계해야 한다.
 
-### Q: 공식 제품 이미지를 블로그에 꼭 넣어야 하나요?
-
-꼭 넣을 필요는 없다. 이미지가 논지를 설명하면 넣고, 브랜드 분위기만 전달하면 출처 기록에 남기는 편이 낫다. 이 글처럼 저장소 구조를 읽는 글에는 파일 트리, YAML snippet, 구조 다이어그램이 더 유용하다.
-
 ## 참고한 공개 자료
 
 - [Anthropic financial-services GitHub repository](https://github.com/anthropics/financial-services)
