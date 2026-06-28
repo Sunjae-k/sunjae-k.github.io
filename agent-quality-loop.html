@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr"><head><title>AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto Sans KR:wght@400;700&amp;family=Noto Sans KR:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="google-site-verification" content="z4Nq-epWJy6nnCYzF9ctaHXmf4rh5X6lsR6QzzjseOg"/><meta name="og:site_name" content="Sunjae blog"/><meta property="og:title" content="AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까"/><meta name="twitter:description" content="AI Agent의 완료 보고를 그대로 믿지 않고, Spec Review와 Quality Review를 분리해 diff·테스트·로그 같은 검증 증거로 회수하는 Agent Quality Loop."/><meta property="og:description" content="AI Agent의 완료 보고를 그대로 믿지 않고, Spec Review와 Quality Review를 분리해 diff·테스트·로그 같은 검증 증거로 회수하는 Agent Quality Loop."/><meta property="og:image:alt" content="AI Agent의 완료 보고를 그대로 믿지 않고, Spec Review와 Quality Review를 분리해 diff·테스트·로그 같은 검증 증거로 회수하는 Agent Quality Loop."/><meta property="og:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:url" content="https://sunjae-k.github.io/static/og-image.png"/><meta name="twitter:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="sunjae-k.github.io"/><meta property="og:url" content="https://sunjae-k.github.io/agent-quality-loop"/><meta property="twitter:url" content="https://sunjae-k.github.io/agent-quality-loop"/><link rel="icon" href="./static/icon.png"/><meta name="description" content="AI Agent의 완료 보고를 그대로 믿지 않고, Spec Review와 Quality Review를 분리해 diff·테스트·로그 같은 검증 증거로 회수하는 Agent Quality Loop."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까","description":"AI Agent의 완료 보고를 그대로 믿지 않고, Spec Review와 Quality Review를 분리해 diff·테스트·로그 같은 검증 증거로 회수하는 Agent Quality Loop.","url":"https://sunjae-k.github.io/agent-quality-loop","mainEntityOfPage":{"@type":"WebPage","@id":"https://sunjae-k.github.io/agent-quality-loop"},"image":["https://sunjae-k.github.io/static/og-image.png"],"datePublished":"2026-05-24T15:00:00.000Z","dateModified":"2026-06-24T15:00:00.000Z","author":{"@type":"Person","name":"Sunjae Kim"},"publisher":{"@type":"Person","name":"Sunjae Kim"},"inLanguage":"ko-KR"}</script><link href="./index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL3ByaXZhdGUvdmFyL2ZvbGRlcnMvNF8vNDk4dGxtd3g2YjM5NHpoOWswbTR0X3ZtMDAwMGduL1QvdG1wLmc5T1lNNmhOTlYvcmVwby9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTs7QUFHRjtFQUNFOztBQUlGO0VBQ0U7RUFDQTtFQUNBIiwic291cmNlc0NvbnRlbnQiOlsiLmV4cGFuZC1idXR0b24ge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsb2F0OiByaWdodDtcbiAgcGFkZGluZzogMC40cmVtO1xuICBtYXJnaW46IDAuM3JlbTtcbiAgcmlnaHQ6IDA7IC8vIE5PVEU6IHJpZ2h0IHdpbGwgYmUgc2V0IGluIG1lcm1haWQuaW5saW5lLnRzXG4gIGNvbG9yOiB2YXIoLS1ncmF5KTtcbiAgYm9yZGVyLWNvbG9yOiB2YXIoLS1kYXJrKTtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICBib3JkZXI6IDFweCBzb2xpZDtcbiAgYm9yZGVyLXJhZGl1czogNXB4O1xuICBvcGFjaXR5OiAwO1xuICB0cmFuc2l0aW9uOiAwLjJzO1xuXG4gICYgPiBzdmcge1xuICAgIGZpbGw6IHZhcigtLWxpZ2h0KTtcbiAgICBmaWx0ZXI6IGNvbnRyYXN0KDAuMyk7XG4gIH1cblxuICAmOmhvdmVyIHtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgYm9yZGVyLWNvbG9yOiB2YXIoLS1zZWNvbmRhcnkpO1xuICB9XG5cbiAgJjpmb2N1cyB7XG4gICAgb3V0bGluZTogMDtcbiAgfVxufVxuXG5wcmUge1xuICAmOmhvdmVyID4gLmV4cGFuZC1idXR0b24ge1xuICAgIG9wYWNpdHk6IDE7XG4gICAgdHJhbnNpdGlvbjogMC4ycztcbiAgfVxufVxuXG4jbWVybWFpZC1jb250YWluZXIge1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGNvbnRhaW46IGxheW91dDtcbiAgei1pbmRleDogOTk5O1xuICBsZWZ0OiAwO1xuICB0b3A6IDA7XG4gIHdpZHRoOiAxMDB2dztcbiAgaGVpZ2h0OiAxMDB2aDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgZGlzcGxheTogbm9uZTtcbiAgYmFja2Ryb3AtZmlsdGVyOiBibHVyKDRweCk7XG4gIGJhY2tncm91bmQ6IHJnYmEoMCwgMCwgMCwgMC41KTtcblxuICAmLmFjdGl2ZSB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB9XG5cbiAgJiA+ICNtZXJtYWlkLXNwYWNlIHtcbiAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgICBib3JkZXItcmFkaXVzOiA1cHg7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogNTAlO1xuICAgIGxlZnQ6IDUwJTtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlLCAtNTAlKTtcbiAgICBoZWlnaHQ6IDgwdmg7XG4gICAgd2lkdGg6IDgwdnc7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcblxuICAgICYgPiAubWVybWFpZC1jb250ZW50IHtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="./prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("./static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://sunjae-k.github.io/index.xml"/></head><body data-slug="agent-quality-loop"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href=".">Sunjae blog</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>검색</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="검색어를 입력하세요" placeholder="검색어를 입력하세요"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="다크 모드"><title>다크 모드</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="라이트 모드"><title>라이트 모드</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="리더 모드"><title>리더 모드</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><nav class="left-nav desktop-only" aria-label="Site navigation"><p class="left-nav__tagline">AI Agent, RAG, local-first AI를<br/>운영·검증·문서 구조 관점에서 읽습니다.</p><div class="left-nav__section"><p class="left-nav__label">Topics</p><a href="/topics#ai-agent-operations">AI Agent Operations</a><a href="/topics#rag--document-operations">RAG / Document Operations</a><a href="/topics#product-ai--ux--infra">Product AI / UX / Infra</a><a href="/topics#urban--spatial-ai">Urban / Spatial AI</a><a href="/topics#ai-visual--knowledge-artifacts">AI Visual / Knowledge Artifacts</a></div></nav></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="./">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까</a></div></nav><h1 class="article-title">AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까</h1><p show-comma="true" class="content-meta"><time datetime="2026-06-24T15:00:00.000Z">2026년 6월 25일</time><span>33 min read</span></p><ul class="tags"><li><a href="./tags/ai-agent" class="internal tag-link">ai-agent</a></li><li><a href="./tags/workflow" class="internal tag-link">workflow</a></li><li><a href="./tags/quality-assurance" class="internal tag-link">quality-assurance</a></li></ul></div></div><article class="popover-hint"><h1 id="ai-agent가-완료했다고-말했을-때-무엇을-믿어야-할까">AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ai-agent가-완료했다고-말했을-때-무엇을-믿어야-할까" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><img src="./assets/agent-quality-loop/hero.png" alt="AI 에이전트의 완료 보고와 검증 증거 사이의 차이를 보여주는 추상 이미지"/></p>
+<p>에이전트가 “모든 테스트를 통과했다”고 보고했다.</p>
+<p>그런데 확인해보니 새로 만든 테스트 하나만 돌렸고, 기존 통합 테스트는 실행하지 않았다. 요구사항 중 하나였던 권한 체크도 빠져 있었다.</p>
+<p>문제는 코드가 아예 망가진 것이 아니었다. 더 나빴다. 그럴듯하게 동작했고, 에이전트는 완료했다고 말했다.</p>
+<p>이런 실패는 에러 로그처럼 시끄럽지 않다. 빌드가 깨지지도 않고, 화면이 바로 터지지도 않는다. 대신 자연어 보고서 안에서 조용히 묻힌다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>완료했습니다.</span></span>
+<span data-line><span>요구사항을 반영했습니다.</span></span>
+<span data-line><span>테스트도 통과했습니다.</span></span></code></pre></figure>
+<p>AI 에이전트를 쓰기 시작하면 처음에는 생성 속도에 놀란다. 코드를 만들고, 문서를 정리하고, 테스트도 작성한다. 하지만 어느 순간 병목이 바뀐다. 더 이상 핵심 질문은 “에이전트가 만들 수 있는가?”가 아니다.</p>
+<p>더 중요한 질문은 이것이다.</p>
+<blockquote>
+<p>에이전트가 만든 결과를 어떤 구조로 검증하고 회수할 것인가?</p>
+</blockquote>
+<p>나는 이 패턴을 <strong>Agent Quality Loop</strong>라고 부른다.</p>
+<h2 id="핵심-요약">핵심 요약<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#핵심-요약" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ul>
+<li>에이전트의 위험은 명시적 실패보다 <strong>성공처럼 보이는 미완료</strong>에서 자주 나온다.</li>
+<li>긴 프롬프트는 생성 전 품질을 높일 수 있지만, 완료 여부를 보장하지는 못한다.</li>
+<li>에이전트 작업에는 작성자와 검토자를 분리하는 품질 루프가 필요하다.</li>
+<li><strong>Spec Review</strong>는 “요구한 것이 맞는가”를 보고, <strong>Quality Review</strong>는 “운영해도 되는가”를 본다.</li>
+<li>최종 산출물은 “완료했습니다”가 아니라 diff, 테스트 명령, 실패 로그, 남은 위험 같은 <strong>검증 증거</strong>여야 한다.</li>
+</ul>
+<h2 id="문제는-생성-능력이-아니라-완료-판단이다">문제는 생성 능력이 아니라 완료 판단이다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#문제는-생성-능력이-아니라-완료-판단이다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>AI 에이전트가 실패하는 방식은 자동완성 도구의 실패와 다르다.</p>
+<p>자동완성은 틀린 줄을 제안한다. 사람은 그 줄을 보고 받아들이거나 지운다. 실패 지점이 비교적 작고 눈에 보인다.</p>
+<p>에이전트는 작업 단위를 가져간다. 파일을 바꾸고, 명령을 실행하고, 테스트를 만들고, 마지막에 요약까지 한다. 이때 사람은 결과물만 보는 것이 아니라 에이전트의 <strong>완료 판단</strong>까지 같이 받게 된다.</p>
+<p>여기서 문제가 생긴다.</p>
+<p>에이전트가 “테스트 통과”라고 말했을 때, 그 말이 의미하는 범위는 사람의 기대와 다를 수 있다.</p>
+<ul>
+<li>관련 단위 테스트 하나만 실행했을 수 있다.</li>
+<li>타입 체크나 린트는 돌리지 않았을 수 있다.</li>
+<li>기존 통합 테스트는 건드리지 않았을 수 있다.</li>
+<li>테스트가 happy path만 확인했을 수 있다.</li>
+<li>요구사항 중 일부는 테스트로 표현되지 않았을 수 있다.</li>
+</ul>
+<p>거짓말이라기보다 완료 기준이 다르다. 사람은 “테스트 통과”를 변경 전체의 안전성으로 읽지만, 에이전트는 방금 실행한 명령 하나의 성공으로 보고할 수 있다.</p>
+<p>그래서 에이전트 워크플로우에서는 프롬프트만으로 충분하지 않다.</p>
+<p>프롬프트는 생성 전 통제다. 모델에게 처음부터 잘하라고 요구한다. 품질 루프는 생성 후 회수 구조다. 모델이 틀릴 수 있다는 전제에서, 틀렸을 때 잡아낼 경로를 만든다.</p>
+<p>에이전트가 단순 답변을 만들 때는 프롬프트 엔지니어링이 중요했다. 하지만 에이전트가 파일을 수정하고, 명령을 실행하고, 외부 상태를 바꾸기 시작하면 워크플로우 엔지니어링이 더 중요해진다.</p>
+<h2 id="agent-quality-loop">Agent Quality Loop<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#agent-quality-loop" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Agent Quality Loop는 에이전트가 작업을 수행한 뒤, 별도의 검토 단계가 스펙 준수와 결과 품질을 반복 검증하는 워크플로우다.</p>
+<p>기본 구조는 다음과 같다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Plan → Execute → Spec Review → Quality Review → Repair → Verify → Ship</span></span></code></pre></figure>
+<p><img src="./assets/agent-quality-loop/loop-diagram.png" alt="Plan, Execute, Spec Review, Quality Review, Repair, Verify, Ship으로 이어지는 Agent Quality Loop 다이어그램"/></p>
+<pre><button class="expand-button" aria-label="Expand mermaid diagram" data-view-component="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 1.06L2.56 7h10.88l-2.22-2.22a.75.75 0 011.06-1.06l3.5 3.5a.75.75 0 010 1.06l-3.5 3.5a.75.75 0 11-1.06-1.06l2.22-2.22H2.56l2.22 2.22a.75.75 0 11-1.06 1.06l-3.5-3.5a.75.75 0 010-1.06l3.5-3.5z"></path></svg></button><code class="mermaid" data-clipboard="&quot;flowchart TD\n    A[Plan: 작업 분해와 완료 조건 정의] --> B[Execute: 에이전트 실행]\n    B --> C[Spec Review: 요구사항 대조]\n    C -->|누락 또는 범위 초과| F[Repair: 수정 지시]\n    C -->|통과| D[Quality Review: 테스트, 보안, 유지보수성]\n    D -->|품질 문제| F\n    D -->|통과| E[Verify: 테스트, diff, 실행 결과 확인]\n    F --> B\n    E -->|검증 실패| F\n    E -->|검증 성공| G[Ship: 증거와 위험 요약 후 완료]&quot;">flowchart TD
+    A[Plan: 작업 분해와 완료 조건 정의] --> B[Execute: 에이전트 실행]
+    B --> C[Spec Review: 요구사항 대조]
+    C -->|누락 또는 범위 초과| F[Repair: 수정 지시]
+    C -->|통과| D[Quality Review: 테스트, 보안, 유지보수성]
+    D -->|품질 문제| F
+    D -->|통과| E[Verify: 테스트, diff, 실행 결과 확인]
+    F --> B
+    E -->|검증 실패| F
+    E -->|검증 성공| G[Ship: 증거와 위험 요약 후 완료]
+</code><div id="mermaid-container" role="dialog"><div id="mermaid-space"><div class="mermaid-content"></div></div></div></pre>
+<p>각 단계는 입력과 출력이 달라야 한다.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>단계</th><th>입력</th><th>출력</th></tr></thead><tbody><tr><td>Plan</td><td>사용자 요청</td><td>작은 작업 목록, 완료 조건, 제외 범위</td></tr><tr><td>Execute</td><td>작업 단위와 제약</td><td>변경 결과, 작업 로그, 실행한 명령</td></tr><tr><td>Spec Review</td><td>원래 요구사항, 결과물</td><td>누락, 범위 초과, 임의 결정 목록</td></tr><tr><td>Quality Review</td><td>결과물, 테스트, 맥락</td><td>품질 이슈, 보안 위험, 추가 테스트 제안</td></tr><tr><td>Repair</td><td>리뷰 결과</td><td>수정된 결과물</td></tr><tr><td>Verify</td><td>최종 결과, 명령 출력</td><td>테스트 결과, diff 요약, 남은 위험</td></tr><tr><td>Ship</td><td>검증 증거</td><td>완료 승인 또는 보류</td></tr></tbody></table></div>
+<p>여기서 중요한 점은 이 루프가 체크리스트가 아니라는 것이다. 리뷰에서 문제가 나오면 종료가 아니라 다시 Repair 단계로 돌아간다. 그리고 수정 후에는 같은 기준으로 다시 확인한다.</p>
+<p>한 번의 리뷰로 품질이 보장되지는 않는다. 리뷰에서 나온 문제를 수정하고, 같은 기준으로 다시 확인할 때 비로소 루프가 닫힌다.</p>
+<h2 id="기존-pr-리뷰나-ci와-무엇이-다른가">기존 PR 리뷰나 CI와 무엇이 다른가<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#기존-pr-리뷰나-ci와-무엇이-다른가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>이쯤에서 이런 반론이 가능하다.</p>
+<blockquote>
+<p>이거 그냥 PR 리뷰와 CI 아닌가?</p>
+</blockquote>
+<p>반은 맞고, 반은 다르다.</p>
+<p>Agent Quality Loop는 PR 리뷰나 CI를 대체하지 않는다. 오히려 그 앞단에서 에이전트 작업을 PR 리뷰 가능한 형태로 만드는 과정에 가깝다.</p>
+<p>CI는 테스트가 있는 것만 검증한다. 테스트가 빠져 있거나, 잘못된 것을 테스트하고 있거나, 요구사항 자체가 테스트로 표현되지 않았다면 CI는 통과할 수 있다.</p>
+<p>PR 리뷰는 사람이 맥락을 들고 있을 때 강하다. 하지만 에이전트가 만든 diff는 종종 “왜 이렇게 바꿨는지”가 자연어 요약에만 남는다. 리뷰어가 원래 요구사항, 변경 범위, 실행한 테스트, 남은 위험을 다시 복원해야 한다면 에이전트가 줄인 시간이 리뷰 단계에서 다시 사라진다.</p>
+<p>Agent Quality Loop의 목적은 에이전트 결과를 바로 merge하는 것이 아니다. 에이전트 결과를 사람이 검토할 수 있는 단위로 정리하고, CI가 보지 못하는 스펙 누락과 품질 리스크를 먼저 드러내는 것이다.</p>
+<h2 id="작성자와-검토자를-분리해야-한다">작성자와 검토자를 분리해야 한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#작성자와-검토자를-분리해야-한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>AI 에이전트 워크플로우에서 가장 위험한 패턴은 self-approval이다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>제가 구현했습니다.</span></span>
+<span data-line><span>제가 확인했습니다.</span></span>
+<span data-line><span>문제 없습니다.</span></span></code></pre></figure>
+<p>사람으로 비유하면 PR 작성자가 본인 PR을 직접 승인하고 바로 머지하는 것과 비슷하다. 작은 작업에서는 괜찮을 수 있지만, 중요한 변경에서는 위험하다.</p>
+<p>Agent Quality Loop에서는 역할을 분리한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Implementer ≠ Reviewer ≠ Verifier</span></span></code></pre></figure>
+<ul>
+<li><strong>Implementer</strong>는 만든다.</li>
+<li><strong>Spec Reviewer</strong>는 요구사항 충족 여부를 본다.</li>
+<li><strong>Quality Reviewer</strong>는 결과물의 품질을 본다.</li>
+<li><strong>Verifier</strong>는 실제 실행 결과와 통합 상태를 확인한다.</li>
+</ul>
+<p><img src="./assets/agent-quality-loop/role-split.png" alt="Implementer, Spec Reviewer, Quality Reviewer, Verifier 역할이 분리된 에이전트 워크플로우"/></p>
+<p>물론 역할을 나눈다고 자동으로 안전해지는 것은 아니다. 같은 모델을 reviewer로 한 번 더 호출하면 같은 착각을 반복할 수 있다. 같은 컨텍스트, 같은 잘못된 가정, 같은 요약을 공유하면 독립적인 검토가 아니다.</p>
+<p>그래서 리뷰어 에이전트에게 implementer의 “완료 요약”만 주면 안 된다. 원래 요구사항, 변경 diff, 테스트 출력처럼 검증 가능한 원본 자료를 함께 줘야 한다.</p>
+<p>역할 분리의 핵심은 에이전트를 여러 번 부르는 것이 아니다. 각 단계의 판단 기준과 입력 자료를 다르게 만드는 것이다.</p>
+<h2 id="spec-review와-quality-review는-다르다">Spec Review와 Quality Review는 다르다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#spec-review와-quality-review는-다르다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>많은 에이전트 리뷰가 실패하는 이유는 두 질문을 섞기 때문이다.</p>
+<p>첫 번째 질문은 이것이다.</p>
+<blockquote>
+<p>요구한 것을 정확히 만들었는가?</p>
+</blockquote>
+<p>두 번째 질문은 이것이다.</p>
+<blockquote>
+<p>그 결과물이 운영 가능한가?</p>
+</blockquote>
+<p>이 둘은 다르다.</p>
+<p>스펙을 잘 맞췄지만 코드 품질이 낮을 수 있다. 반대로 코드가 깔끔해 보여도 사용자가 요구한 기능을 빠뜨렸을 수 있다.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>상황</th><th>Spec Review</th><th>Quality Review</th></tr></thead><tbody><tr><td>요구한 API는 만들었지만 테스트가 없다</td><td>PASS 가능</td><td>FAIL</td></tr><tr><td>코드 품질은 좋아 보이지만 필수 응답 필드가 빠졌다</td><td>FAIL</td><td>판단 보류</td></tr><tr><td>요구사항 밖 리팩터링을 대량 수행했다</td><td>FAIL</td><td>판단 보류</td></tr><tr><td>테스트는 있지만 엣지 케이스가 없다</td><td>PASS 가능</td><td>FAIL</td></tr><tr><td>기존 응답 포맷을 깨뜨렸다</td><td>FAIL</td><td>FAIL 가능</td></tr></tbody></table></div>
+<p>Spec Review는 원래 요구사항과 결과물을 대조한다.</p>
+<ul>
+<li>명시 요구사항이 빠짐없이 반영됐는가?</li>
+<li>출력 형식, 파일 경로, 인터페이스가 맞는가?</li>
+<li>사용자가 명시한 제약을 지켰는가?</li>
+<li>불필요한 범위 확장이 없는가?</li>
+<li>애매한 부분을 임의로 결정하지 않았는가?</li>
+</ul>
+<p>Quality Review는 결과물 자체의 운영 가능성을 본다.</p>
+<ul>
+<li>테스트가 충분한가?</li>
+<li>엣지 케이스가 있는가?</li>
+<li>보안이나 개인정보 위험이 없는가?</li>
+<li>기존 구조와 잘 맞는가?</li>
+<li>유지보수하기 쉬운가?</li>
+<li>성능이나 비용 문제가 없는가?</li>
+<li>실패했을 때 디버깅 가능한가?</li>
+</ul>
+<p>이 두 리뷰를 분리해야 한다. 그래야 문제를 정확히 고칠 수 있다. 스펙 누락은 요구사항 정렬의 문제이고, 품질 이슈는 구현 안정성의 문제다. 둘을 섞으면 리뷰 코멘트는 많아지지만 무엇을 먼저 고쳐야 하는지 흐려진다.</p>
+<h2 id="예시-로그인-api-작업에-적용하기">예시: 로그인 API 작업에 적용하기<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#예시-로그인-api-작업에-적용하기" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>추상적인 원칙만으로는 부족하다. 실제 루프는 이런 모양에 가깝다.</p>
+<h3 id="1-task-brief">1. Task Brief<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#1-task-brief" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="markdown" data-theme="github-light github-dark"><code data-language="markdown" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">목표:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 이메일/비밀번호 기반 로그인 API를 추가한다.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">완료 조건:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> POST /login은 유효한 email/password에 대해 200과 access_token을 반환한다.</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 잘못된 password는 401을 반환한다.</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 존재하지 않는 email도 401을 반환하되 계정 존재 여부를 노출하지 않는다.</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> email_verified=false인 사용자는 로그인할 수 없다.</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 기존 API error response schema를 유지한다.</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 성공, 실패, 비활성 사용자 케이스 테스트가 있다.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">제약:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> password 비교는 bcrypt.compare를 사용한다.</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 기존 User 모델 필드명은 바꾸지 않는다.</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> rate limit은 이번 작업 범위에서 제외하되 남은 위험으로 기록한다.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">필수 증거:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 변경 파일 목록</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 실행한 테스트 명령</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 테스트 결과</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 남은 위험</span></span></code></pre></figure>
+<h3 id="2-에이전트의-1차-결과">2. 에이전트의 1차 결과<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#2-에이전트의-1차-결과" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>에이전트는 <code>/login</code> endpoint를 추가했고, 정상 로그인 테스트도 만들었다. 겉으로 보면 작업은 끝난 것처럼 보인다.</p>
+<p>하지만 Spec Review를 돌리면 다른 문제가 보인다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Spec Review 결과: FAIL</span></span>
+<span data-line> </span>
+<span data-line><span>Missing Requirements:</span></span>
+<span data-line><span>- email_verified=false 사용자를 막는 조건이 없다.</span></span>
+<span data-line><span>- 기존 API error response schema를 유지하지 않았다.</span></span>
+<span data-line><span>- password 비교에 bcrypt.compare를 사용하라는 명시 제약을 지키지 않았다.</span></span>
+<span data-line> </span>
+<span data-line><span>Scope Creep:</span></span>
+<span data-line><span>- User 모델의 필드명을 일부 변경했다. 요구사항에 없는 변경이다.</span></span>
+<span data-line> </span>
+<span data-line><span>Required Fixes:</span></span>
+<span data-line><span>- email_verified 조건을 추가한다.</span></span>
+<span data-line><span>- 401 응답 body를 기존 error schema에 맞춘다.</span></span>
+<span data-line><span>- password 비교를 bcrypt.compare로 바꾼다.</span></span>
+<span data-line><span>- User 모델 필드명 변경을 되돌린다.</span></span></code></pre></figure>
+<p>Spec Review는 코드가 예쁜지 보지 않는다. 요구한 것이 맞는지만 본다.</p>
+<h3 id="3-quality-review에서-잡은-문제">3. Quality Review에서 잡은 문제<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#3-quality-review에서-잡은-문제" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>스펙 누락을 고친 뒤에는 Quality Review가 필요하다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Quality Review 결과: FAIL</span></span>
+<span data-line> </span>
+<span data-line><span>Important:</span></span>
+<span data-line><span>- 실패 케이스 테스트가 password mismatch만 확인한다.</span></span>
+<span data-line><span>- 존재하지 않는 email과 잘못된 password의 응답 시간이 크게 다를 수 있다.</span></span>
+<span data-line><span>- email_verified=false 케이스 테스트가 없다.</span></span>
+<span data-line> </span>
+<span data-line><span>Minor:</span></span>
+<span data-line><span>- 테스트 이름이 너무 일반적이다.</span></span>
+<span data-line> </span>
+<span data-line><span>Suggested Tests:</span></span>
+<span data-line><span>- valid login</span></span>
+<span data-line><span>- wrong password</span></span>
+<span data-line><span>- unknown email</span></span>
+<span data-line><span>- unverified email</span></span>
+<span data-line><span>- response schema compatibility</span></span>
+<span data-line> </span>
+<span data-line><span>Residual Risks:</span></span>
+<span data-line><span>- rate limit은 이번 scope에서 제외되어 brute-force 위험이 남아 있다.</span></span></code></pre></figure>
+<p>Quality Review는 요구사항을 다시 확인하는 단계가 아니다. 결과물이 운영 가능한지 본다.</p>
+<h3 id="4-verification-evidence">4. Verification Evidence<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#4-verification-evidence" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>수정 후 최종 보고는 “완료했습니다”가 아니라 검증 증거여야 한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="markdown" data-theme="github-light github-dark"><code data-language="markdown" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">## Final Verification Report</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Summary</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> POST /login endpoint 추가</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> email/password 인증 처리</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> email_verified=false 사용자 차단</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 기존 error response schema 유지</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Changed Files</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> src/auth/login.ts</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> src/auth/login.test.ts</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> src/routes.ts</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Commands</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> pnpm test src/auth/login.test.ts</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> pnpm typecheck</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Results</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> login.test.ts: 7 passed, 0 failed</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> typecheck: passed</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Manual Checks</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> valid login → 200 + access_token</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> wrong password → 401 + 기존 error schema</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> unknown email → 401 + 기존 error schema</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> unverified email → 401 + 기존 error schema</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Residual Risks</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> rate limiting은 이번 작업 범위에서 제외했다. 별도 task 필요.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Ship Decision</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> SHIP, 단 rate limit 후속 작업 생성 필요</span></span></code></pre></figure>
+<p>이 정도가 되어야 사람이 결과를 검토할 수 있다. 자연어 완료 보고가 아니라, 변경과 검증의 흔적이 남아야 한다.</p>
+<h2 id="작은-작업-단위가-품질을-만든다">작은 작업 단위가 품질을 만든다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#작은-작업-단위가-품질을-만든다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Agent Quality Loop는 큰 작업을 한 번에 맡길 때 약해진다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>사용자 인증 시스템 만들어줘.</span></span></code></pre></figure>
+<p>이런 요청은 범위가 넓다. 데이터 모델, 비밀번호 처리, 세션, 토큰, API, 에러 처리, 테스트, 보안 정책이 모두 섞인다. 에이전트가 결과를 내더라도 검토자가 무엇을 기준으로 봐야 하는지 흐려진다.</p>
+<p>좋은 agent task는 보통 다음 조건을 만족한다.</p>
+<ul>
+<li>하나의 의도만 가진다.</li>
+<li>변경 파일 범위를 예측할 수 있다.</li>
+<li>3~7개의 acceptance criteria로 표현된다.</li>
+<li>1~2개의 명령으로 검증 가능하다.</li>
+<li>실패했을 때 revert 범위가 작다.</li>
+</ul>
+<p>나쁜 작업 단위는 이렇게 생겼다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>인증 시스템 구현</span></span>
+<span data-line><span>성능 개선</span></span>
+<span data-line><span>문서 정리</span></span>
+<span data-line><span>코드 품질 높이기</span></span></code></pre></figure>
+<p>좋은 작업 단위는 더 좁다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>로그인 실패 시 401 응답 body를 기존 API error schema에 맞춘다.</span></span>
+<span data-line><span>회원가입 API에 중복 이메일 테스트를 추가한다.</span></span>
+<span data-line><span>/projects 조회에서 N+1 쿼리를 제거하고 쿼리 수 테스트를 추가한다.</span></span>
+<span data-line><span>릴리즈 노트에서 내부 코드명과 미공개 고객명을 제거한다.</span></span></code></pre></figure>
+<p>작업이 작아질수록 리뷰 기준이 선명해진다. 선명한 리뷰 기준은 에이전트의 실패를 빨리 드러낸다. 실패가 빨리 드러나면 수정 비용도 줄어든다.</p>
+<h2 id="결과물은-답변이-아니라-증거여야-한다">결과물은 답변이 아니라 증거여야 한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#결과물은-답변이-아니라-증거여야-한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>“완료했습니다”는 증거가 아니다.</p>
+<p>좋은 에이전트 워크플로우는 마지막에 사람이 확인할 수 있는 자료를 남긴다.</p>
+<p>코드 작업이라면 이런 증거가 필요하다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>- 변경된 파일 목록</span></span>
+<span data-line><span>- 핵심 diff 요약</span></span>
+<span data-line><span>- 실행한 테스트 명령</span></span>
+<span data-line><span>- 테스트 결과</span></span>
+<span data-line><span>- 실패했다가 고친 내용</span></span>
+<span data-line><span>- 남은 위험</span></span>
+<span data-line><span>- 롤백이 필요한 경우 되돌릴 지점</span></span></code></pre></figure>
+<p>문서 작업이라면 이런 증거가 필요하다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>- 반영한 요구사항 목록</span></span>
+<span data-line><span>- 제외한 내용과 이유</span></span>
+<span data-line><span>- 독자 관점의 핵심 메시지</span></span>
+<span data-line><span>- 공개하면 안 되는 내부 정보 제거 여부</span></span>
+<span data-line><span>- 링크와 이미지 확인 결과</span></span>
+<span data-line><span>- SEO 제목과 description</span></span></code></pre></figure>
+<p>예를 들어 외부 공개용 릴리즈 노트를 에이전트에게 맡겼다면, Quality Loop는 코드가 아니라 공개 위험을 잡는다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Spec Review:</span></span>
+<span data-line><span>- 포함해야 할 기능 3개 중 1개 누락</span></span>
+<span data-line><span>- breaking change 안내 위치가 요구사항과 다름</span></span>
+<span data-line><span>- 날짜 형식이 블로그 스타일과 다름</span></span>
+<span data-line> </span>
+<span data-line><span>Quality Review:</span></span>
+<span data-line><span>- 고객 가치보다 내부 구현 설명이 많음</span></span>
+<span data-line><span>- 내부 코드명 Project Raven이 그대로 남아 있음</span></span>
+<span data-line><span>- 마이그레이션 가이드 링크 없음</span></span>
+<span data-line> </span>
+<span data-line><span>Verify:</span></span>
+<span data-line><span>- 공개 금지 키워드 검색</span></span>
+<span data-line><span>- 링크 확인</span></span>
+<span data-line><span>- 제목과 description 확인</span></span></code></pre></figure>
+<p>에이전트의 결과를 믿는 대신, 결과를 검사할 수 있어야 한다.</p>
+<h2 id="바로-쓸-수-있는-템플릿">바로 쓸 수 있는 템플릿<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#바로-쓸-수-있는-템플릿" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>아래 템플릿은 그대로 복사해서 agent task에 붙일 수 있다.</p>
+<h3 id="task-brief-템플릿">Task Brief 템플릿<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#task-brief-템플릿" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="markdown" data-theme="github-light github-dark"><code data-language="markdown" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">## Task Brief</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Goal</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 무엇을 달성해야 하는가?</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Scope</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">포함할 것:</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">-</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">제외할 것:</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">-</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Acceptance Criteria</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 조건 1</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 조건 2</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 조건 3</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Constraints</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">변경 가능한 파일:</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">-</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">변경하면 안 되는 파일:</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">-</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">유지해야 할 인터페이스:</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">-</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">성능/보안/개인정보 제약:</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">-</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Evidence Required</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 변경 파일 목록</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 핵심 diff 요약</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 실행한 테스트 명령</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 테스트 결과</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 남은 위험</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> [ ] 후속 작업</span></span></code></pre></figure>
+<h3 id="spec-review-템플릿">Spec Review 템플릿<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#spec-review-템플릿" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="markdown" data-theme="github-light github-dark"><code data-language="markdown" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">너는 Spec Reviewer다.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">원래 요구사항과 에이전트 결과물을 비교하라.</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">품질, 스타일, 리팩터링 의견은 제외하고 오직 스펙 충족 여부만 판단하라.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">확인할 것:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">1.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 명시 요구사항 누락</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">2.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 출력 형식 불일치</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">3.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 잘못된 파일/경로/인터페이스</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">4.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 범위 밖 구현</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">5.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 사용자가 정하지 않은 임의 결정</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">6.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> acceptance criteria 미충족</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">출력 형식:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Verdict: PASS / FAIL</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Missing Requirements:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Scope Creep:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Ambiguous Decisions:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Required Fixes:</span></span></code></pre></figure>
+<h3 id="quality-review-템플릿">Quality Review 템플릿<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#quality-review-템플릿" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="markdown" data-theme="github-light github-dark"><code data-language="markdown" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">너는 Quality Reviewer다.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">스펙 충족 여부는 이미 검토되었다고 가정하고,</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">결과물이 운영 가능한 품질인지 평가하라.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">확인할 것:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">1.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 테스트 충분성</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">2.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 엣지 케이스</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">3.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 보안/개인정보 위험</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">4.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 기존 구조와 일관성</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">5.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 유지보수성</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">6.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 성능/비용</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">7.</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 실패 시 디버깅 가능성</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">출력 형식:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Verdict: PASS / FAIL</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Critical:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Important:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Minor:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Suggested Tests:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Residual Risks:</span></span></code></pre></figure>
+<h3 id="final-verification-report-템플릿">Final Verification Report 템플릿<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#final-verification-report-템플릿" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="markdown" data-theme="github-light github-dark"><code data-language="markdown" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">## Final Verification Report</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Summary</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 완료한 작업:</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Changed Files</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 파일 1:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 파일 2:</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Evidence</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 테스트 명령:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 테스트 결과:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 수동 확인:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> diff 요약:</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Review Results</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Spec Review: PASS / FAIL</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> Quality Review: PASS / FAIL</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Known Limitations</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 남은 위험:</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 후속 작업:</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### Ship Decision</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> SHIP / DO NOT SHIP</span></span></code></pre></figure>
+<h2 id="언제-무겁게-쓰고-언제-생략할-것인가">언제 무겁게 쓰고, 언제 생략할 것인가<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#언제-무겁게-쓰고-언제-생략할-것인가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>모든 작업에 무거운 루프가 필요한 것은 아니다. 오탈자 수정에 Spec Reviewer와 Quality Reviewer를 따로 붙이면 배보다 배꼽이 커진다.</p>
+<p>작업 위험도에 따라 루프의 무게를 조절해야 한다.</p>
+<p><img src="./assets/agent-quality-loop/risk-table.png" alt="작업 위험도에 따라 Agent Quality Loop 적용 수준을 나누는 표"/></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>작업 유형</th><th>예시</th><th>권장 루프</th></tr></thead><tbody><tr><td>Low risk</td><td>오탈자 수정, 짧은 요약, 포맷 변환</td><td>Execute + quick check</td></tr><tr><td>Medium risk</td><td>내부 문서, 작은 코드 수정, 비핵심 자동화</td><td>Spec Review + Verify</td></tr><tr><td>High risk</td><td>제품 기능, 여러 파일 변경, 공개 문서</td><td>Spec Review + Quality Review + Verify</td></tr><tr><td>Critical risk</td><td>결제, 인증, 권한, 개인정보, 데이터 삭제</td><td>사람 승인 + 테스트 증거 + 롤백 계획 필수</td></tr></tbody></table></div>
+<p>이 루프의 목적은 모든 일을 느리게 만드는 것이 아니다. 실패 비용이 큰 작업에서 “그럴듯한 미완료”를 빨리 잡아내는 것이다.</p>
+<h2 id="한계-reviewer-agent도-틀릴-수-있다">한계: reviewer agent도 틀릴 수 있다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#한계-reviewer-agent도-틀릴-수-있다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>품질 루프는 공짜가 아니다.</p>
+<p>작업을 쪼개고 리뷰 단계를 추가하면 당연히 느려진다. 모델 호출 비용도 늘어난다. 루프가 길어지면 컨텍스트가 비대해지고, 중간 요약에서 중요한 제약이 사라질 수도 있다.</p>
+<p>그리고 reviewer agent도 틀릴 수 있다. 같은 모델, 같은 프롬프트 습관, 같은 입력 자료를 쓰면 implementer가 놓친 문제를 reviewer도 놓칠 수 있다.</p>
+<p>그래서 중요한 작업에서는 몇 가지 원칙이 필요하다.</p>
+<ul>
+<li>reviewer에게 implementer의 요약만 주지 않는다.</li>
+<li>원 요구사항, diff, 테스트 출력처럼 확인 가능한 자료를 준다.</li>
+<li>테스트 결과는 자연어 보고가 아니라 실제 명령 출력으로 확인한다.</li>
+<li>보안, 권한, 결제, 개인정보 작업은 사람 승인 단계를 둔다.</li>
+<li>가능하면 다른 모델, 다른 프롬프트, 다른 관점으로 검토한다.</li>
+<li>남은 위험을 없애지 못했다면 숨기지 말고 ship decision에 포함한다.</li>
+</ul>
+<p>Agent Quality Loop는 사람 리뷰를 없애는 구조가 아니다. 사람 리뷰가 봐야 할 것을 더 선명하게 만드는 구조다.</p>
+<h2 id="프롬프트-엔지니어링에서-워크플로우-엔지니어링으로">프롬프트 엔지니어링에서 워크플로우 엔지니어링으로<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#프롬프트-엔지니어링에서-워크플로우-엔지니어링으로" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>AI 에이전트의 초기는 프롬프트가 중심이었다. 더 자세히 지시하면 더 좋은 답이 나왔다. 역할을 부여하고, 예시를 넣고, 출력 형식을 고정하는 것만으로도 품질이 좋아졌다.</p>
+<p>하지만 에이전트가 실제 작업을 수행하기 시작하면 문제의 층위가 달라진다.</p>
+<p>이제 중요한 것은 한 번의 답변 품질이 아니라 작업 전체의 운영 품질이다.</p>
+<ul>
+<li>어떤 단위로 일을 맡길 것인가?</li>
+<li>어떤 기준으로 완료를 판단할 것인가?</li>
+<li>누가 스펙 준수를 검토할 것인가?</li>
+<li>누가 품질을 검토할 것인가?</li>
+<li>실패하면 어디로 되돌릴 것인가?</li>
+<li>어떤 증거를 남길 것인가?</li>
+</ul>
+<p>이 질문들은 프롬프트 엔지니어링보다 워크플로우 엔지니어링에 가깝다.</p>
+<p>AI 에이전트 시대의 생산성은 “얼마나 빨리 생성하느냐”에서 끝나지 않는다. 진짜 생산성은 <strong>검증 가능한 속도</strong>에서 나온다.</p>
+<h2 id="결론-좋은-에이전트는-혼자-일하지-않는다">결론: 좋은 에이전트는 혼자 일하지 않는다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#결론-좋은-에이전트는-혼자-일하지-않는다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>좋은 AI 에이전트 워크플로우는 한 명의 똑똑한 에이전트에게 모든 것을 맡기는 구조가 아니다.</p>
+<p>일을 작게 나누고, 실행과 검토를 분리하고, 실패를 수정 루프로 되돌리고, 최종 결과를 증거로 확인하는 구조다.</p>
+<p>Agent Quality Loop의 핵심은 단순하다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Plan → Execute → Spec Review → Quality Review → Repair → Verify → Ship</span></span></code></pre></figure>
+<p>에이전트는 빠르게 만든다. 하지만 빠르게 만든 결과를 바로 신뢰하는 것은 다른 문제다.</p>
+<p>앞으로 좋은 AI workflow의 차이는 “어떤 모델을 쓰는가”만으로 결정되지 않을 것이다. 더 중요한 차이는 에이전트가 만든 결과를 어떻게 검증하고 회수하는가에서 생길 것이다.</p>
+<p>프롬프트는 모델에게 잘하라고 말한다. 품질 루프는 모델이 틀렸을 때 잡아낸다.</p>
+<p>둘 다 필요하지만, 에이전트가 실제 일을 하기 시작하면 후자가 더 중요해진다.</p>
+<h2 id="faq">FAQ<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#faq" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="agent-quality-loop는-코드-작업에만-필요한가">Agent Quality Loop는 코드 작업에만 필요한가?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#agent-quality-loop는-코드-작업에만-필요한가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>아니다. 코드 작업에서 가장 명확하게 보일 뿐이다. 공개 문서, 리서치 요약, 데이터 분석, 고객 응답, 운영 자동화에도 적용할 수 있다. 핵심은 결과를 바로 믿지 않고 요구사항 검토와 품질 검토를 분리하는 것이다.</p>
+<h3 id="spec-review와-quality-review를-꼭-나눠야-하나">Spec Review와 Quality Review를 꼭 나눠야 하나?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#spec-review와-quality-review를-꼭-나눠야-하나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>중요한 작업이라면 나누는 편이 좋다. “요구한 것을 만들었는가”와 “운영 가능한가”는 다른 질문이다. 두 질문을 섞으면 요구사항 누락을 코드 스타일 문제처럼 다루거나, 반대로 품질 문제를 스펙 충족으로 덮어버리기 쉽다.</p>
+<h3 id="같은-모델을-여러-역할로-쓰는-것이-의미가-있나">같은 모델을 여러 역할로 쓰는 것이 의미가 있나?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#같은-모델을-여러-역할로-쓰는-것이-의미가-있나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>완전한 독립 리뷰는 아니다. 하지만 입력 자료와 판단 기준을 다르게 주면 self-approval보다는 낫다. 중요한 작업에서는 다른 모델, 다른 프롬프트, 사람 승인, 실제 테스트 출력을 함께 써야 한다.</p>
+<h3 id="모든-작업에-이런-루프를-적용하면-너무-느리지-않나">모든 작업에 이런 루프를 적용하면 너무 느리지 않나?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#모든-작업에-이런-루프를-적용하면-너무-느리지-않나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>맞다. 그래서 모든 작업에 적용하면 안 된다. 작은 수정은 quick check로 충분하다. 외부 공개, 제품 기능, 보안/개인정보, 여러 파일 변경처럼 실패 비용이 큰 작업에 무겁게 적용하는 것이 맞다.</p>
+<h3 id="사람-리뷰와-ci를-대체할-수-있나">사람 리뷰와 CI를 대체할 수 있나?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#사람-리뷰와-ci를-대체할-수-있나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>대체하기 어렵다. Agent Quality Loop는 사람 리뷰와 CI 앞에서 에이전트 결과물을 정리하고, 스펙 누락과 품질 리스크를 먼저 드러내는 구조다. 최종 책임이 큰 작업에서는 사람 승인이 필요하다.</p></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-2" aria-expanded="true"><h3>목차</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#ai-agent가-완료했다고-말했을-때-무엇을-믿어야-할까" data-for="ai-agent가-완료했다고-말했을-때-무엇을-믿어야-할까">AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까</a></li><li class="depth-1"><a href="#핵심-요약" data-for="핵심-요약">핵심 요약</a></li><li class="depth-1"><a href="#문제는-생성-능력이-아니라-완료-판단이다" data-for="문제는-생성-능력이-아니라-완료-판단이다">문제는 생성 능력이 아니라 완료 판단이다</a></li><li class="depth-1"><a href="#agent-quality-loop" data-for="agent-quality-loop">Agent Quality Loop</a></li><li class="depth-1"><a href="#기존-pr-리뷰나-ci와-무엇이-다른가" data-for="기존-pr-리뷰나-ci와-무엇이-다른가">기존 PR 리뷰나 CI와 무엇이 다른가</a></li><li class="depth-1"><a href="#작성자와-검토자를-분리해야-한다" data-for="작성자와-검토자를-분리해야-한다">작성자와 검토자를 분리해야 한다</a></li><li class="depth-1"><a href="#spec-review와-quality-review는-다르다" data-for="spec-review와-quality-review는-다르다">Spec Review와 Quality Review는 다르다</a></li><li class="depth-1"><a href="#예시-로그인-api-작업에-적용하기" data-for="예시-로그인-api-작업에-적용하기">예시: 로그인 API 작업에 적용하기</a></li><li class="depth-2"><a href="#1-task-brief" data-for="1-task-brief">1. Task Brief</a></li><li class="depth-2"><a href="#2-에이전트의-1차-결과" data-for="2-에이전트의-1차-결과">2. 에이전트의 1차 결과</a></li><li class="depth-2"><a href="#3-quality-review에서-잡은-문제" data-for="3-quality-review에서-잡은-문제">3. Quality Review에서 잡은 문제</a></li><li class="depth-2"><a href="#4-verification-evidence" data-for="4-verification-evidence">4. Verification Evidence</a></li><li class="depth-1"><a href="#작은-작업-단위가-품질을-만든다" data-for="작은-작업-단위가-품질을-만든다">작은 작업 단위가 품질을 만든다</a></li><li class="depth-1"><a href="#결과물은-답변이-아니라-증거여야-한다" data-for="결과물은-답변이-아니라-증거여야-한다">결과물은 답변이 아니라 증거여야 한다</a></li><li class="depth-1"><a href="#바로-쓸-수-있는-템플릿" data-for="바로-쓸-수-있는-템플릿">바로 쓸 수 있는 템플릿</a></li><li class="depth-2"><a href="#task-brief-템플릿" data-for="task-brief-템플릿">Task Brief 템플릿</a></li><li class="depth-2"><a href="#spec-review-템플릿" data-for="spec-review-템플릿">Spec Review 템플릿</a></li><li class="depth-2"><a href="#quality-review-템플릿" data-for="quality-review-템플릿">Quality Review 템플릿</a></li><li class="depth-2"><a href="#final-verification-report-템플릿" data-for="final-verification-report-템플릿">Final Verification Report 템플릿</a></li><li class="depth-1"><a href="#언제-무겁게-쓰고-언제-생략할-것인가" data-for="언제-무겁게-쓰고-언제-생략할-것인가">언제 무겁게 쓰고, 언제 생략할 것인가</a></li><li class="depth-1"><a href="#한계-reviewer-agent도-틀릴-수-있다" data-for="한계-reviewer-agent도-틀릴-수-있다">한계: reviewer agent도 틀릴 수 있다</a></li><li class="depth-1"><a href="#프롬프트-엔지니어링에서-워크플로우-엔지니어링으로" data-for="프롬프트-엔지니어링에서-워크플로우-엔지니어링으로">프롬프트 엔지니어링에서 워크플로우 엔지니어링으로</a></li><li class="depth-1"><a href="#결론-좋은-에이전트는-혼자-일하지-않는다" data-for="결론-좋은-에이전트는-혼자-일하지-않는다">결론: 좋은 에이전트는 혼자 일하지 않는다</a></li><li class="depth-1"><a href="#faq" data-for="faq">FAQ</a></li><li class="depth-2"><a href="#agent-quality-loop는-코드-작업에만-필요한가" data-for="agent-quality-loop는-코드-작업에만-필요한가">Agent Quality Loop는 코드 작업에만 필요한가?</a></li><li class="depth-2"><a href="#spec-review와-quality-review를-꼭-나눠야-하나" data-for="spec-review와-quality-review를-꼭-나눠야-하나">Spec Review와 Quality Review를 꼭 나눠야 하나?</a></li><li class="depth-2"><a href="#같은-모델을-여러-역할로-쓰는-것이-의미가-있나" data-for="같은-모델을-여러-역할로-쓰는-것이-의미가-있나">같은 모델을 여러 역할로 쓰는 것이 의미가 있나?</a></li><li class="depth-2"><a href="#모든-작업에-이런-루프를-적용하면-너무-느리지-않나" data-for="모든-작업에-이런-루프를-적용하면-너무-느리지-않나">모든 작업에 이런 루프를 적용하면 너무 느리지 않나?</a></li><li class="depth-2"><a href="#사람-리뷰와-ci를-대체할-수-있나" data-for="사람-리뷰와-ci를-대체할-수-있나">사람 리뷰와 CI를 대체할 수 있나?</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="./postscript.js" type="module" data-persist="true"></script></html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr"><head><title>LLM을 덜 쓰기 위해 에이전트를 쓴다</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto Sans KR:wght@400;700&amp;family=Noto Sans KR:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="google-site-verification" content="z4Nq-epWJy6nnCYzF9ctaHXmf4rh5X6lsR6QzzjseOg"/><meta name="og:site_name" content="Sunjae blog"/><meta property="og:title" content="LLM을 덜 쓰기 위해 에이전트를 쓴다"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="LLM을 덜 쓰기 위해 에이전트를 쓴다"/><meta name="twitter:description" content="주소 검색에서 LLM을 모든 요청에 붙이는 대신, 실패 로그를 읽는 에이전트로 라우터·테스트·fallback 기준을 개선해 LLM 호출을 줄이는 운영 루프."/><meta property="og:description" content="주소 검색에서 LLM을 모든 요청에 붙이는 대신, 실패 로그를 읽는 에이전트로 라우터·테스트·fallback 기준을 개선해 LLM 호출을 줄이는 운영 루프."/><meta property="og:image:alt" content="주소 검색에서 LLM을 모든 요청에 붙이는 대신, 실패 로그를 읽는 에이전트로 라우터·테스트·fallback 기준을 개선해 LLM 호출을 줄이는 운영 루프."/><meta property="og:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:url" content="https://sunjae-k.github.io/static/og-image.png"/><meta name="twitter:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="sunjae-k.github.io"/><meta property="og:url" content="https://sunjae-k.github.io/llm-agent-address-search"/><meta property="twitter:url" content="https://sunjae-k.github.io/llm-agent-address-search"/><link rel="icon" href="./static/icon.png"/><meta name="description" content="주소 검색에서 LLM을 모든 요청에 붙이는 대신, 실패 로그를 읽는 에이전트로 라우터·테스트·fallback 기준을 개선해 LLM 호출을 줄이는 운영 루프."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"LLM을 덜 쓰기 위해 에이전트를 쓴다","description":"주소 검색에서 LLM을 모든 요청에 붙이는 대신, 실패 로그를 읽는 에이전트로 라우터·테스트·fallback 기준을 개선해 LLM 호출을 줄이는 운영 루프.","url":"https://sunjae-k.github.io/llm-agent-address-search","mainEntityOfPage":{"@type":"WebPage","@id":"https://sunjae-k.github.io/llm-agent-address-search"},"image":["https://sunjae-k.github.io/static/og-image.png"],"datePublished":"2026-06-10T15:00:00.000Z","dateModified":"2026-06-24T15:00:00.000Z","author":{"@type":"Person","name":"Sunjae Kim"},"publisher":{"@type":"Person","name":"Sunjae Kim"},"inLanguage":"ko-KR"}</script><link href="./index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL3ByaXZhdGUvdmFyL2ZvbGRlcnMvNF8vNDk4dGxtd3g2YjM5NHpoOWswbTR0X3ZtMDAwMGduL1QvdG1wLmc5T1lNNmhOTlYvcmVwby9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTs7QUFHRjtFQUNFOztBQUlGO0VBQ0U7RUFDQTtFQUNBIiwic291cmNlc0NvbnRlbnQiOlsiLmV4cGFuZC1idXR0b24ge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsb2F0OiByaWdodDtcbiAgcGFkZGluZzogMC40cmVtO1xuICBtYXJnaW46IDAuM3JlbTtcbiAgcmlnaHQ6IDA7IC8vIE5PVEU6IHJpZ2h0IHdpbGwgYmUgc2V0IGluIG1lcm1haWQuaW5saW5lLnRzXG4gIGNvbG9yOiB2YXIoLS1ncmF5KTtcbiAgYm9yZGVyLWNvbG9yOiB2YXIoLS1kYXJrKTtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICBib3JkZXI6IDFweCBzb2xpZDtcbiAgYm9yZGVyLXJhZGl1czogNXB4O1xuICBvcGFjaXR5OiAwO1xuICB0cmFuc2l0aW9uOiAwLjJzO1xuXG4gICYgPiBzdmcge1xuICAgIGZpbGw6IHZhcigtLWxpZ2h0KTtcbiAgICBmaWx0ZXI6IGNvbnRyYXN0KDAuMyk7XG4gIH1cblxuICAmOmhvdmVyIHtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgYm9yZGVyLWNvbG9yOiB2YXIoLS1zZWNvbmRhcnkpO1xuICB9XG5cbiAgJjpmb2N1cyB7XG4gICAgb3V0bGluZTogMDtcbiAgfVxufVxuXG5wcmUge1xuICAmOmhvdmVyID4gLmV4cGFuZC1idXR0b24ge1xuICAgIG9wYWNpdHk6IDE7XG4gICAgdHJhbnNpdGlvbjogMC4ycztcbiAgfVxufVxuXG4jbWVybWFpZC1jb250YWluZXIge1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGNvbnRhaW46IGxheW91dDtcbiAgei1pbmRleDogOTk5O1xuICBsZWZ0OiAwO1xuICB0b3A6IDA7XG4gIHdpZHRoOiAxMDB2dztcbiAgaGVpZ2h0OiAxMDB2aDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgZGlzcGxheTogbm9uZTtcbiAgYmFja2Ryb3AtZmlsdGVyOiBibHVyKDRweCk7XG4gIGJhY2tncm91bmQ6IHJnYmEoMCwgMCwgMCwgMC41KTtcblxuICAmLmFjdGl2ZSB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB9XG5cbiAgJiA+ICNtZXJtYWlkLXNwYWNlIHtcbiAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgICBib3JkZXItcmFkaXVzOiA1cHg7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogNTAlO1xuICAgIGxlZnQ6IDUwJTtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlLCAtNTAlKTtcbiAgICBoZWlnaHQ6IDgwdmg7XG4gICAgd2lkdGg6IDgwdnc7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcblxuICAgICYgPiAubWVybWFpZC1jb250ZW50IHtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="./prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("./static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://sunjae-k.github.io/index.xml"/></head><body data-slug="llm-agent-address-search"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href=".">Sunjae blog</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>검색</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="검색어를 입력하세요" placeholder="검색어를 입력하세요"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="다크 모드"><title>다크 모드</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="라이트 모드"><title>라이트 모드</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="리더 모드"><title>리더 모드</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><nav class="left-nav desktop-only" aria-label="Site navigation"><p class="left-nav__tagline">AI Agent, RAG, local-first AI를<br/>운영·검증·문서 구조 관점에서 읽습니다.</p><div class="left-nav__section"><p class="left-nav__label">Topics</p><a href="/topics#ai-agent-operations">AI Agent Operations</a><a href="/topics#rag--document-operations">RAG / Document Operations</a><a href="/topics#product-ai--ux--infra">Product AI / UX / Infra</a><a href="/topics#urban--spatial-ai">Urban / Spatial AI</a><a href="/topics#ai-visual--knowledge-artifacts">AI Visual / Knowledge Artifacts</a></div></nav></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="./">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>LLM을 덜 쓰기 위해 에이전트를 쓴다</a></div></nav><h1 class="article-title">LLM을 덜 쓰기 위해 에이전트를 쓴다</h1><p show-comma="true" class="content-meta"><time datetime="2026-06-24T15:00:00.000Z">2026년 6월 25일</time><span>25 min read</span></p><ul class="tags"><li><a href="./tags/ai-agent" class="internal tag-link">ai-agent</a></li><li><a href="./tags/address-search" class="internal tag-link">address-search</a></li><li><a href="./tags/entity-resolution" class="internal tag-link">entity-resolution</a></li><li><a href="./tags/llm-fallback" class="internal tag-link">llm-fallback</a></li><li><a href="./tags/agent-loop" class="internal tag-link">agent-loop</a></li><li><a href="./tags/product-engineering" class="internal tag-link">product-engineering</a></li></ul></div></div><article class="popover-hint"><h1 id="llm을-덜-쓰기-위해-에이전트를-쓴다">LLM을 덜 쓰기 위해 에이전트를 쓴다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#llm을-덜-쓰기-위해-에이전트를-쓴다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="핵심-요약">핵심 요약<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#핵심-요약" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p><img src="./assets/llm-agent-address-search/hero-v5.png" alt="실패 로그를 읽는 에이전트가 주소 검색 라우터를 개선하고, 대부분의 요청은 DB 경로로 빠르게 보내며 일부만 LLM fallback으로 보내는 구조"/></p>
+<ul>
+<li>이 글은 검색·추천·resolver를 운영하는 팀이 <strong>언제 LLM을 호출하고, 언제 빠른 DB 경로로 돌려보낼지</strong> 판단하는 데 초점을 둔다.</li>
+<li>주소 검색 실패는 단순 문자열 오류가 아니라 뒤쪽 실거래가, 공시가격, 단지 정보 조회까지 전파되는 entity resolution 문제다.</li>
+<li>에이전트의 역할은 모든 검색을 대신하는 것이 아니라, 실패 로그를 읽고 반복 패턴을 라우터·테스트 개선 후보로 바꾸는 것이다.</li>
+<li>그래서 핵심 지표는 “LLM을 얼마나 많이 썼나”가 아니라 <strong>반복 실패가 다음 배포에서 얼마나 빠른 경로로 흡수됐나</strong>에 가깝다.</li>
+</ul>
+<p>부동산 주소 검색에 LLM을 붙이는 건 쉬운 선택이었다.</p>
+<p>사용자는 주소를 정석대로 입력하지 않는다. “OO대 앞 오피스텔”처럼 장소명과 건물 유형을 섞어 쓰고, “OO아파트 상가동”, “OO단지 경비실”, “OO아파트 테니스장”처럼 실제 주거 단지가 아닌 시설명을 입력하기도 한다.</p>
+<p>이런 입력을 볼 때 가장 먼저 드는 생각은 단순하다.</p>
+<blockquote>
+<p>LLM이 한 번 정리해주면 되지 않을까?</p>
+</blockquote>
+<p>하지만 검색창 뒤에 있는 시스템은 채팅창과 다르다.</p>
+<p>주소 검색은 빠르게 응답해야 하고, 같은 입력에는 같은 결과를 돌려줘야 한다. 무엇보다 검색 결과는 뒤쪽의 실거래가, 공시가격, 단지 정보 조회로 이어진다. 첫 후보가 틀리면 뒤쪽 데이터가 모두 그럴듯하게 틀어진다.</p>
+<p>그래서 LLM을 검색 요청마다 호출하지 않는 방향을 선택했다.</p>
+<p>대신 실패를 버리지 않았다. 검색이 흔들린 순간을 로그로 남기고, 에이전트가 그 로그를 읽게 했다. 에이전트의 역할은 검색을 대신하는 것이 아니라, 다음 배포에서 같은 실패가 반복되지 않도록 라우터 개선 후보를 만드는 것이었다.</p>
+<p>문제의 초점은 LLM을 어디에 붙일지가 아니라,
+어떤 실패를 다음 배포에서 빠른 경로로 되돌릴 수 있느냐였다.</p>
+<hr/>
+<h2 id="문제-주소-검색-실패는-뒤쪽-데이터-조회까지-전파된다">문제: 주소 검색 실패는 뒤쪽 데이터 조회까지 전파된다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#문제-주소-검색-실패는-뒤쪽-데이터-조회까지-전파된다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>처음에는 주소 검색을 단순한 정규화 문제로 봤다.</p>
+<p>사용자가 입력한 문자열을 정리해서 DB에서 찾을 수 있는 주소나 단지명으로 바꾸면 된다고 생각했다. 예를 들어 이런 식이다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>입력: OO대 앞 오피스텔</span></span>
+<span data-line><span>기대: OO대 인근 오피스텔 후보 검색</span></span></code></pre></figure>
+<p>그래서 앞단에 정규식 기반 라우터를 두었다. 입력 문자열에서 지역명, 단지명, 건물 유형, 주소 힌트를 빠르게 분리하고 적절한 검색 경로로 보내는 역할이다.</p>
+<p>정규식은 빠르다. 대부분의 명확한 주소는 이 단계에서 충분히 처리된다.</p>
+<p>문제는 정규식이 문맥을 모른다는 점이다.</p>
+<p>예를 들어 “OO대 앞 오피스텔”이라는 입력에서 “OO대 앞”을 위치 힌트로 보존하지 못하고 “오피스텔”만 남기면 어떻게 될까. 라우터 입장에서는 장소명과 건물 유형을 분리한 것처럼 보이지만, 사용자 의도 입장에서는 핵심 위치 정보가 사라진다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>입력: OO대 앞 오피스텔</span></span>
+<span data-line><span>라우터 처리: &quot;오피스텔&quot;만 검색</span></span>
+<span data-line><span>결과: 전혀 다른 지역의 오피스텔 후보가 상위 노출</span></span></code></pre></figure>
+<p>이때 알게 됐다. 주소 검색은 단순한 문자열 정규화가 아니었다.</p>
+<p>주소 검색은 사용자의 입력 문자열을 실제 부동산 객체에 연결하는 문제다. 조금 더 기술적으로 말하면 entity resolution에 가깝다. 사용자가 입력한 말이 어떤 단지, 어떤 필지, 어떤 건물을 가리키는지 찾아야 한다.</p>
+<p>그리고 이 연결이 틀리면 뒤쪽은 전부 틀어진다.</p>
+<p>단지 key가 틀리고, 실거래가가 틀리고, 공시가격과 주변 환경 정보도 틀어진다. 첫 단계의 작은 오해가 전체 응답의 품질을 결정한다.</p>
+<p>주소 검색은 첫 단계지만, 실패 비용은 마지막까지 전파된다.</p>
+<hr/>
+<h2 id="선택지-모든-입력을-llm에-보내면-왜-위험한가">선택지: 모든 입력을 LLM에 보내면 왜 위험한가<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#선택지-모든-입력을-llm에-보내면-왜-위험한가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>주소 정제가 어렵다면 가장 쉬운 선택은 모든 입력을 LLM에 보내는 것이다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>사용자 입력</span></span>
+<span data-line><span>  → LLM 주소 정규화</span></span>
+<span data-line><span>  → DB 조회</span></span>
+<span data-line><span>  → 결과 반환</span></span></code></pre></figure>
+<p>이 구조는 매력적이다. 정규식으로 예외를 계속 늘리지 않아도 되고, 사용자의 애매한 표현도 LLM이 알아서 해석해줄 것처럼 보인다.</p>
+<p>하지만 검색 시스템에서는 잘 맞지 않았다.</p>
+<p>첫째, 주소 검색은 대화형 답변보다 훨씬 짧은 응답 시간을 요구한다. 사용자는 검색창에 입력한 뒤 결과가 즉시 뜨기를 기대한다. 여기에 매번 모델 호출이 들어가면 사용자는 그냥 “검색이 느리다”고 느낀다.</p>
+<p>둘째, 대부분의 요청은 모델 없이도 처리 가능하다. 정상적인 도로명주소, 명확한 단지명, 이미 DB에서 바로 찾을 수 있는 요청까지 LLM에 보내는 것은 낭비다.</p>
+<p>셋째, 통제 가능성이 떨어진다. 주소 검색에서 필요한 결과는 “그럴듯한 주소”가 아니라 “DB와 연결 가능한 객체”다. LLM이 자유롭게 주소를 생성하거나 보정하면 결과가 왜 그렇게 나왔는지 추적하기 어려워진다.</p>
+<p>그래서 방향을 바꿨다.</p>
+<p>LLM을 앞단에 세우지 않는다. 대부분의 요청은 기존처럼 정규식과 DB가 처리한다. LLM은 그 둘이 확신하지 못하는 케이스에만 호출한다.</p>
+<p>운영 로그를 기준으로 보면 LLM이 필요한 케이스는 전체의 일부였다. 대부분은 룰과 DB 조회로 지나갔고, 일부만 fallback이 필요했다.</p>
+<p>그래서 이 파이프라인의 목표는 “LLM으로 주소 검색을 해결하기”가 아니라 <strong>LLM을 호출해야 하는 마지막 구간을 잘 고르는 것</strong>이 됐다.</p>
+<hr/>
+<h2 id="지표-llm-fallback-rate를-비용이-아니라-라우터-신호로-본다">지표: LLM fallback rate를 비용이 아니라 라우터 신호로 본다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#지표-llm-fallback-rate를-비용이-아니라-라우터-신호로-본다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>LLM 호출 여부를 단순한 비용 지표로만 보지는 않았다.</p>
+<p>주소 검색에서 LLM fallback rate는 라우터가 얼마나 많은 케이스를 스스로 처리하지 못하는지를 보여주는 신호였다. fallback rate가 올라가면 두 가지 가능성이 있다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>1. 새로운 입력 패턴이 들어오고 있다.</span></span>
+<span data-line><span>2. 기존 라우터가 너무 좁게 설계되어 있다.</span></span></code></pre></figure>
+<p>반대로 fallback rate가 너무 낮은데 실패율이 올라가면, 애매한 요청을 억지로 룰에서 처리하고 있을 가능성이 있다.</p>
+<p>그래서 중요한 건 LLM 호출 비율을 무작정 낮추는 것이 아니었다.</p>
+<p>필요한 케이스는 LLM으로 보내야 한다. 다만 반복되는 실패는 계속 LLM에 맡기면 안 된다. 실패 패턴이 명확해졌다면 다음에는 라우터가 그 패턴을 처리해야 한다.</p>
+<p>즉, fallback은 영구 경로가 아니라 관찰 경로에 가까웠다.</p>
+<p>처음 보는 애매한 입력은 fallback으로 보낸다. 그 결과를 로그로 남긴다. 같은 유형의 실패가 반복되면 에이전트가 패턴을 묶고, 사람이 검토할 수 있는 개선 후보로 바꾼다.</p>
+<p>이 루프가 돌수록 fallback은 다시 예외 처리 경로로 작아진다.</p>
+<hr/>
+<h2 id="구조-에이전트는-검색-요청이-아니라-실패-로그를-본다">구조: 에이전트는 검색 요청이 아니라 실패 로그를 본다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#구조-에이전트는-검색-요청이-아니라-실패-로그를-본다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>에이전트를 붙인다고 해서 모든 검색 요청을 에이전트에게 보내지는 않았다.</p>
+<p>그건 다시 LLM-first 구조로 돌아가는 일이다. 목표는 검색 중간에 에이전트가 끼어드는 구조가 아니었다.</p>
+<p>에이전트에게 맡긴 일은 “검색을 대신하라”가 아니었다.</p>
+<blockquote>
+<p>실패를 읽고, 다음 배포에서 같은 실패가 반복되지 않게 만들 제안을 하라.</p>
+</blockquote>
+<p>그래서 에이전트는 검색이 끝난 뒤의 로그를 본다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>- raw query</span></span>
+<span data-line><span>- router decision</span></span>
+<span data-line><span>- DB 후보 개수</span></span>
+<span data-line><span>- LLM 호출 여부</span></span>
+<span data-line><span>- LLM fallback 여부</span></span>
+<span data-line><span>- reranker 선택 후보</span></span>
+<span data-line><span>- 최종 resolved key</span></span>
+<span data-line><span>- 후속 조회 성공 여부</span></span></code></pre></figure>
+<p>이 로그에는 검색 파이프라인이 어디서 흔들렸는지가 남아 있다. 어떤 입력이 라우터에서 잘못 잘렸는지, 어떤 후보군에서 상가동이나 경비실 같은 노이즈가 반복되는지, 어떤 케이스가 매번 LLM fallback까지 넘어가는지 확인할 수 있다.</p>
+<p>여기서 에이전트의 역할은 운영 코드를 직접 고치는 것이 아니다.</p>
+<p>에이전트는 실패 로그를 읽고, 반복되는 패턴을 묶고, 사람이 검토할 수 있는 변경 단위로 정리한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>실패 로그 수집</span></span>
+<span data-line><span>  → 에이전트가 실패 유형 분류</span></span>
+<span data-line><span>  → 라우터 / 정규식 개선 후보 제안</span></span>
+<span data-line><span>  → fallback 조건 조정 제안</span></span>
+<span data-line><span>  → regression test 추가 제안</span></span>
+<span data-line><span>  → 사람 리뷰</span></span>
+<span data-line><span>  → 다음 배포</span></span></code></pre></figure>
+<p>아직 완전 자율 개선 시스템은 아니다. 에이전트가 운영 rule을 마음대로 바꾸지 않는다. 반영 여부는 사람이 검토한다.</p>
+<p>하지만 개선 루프의 앞부분은 에이전트가 충분히 도울 수 있었다. 실패 로그를 사람이 하나씩 뒤지는 대신, 반복 패턴과 수정 후보를 먼저 받아볼 수 있었기 때문이다.</p>
+<hr/>
+<h2 id="예시-하나의-실패가-라우터-개선으로-바뀌는-과정">예시: 하나의 실패가 라우터 개선으로 바뀌는 과정<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#예시-하나의-실패가-라우터-개선으로-바뀌는-과정" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p><img src="./assets/llm-agent-address-search/failure-loop-v7.png" alt="실패 로그가 분석 에이전트의 개선 제안과 테스트를 거쳐 다음 배포에서 라우터로 흡수되고 LLM fallback을 줄이는 피드백 루프"/></p>
+<p>실패 로그는 단순한 디버깅 기록이 아니라 다음 라우터를 개선하는 재료였다.</p>
+<p>예를 들어 <code>OO대 앞 오피스텔</code>이라는 입력이 들어왔다고 하자. 라우터가 <code>OO대 앞</code>을 위치 힌트로 보존하지 못하고 <code>오피스텔</code>만 남기면, 검색 후보는 전혀 다른 지역으로 튈 수 있다.</p>
+<p>이때 로그에는 다음 정보가 남는다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>raw_query: OO대 앞 오피스텔</span></span>
+<span data-line><span>router_output: 오피스텔</span></span>
+<span data-line><span>candidate_count: 12</span></span>
+<span data-line><span>selected_candidate_region: 다른 지역</span></span>
+<span data-line><span>llm_fallback: true</span></span>
+<span data-line><span>downstream_status: low_confidence</span></span></code></pre></figure>
+<p>에이전트는 이런 실패를 하나의 사건으로만 보지 않는다. 비슷한 로그를 묶어 <code>대학명 + 건물 유형</code> 패턴이 반복되고 있는지 본다.</p>
+<p>그리고 사람이 검토할 수 있는 변경 단위로 정리한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="md" data-theme="github-light github-dark"><code data-language="md" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">## 개선 제안: 대학명 + 건물 유형 패턴</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### 관찰</span></span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">`대학명 + 오피스텔`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 형태의 입력에서 위치 힌트가 제거되는 케이스가 반복됨.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### 영향</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">위치 힌트가 사라지면서 다른 지역 후보가 상위에 노출됨.</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### 제안</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 대학명 토큰을 </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">`location_hint`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">로 보존</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> DB 후보 검색 시 </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF;">`keyword = &quot;{대학명} {건물유형}&quot;`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 유지</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 후보가 여러 개이고 confidence가 낮으면 reranker 호출</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold;">### regression test</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 입력: OO대 앞 오피스텔</span></span>
+<span data-line><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> 기대: OO대 인근 오피스텔 후보 우선</span></span></code></pre></figure>
+<p>이 제안이 반영되면 같은 유형의 요청은 다음부터 LLM fallback까지 가지 않는다. 라우터가 위치 힌트를 보존하고, DB 후보 검색만으로 결과를 좁힐 수 있다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Before:</span></span>
+<span data-line><span>OO대 앞 오피스텔</span></span>
+<span data-line><span>  → 라우터가 위치 힌트 제거</span></span>
+<span data-line><span>  → DB 후보가 다른 지역으로 튐</span></span>
+<span data-line><span>  → LLM fallback</span></span>
+<span data-line><span>  → reranker</span></span>
+<span data-line><span>  → 결과</span></span>
+<span data-line> </span>
+<span data-line><span>After:</span></span>
+<span data-line><span>OO대 앞 오피스텔</span></span>
+<span data-line><span>  → 라우터가 location_hint 보존</span></span>
+<span data-line><span>  → DB 후보 검색</span></span>
+<span data-line><span>  → 결과</span></span></code></pre></figure>
+<p>반복 실패가 라우터로 흡수되면, LLM은 다시 예외 처리 경로로 작아진다.</p>
+<p>이게 이 구조의 핵심이다.</p>
+<p>에이전트는 LLM을 더 쓰기 위해 있는 게 아니라, LLM을 덜 쓰도록 시스템을 개선하기 위해 있다.</p>
+<hr/>
+<h2 id="마지막-구간의-llm은-생성기가-아니라-reranker다">마지막 구간의 LLM은 생성기가 아니라 reranker다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#마지막-구간의-llm은-생성기가-아니라-reranker다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>물론 모든 케이스를 라우터로 흡수할 수는 없다.</p>
+<p>애매한 입력은 계속 생긴다. 검색 후보가 여러 개 나오고, 그중 어떤 후보가 진짜 의도에 가까운지 판단해야 하는 경우도 있다.</p>
+<p>예를 들어 사용자가 “OO아파트”를 입력했는데 후보가 이렇게 나온다고 해보자.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>1. OO아파트 테니스장</span></span>
+<span data-line><span>2. OO아파트 상가동</span></span>
+<span data-line><span>3. OO아파트 경비실</span></span>
+<span data-line><span>4. OO아파트 단지</span></span></code></pre></figure>
+<p>기계적으로 첫 번째 후보를 고르면 틀릴 수 있다. 테니스장, 상가동, 경비실은 실제 검색 API에서는 상위에 뜰 수 있지만, 사용자가 찾는 대상은 대개 “OO아파트 단지”다.</p>
+<p>여기서는 LLM을 쓴다. 다만 LLM에게 새 주소를 만들라고 하지 않는다.</p>
+<p>나쁜 방식은 이렇다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>이 입력이 가리키는 올바른 주소를 알려줘.</span></span></code></pre></figure>
+<p>선택한 방식은 달랐다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>사용자 입력과 후보 목록이 주어진다.</span></span>
+<span data-line><span>새로운 주소를 만들지 말고, 후보 중 가장 적절한 항목의 번호만 반환하라.</span></span></code></pre></figure>
+<p>LLM에게 열린 생성 문제를 주지 않고, 닫힌 선택 문제를 준 것이다.</p>
+<p>후보는 DB와 검색 시스템이 만들고, LLM은 그 안에서 고른다. 이 구조에서는 모델이 존재하지 않는 주소를 만들어낼 여지가 줄어든다. 선택 결과도 로그로 남길 수 있다.</p>
+<p>그리고 그 선택 결과는 다시 에이전트가 읽는다.</p>
+<p>어떤 후보군에서 reranker가 자주 호출되는지, 어떤 노이즈가 반복되는지, 어떤 패턴은 라우터나 후보 생성 단계로 흡수할 수 있는지 다시 분류한다.</p>
+<p>LLM은 마지막 구간의 판단을 돕고, 에이전트는 그 판단이 반복되는 이유를 읽는다.</p>
+<hr/>
+<h2 id="모든-실패가-llm-문제는-아니다">모든 실패가 LLM 문제는 아니다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#모든-실패가-llm-문제는-아니다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>실패 로그를 읽는 에이전트에게 가장 먼저 가르쳐야 한 것은 “모든 실패를 프롬프트 문제로 보지 말라”는 것이었다.</p>
+<p>주소 검색 실패에는 적어도 두 종류가 있었다.</p>
+<p>첫째, 입력 해석 실패다.</p>
+<p>사용자의 위치 힌트를 잘라내거나, 후보 중 진짜 단지를 고르지 못하는 경우다. 이런 문제는 라우터 개선이나 LLM reranker로 줄일 수 있다.</p>
+<p>둘째, 데이터 연결 실패다.</p>
+<p>부동산 데이터는 여러 체계가 섞인다. 단지, 필지, 건축물, 실거래, 공시가격 데이터가 서로 다른 주기로 갱신된다. 그래서 어떤 신규 단지는 실거래 데이터가 있는데 단지 key가 아직 없을 수 있다.</p>
+<p>이 경우 단지 key만 기준으로 보면 검색은 실패한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>실거래 데이터: 있음</span></span>
+<span data-line><span>단지 key: 없음</span></span>
+<span data-line><span>결과: 단지 기반 조회 실패</span></span></code></pre></figure>
+<p>이건 모델이 더 똑똑해진다고 해결되지 않는다.</p>
+<p>프롬프트를 고쳐도 없는 key가 생기지는 않는다.</p>
+<p>여기서는 PNU 기반 fallback처럼 데이터 구조 안에서 우회 경로를 만들어야 한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>단지 key 조회 실패</span></span>
+<span data-line><span>  → PNU 기반 조회</span></span>
+<span data-line><span>  → 위치 / 필지 기반 정보 연결</span></span></code></pre></figure>
+<p>사용자 입력이 애매한 문제는 LLM이 도울 수 있다. 하지만 데이터 key가 비어 있는 문제는 데이터 모델과 fallback 경로로 풀어야 한다.</p>
+<p>에이전트가 실패 로그를 읽을 때도 이 구분이 중요했다. 어떤 실패는 라우터 개선 후보가 되고, 어떤 실패는 데이터 pipeline 개선 후보가 된다. 둘을 구분하지 못하면 모든 문제를 LLM fallback으로 밀어 넣게 된다.</p>
+<p>LLM을 많이 쓴다고 데이터 결손이 사라지지는 않는다.</p>
+<hr/>
+<h2 id="이-과정에서-얻은-설계-원칙">이 과정에서 얻은 설계 원칙<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#이-과정에서-얻은-설계-원칙" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>이 개선을 거치면서 기준이 조금 명확해졌다.</p>
+<p>LLM을 쓰기 좋은 지점은 이런 곳이다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>- 입력이 애매하다</span></span>
+<span data-line><span>- 후보가 여러 개다</span></span>
+<span data-line><span>- 후보 중 선택이 필요하다</span></span>
+<span data-line><span>- 선택지는 시스템이 이미 생성했다</span></span>
+<span data-line><span>- 모델은 새 값을 만들지 않아도 된다</span></span></code></pre></figure>
+<p>반대로 LLM을 쓰지 않는 편이 나은 지점도 있다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>- 주소가 명확하다</span></span>
+<span data-line><span>- DB에서 바로 찾을 수 있다</span></span>
+<span data-line><span>- 반복되는 실패 패턴이라 라우터로 흡수할 수 있다</span></span>
+<span data-line><span>- key가 없어서 fallback이 필요한 데이터 문제다</span></span>
+<span data-line><span>- 같은 입력에 대해 동일한 결과가 중요하다</span></span>
+<span data-line><span>- latency가 더 중요하다</span></span></code></pre></figure>
+<p>이 기준으로 보면 LLM은 주소 검색의 중심이 아니다.</p>
+<p>중심은 여전히 라우터, DB 후보, 도메인 fallback, 실패 로그다. LLM은 마지막에 남는 애매함을 줄여주는 장치다. 에이전트는 그 로그를 읽고 중심부를 조금씩 개선한다.</p>
+<p>검색 요청은 먼저 라우터와 DB를 지난다. 애매한 후보 선택만 LLM reranker가 맡는다. 실패는 로그로 남고, 에이전트는 그 로그를 읽어 다음 라우터 개선 후보를 만든다. 데이터 key가 비어 있는 문제는 프롬프트가 아니라 PNU fallback 같은 데이터 구조로 해결한다.</p>
+<p>이 루프가 돌수록 같은 실패는 LLM까지 가지 않는다.</p>
+<hr/>
+<h2 id="마무리">마무리<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#마무리" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>이번 개선에서 중요한 건 LLM을 얼마나 잘 호출했느냐가 아니었다.</p>
+<p>LLM을 호출하지 않아도 되는 케이스를 얼마나 많이 빠른 경로로 되돌렸느냐였다.</p>
+<p>모든 요청을 LLM에 보내면 시스템은 똑똑해 보이지만 느려진다. 모든 요청을 정규식과 DB로만 처리하면 빠르지만 애매한 입력에서 자주 틀린다.</p>
+<p>그래서 두 경로 사이에 선을 그었다.</p>
+<p>대부분의 요청은 빠르게 지나간다. 마지막 일부만 LLM이 본다. 그리고 그 마지막 일부에서도 LLM은 정답을 생성하지 않는다. 후보 중에서 고른다.</p>
+<p>에이전트는 이 구조를 운영하는 데 쓰인다.</p>
+<p>실패 로그를 읽고, 반복 패턴을 찾고, 라우터와 fallback 조건을 개선할 후보를 만든다. 이 루프가 잘 돌수록 같은 실패는 다음번에 LLM까지 가지 않는다.</p>
+<p>부동산 주소 검색에서 LLM은 주인공이 아니었다.</p>
+<p>잘 만든 라우터, 좋은 후보, 도메인 fallback, 그리고 실패 로그가 먼저였다. 에이전트는 그 로그를 읽고 시스템을 조금씩 고쳤다.</p>
+<p>LLM을 덜 쓰기 위해, 에이전트는 검색창 앞이 아니라 로그 뒤에 서야 했다.</p></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-16" aria-expanded="true"><h3>목차</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#llm을-덜-쓰기-위해-에이전트를-쓴다" data-for="llm을-덜-쓰기-위해-에이전트를-쓴다">LLM을 덜 쓰기 위해 에이전트를 쓴다</a></li><li class="depth-1"><a href="#핵심-요약" data-for="핵심-요약">핵심 요약</a></li><li class="depth-1"><a href="#문제-주소-검색-실패는-뒤쪽-데이터-조회까지-전파된다" data-for="문제-주소-검색-실패는-뒤쪽-데이터-조회까지-전파된다">문제: 주소 검색 실패는 뒤쪽 데이터 조회까지 전파된다</a></li><li class="depth-1"><a href="#선택지-모든-입력을-llm에-보내면-왜-위험한가" data-for="선택지-모든-입력을-llm에-보내면-왜-위험한가">선택지: 모든 입력을 LLM에 보내면 왜 위험한가</a></li><li class="depth-1"><a href="#지표-llm-fallback-rate를-비용이-아니라-라우터-신호로-본다" data-for="지표-llm-fallback-rate를-비용이-아니라-라우터-신호로-본다">지표: LLM fallback rate를 비용이 아니라 라우터 신호로 본다</a></li><li class="depth-1"><a href="#구조-에이전트는-검색-요청이-아니라-실패-로그를-본다" data-for="구조-에이전트는-검색-요청이-아니라-실패-로그를-본다">구조: 에이전트는 검색 요청이 아니라 실패 로그를 본다</a></li><li class="depth-1"><a href="#예시-하나의-실패가-라우터-개선으로-바뀌는-과정" data-for="예시-하나의-실패가-라우터-개선으로-바뀌는-과정">예시: 하나의 실패가 라우터 개선으로 바뀌는 과정</a></li><li class="depth-1"><a href="#마지막-구간의-llm은-생성기가-아니라-reranker다" data-for="마지막-구간의-llm은-생성기가-아니라-reranker다">마지막 구간의 LLM은 생성기가 아니라 reranker다</a></li><li class="depth-1"><a href="#모든-실패가-llm-문제는-아니다" data-for="모든-실패가-llm-문제는-아니다">모든 실패가 LLM 문제는 아니다</a></li><li class="depth-1"><a href="#이-과정에서-얻은-설계-원칙" data-for="이-과정에서-얻은-설계-원칙">이 과정에서 얻은 설계 원칙</a></li><li class="depth-1"><a href="#마무리" data-for="마무리">마무리</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="./postscript.js" type="module" data-persist="true"></script></html>

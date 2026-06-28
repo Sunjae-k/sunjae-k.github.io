@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr"><head><title>AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto Sans KR:wght@400;700&amp;family=Noto Sans KR:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="google-site-verification" content="z4Nq-epWJy6nnCYzF9ctaHXmf4rh5X6lsR6QzzjseOg"/><meta name="og:site_name" content="Sunjae blog"/><meta property="og:title" content="AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다"/><meta name="twitter:description" content="AI-native 회사를 skill, resolver, memory, eval이 연결된 workflow operating system으로 해석하고, 조직도가 아니라 요청 해결 구조가 중요해지는 이유를 정리한다."/><meta property="og:description" content="AI-native 회사를 skill, resolver, memory, eval이 연결된 workflow operating system으로 해석하고, 조직도가 아니라 요청 해결 구조가 중요해지는 이유를 정리한다."/><meta property="og:image:alt" content="AI-native 회사를 skill, resolver, memory, eval이 연결된 workflow operating system으로 해석하고, 조직도가 아니라 요청 해결 구조가 중요해지는 이유를 정리한다."/><meta property="og:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:url" content="https://sunjae-k.github.io/static/og-image.png"/><meta name="twitter:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="sunjae-k.github.io"/><meta property="og:url" content="https://sunjae-k.github.io/ai-native-company-resolver"/><meta property="twitter:url" content="https://sunjae-k.github.io/ai-native-company-resolver"/><link rel="icon" href="./static/icon.png"/><meta name="description" content="AI-native 회사를 skill, resolver, memory, eval이 연결된 workflow operating system으로 해석하고, 조직도가 아니라 요청 해결 구조가 중요해지는 이유를 정리한다."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다","description":"AI-native 회사를 skill, resolver, memory, eval이 연결된 workflow operating system으로 해석하고, 조직도가 아니라 요청 해결 구조가 중요해지는 이유를 정리한다.","url":"https://sunjae-k.github.io/ai-native-company-resolver","mainEntityOfPage":{"@type":"WebPage","@id":"https://sunjae-k.github.io/ai-native-company-resolver"},"image":["https://sunjae-k.github.io/static/og-image.png"],"datePublished":"2026-05-25T15:00:00.000Z","dateModified":"2026-05-25T15:00:00.000Z","author":{"@type":"Person","name":"Sunjae Kim"},"publisher":{"@type":"Person","name":"Sunjae Kim"},"inLanguage":"ko-KR"}</script><link href="./index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL3ByaXZhdGUvdmFyL2ZvbGRlcnMvNF8vNDk4dGxtd3g2YjM5NHpoOWswbTR0X3ZtMDAwMGduL1QvdG1wLmc5T1lNNmhOTlYvcmVwby9xdWFydHovY29tcG9uZW50cy9zdHlsZXMiLCJzb3VyY2VzIjpbIm1lcm1haWQuaW5saW5lLnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUdGO0VBQ0U7OztBQUtGO0VBQ0U7RUFDQTs7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTtFQUNBOztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTs7QUFHRjtFQUNFOztBQUlGO0VBQ0U7RUFDQTtFQUNBIiwic291cmNlc0NvbnRlbnQiOlsiLmV4cGFuZC1idXR0b24ge1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsb2F0OiByaWdodDtcbiAgcGFkZGluZzogMC40cmVtO1xuICBtYXJnaW46IDAuM3JlbTtcbiAgcmlnaHQ6IDA7IC8vIE5PVEU6IHJpZ2h0IHdpbGwgYmUgc2V0IGluIG1lcm1haWQuaW5saW5lLnRzXG4gIGNvbG9yOiB2YXIoLS1ncmF5KTtcbiAgYm9yZGVyLWNvbG9yOiB2YXIoLS1kYXJrKTtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICBib3JkZXI6IDFweCBzb2xpZDtcbiAgYm9yZGVyLXJhZGl1czogNXB4O1xuICBvcGFjaXR5OiAwO1xuICB0cmFuc2l0aW9uOiAwLjJzO1xuXG4gICYgPiBzdmcge1xuICAgIGZpbGw6IHZhcigtLWxpZ2h0KTtcbiAgICBmaWx0ZXI6IGNvbnRyYXN0KDAuMyk7XG4gIH1cblxuICAmOmhvdmVyIHtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgYm9yZGVyLWNvbG9yOiB2YXIoLS1zZWNvbmRhcnkpO1xuICB9XG5cbiAgJjpmb2N1cyB7XG4gICAgb3V0bGluZTogMDtcbiAgfVxufVxuXG5wcmUge1xuICAmOmhvdmVyID4gLmV4cGFuZC1idXR0b24ge1xuICAgIG9wYWNpdHk6IDE7XG4gICAgdHJhbnNpdGlvbjogMC4ycztcbiAgfVxufVxuXG4jbWVybWFpZC1jb250YWluZXIge1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIGNvbnRhaW46IGxheW91dDtcbiAgei1pbmRleDogOTk5O1xuICBsZWZ0OiAwO1xuICB0b3A6IDA7XG4gIHdpZHRoOiAxMDB2dztcbiAgaGVpZ2h0OiAxMDB2aDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgZGlzcGxheTogbm9uZTtcbiAgYmFja2Ryb3AtZmlsdGVyOiBibHVyKDRweCk7XG4gIGJhY2tncm91bmQ6IHJnYmEoMCwgMCwgMCwgMC41KTtcblxuICAmLmFjdGl2ZSB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICB9XG5cbiAgJiA+ICNtZXJtYWlkLXNwYWNlIHtcbiAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgICBib3JkZXItcmFkaXVzOiA1cHg7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogNTAlO1xuICAgIGxlZnQ6IDUwJTtcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlLCAtNTAlKTtcbiAgICBoZWlnaHQ6IDgwdmg7XG4gICAgd2lkdGg6IDgwdnc7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcblxuICAgICYgPiAubWVybWFpZC1jb250ZW50IHtcbiAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgIHRyYW5zZm9ybS1vcmlnaW46IDAgMDtcbiAgICAgIHRyYW5zaXRpb246IHRyYW5zZm9ybSAwLjFzIGVhc2U7XG4gICAgICBvdmVyZmxvdzogdmlzaWJsZTtcbiAgICAgIG1pbi1oZWlnaHQ6IDIwMHB4O1xuICAgICAgbWluLXdpZHRoOiAyMDBweDtcblxuICAgICAgcHJlIHtcbiAgICAgICAgbWFyZ2luOiAwO1xuICAgICAgICBib3JkZXI6IG5vbmU7XG4gICAgICB9XG5cbiAgICAgIHN2ZyB7XG4gICAgICAgIG1heC13aWR0aDogbm9uZTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgfVxuICAgIH1cblxuICAgICYgPiAubWVybWFpZC1jb250cm9scyB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICBib3R0b206IDIwcHg7XG4gICAgICByaWdodDogMjBweDtcbiAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICBnYXA6IDhweDtcbiAgICAgIHBhZGRpbmc6IDhweDtcbiAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICBib3JkZXItcmFkaXVzOiA2cHg7XG4gICAgICBib3gtc2hhZG93OiAwIDJweCA0cHggcmdiYSgwLCAwLCAwLCAwLjEpO1xuICAgICAgei1pbmRleDogMjtcblxuICAgICAgLm1lcm1haWQtY29udHJvbC1idXR0b24ge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgcGFkZGluZzogMDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgICBjb2xvcjogdmFyKC0tZGFyayk7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBmb250LXNpemU6IDE2cHg7XG4gICAgICAgIGZvbnQtZmFtaWx5OiB2YXIoLS1ib2R5Rm9udCk7XG4gICAgICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2U7XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgICAgfVxuXG4gICAgICAgICY6YWN0aXZlIHtcbiAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoMXB4KTtcbiAgICAgICAgfVxuXG4gICAgICAgIC8vIFN0eWxlIHRoZSByZXNldCBidXR0b24gZGlmZmVyZW50bHlcbiAgICAgICAgJjpudGgtY2hpbGQoMikge1xuICAgICAgICAgIHdpZHRoOiBhdXRvO1xuICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIH1cbiAgICAgIH1cbiAgICB9XG4gIH1cbn1cbiJdfQ== */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="./prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("./static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://sunjae-k.github.io/index.xml"/></head><body data-slug="ai-native-company-resolver"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href=".">Sunjae blog</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>검색</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="검색어를 입력하세요" placeholder="검색어를 입력하세요"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="다크 모드"><title>다크 모드</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="라이트 모드"><title>라이트 모드</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="리더 모드"><title>리더 모드</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><nav class="left-nav desktop-only" aria-label="Site navigation"><p class="left-nav__tagline">AI Agent, RAG, local-first AI를<br/>운영·검증·문서 구조 관점에서 읽습니다.</p><div class="left-nav__section"><p class="left-nav__label">Topics</p><a href="/topics#ai-agent-operations">AI Agent Operations</a><a href="/topics#rag--document-operations">RAG / Document Operations</a><a href="/topics#product-ai--ux--infra">Product AI / UX / Infra</a><a href="/topics#urban--spatial-ai">Urban / Spatial AI</a><a href="/topics#ai-visual--knowledge-artifacts">AI Visual / Knowledge Artifacts</a></div></nav></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="./">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>AI native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다</a></div></nav><h1 class="article-title">AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다</h1><p show-comma="true" class="content-meta"><time datetime="2026-05-25T15:00:00.000Z">2026년 5월 26일</time><span>35 min read</span></p><ul class="tags"><li><a href="./tags/ai-native-company" class="internal tag-link">ai-native-company</a></li><li><a href="./tags/ai-agent" class="internal tag-link">ai-agent</a></li><li><a href="./tags/resolver" class="internal tag-link">resolver</a></li><li><a href="./tags/workflow" class="internal tag-link">workflow</a></li><li><a href="./tags/evaluation" class="internal tag-link">evaluation</a></li></ul></div></div><article class="popover-hint"><h1 id="ai-native-회사는-조직도가-아니라-요청을-해결하는-시스템으로-움직인다">AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ai-native-회사는-조직도가-아니라-요청을-해결하는-시스템으로-움직인다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p><img src="./assets/ai-native-company-resolver/resolver-hero.png" alt="AI-native 회사의 업무 요청이 resolver를 통해 skill, memory, eval, human review로 라우팅되는 추상 다이어그램"/></p>
+<p>많은 회사가 이제 “AI를 도입했다”고 말한다. 회의록을 요약하고, 이메일을 다듬고, 코드를 더 빨리 쓰고, 사내 문서를 검색하게 만든다. 분명 생산성은 오른다. 하지만 이것만으로 회사가 AI-native가 되지는 않는다.</p>
+<p>기존 업무 흐름은 그대로 둔 채 중간중간 AI 도구를 끼워 넣는 것과, 업무 자체를 agent가 실행 가능한 구조로 다시 설계하는 것은 다르다. 전자는 더 똑똑한 도구를 쓰는 회사이고, 후자는 회사의 작동 방식을 바꾸는 회사다.</p>
+<p>YC의 Garry Tan과 Diana Hu가 Stanford 강의에서 말한 AI-native 회사의 핵심도 여기에 있다. 중요한 것은 어떤 모델을 쓰느냐가 아니다. 반복되는 업무를 skill로 만들고, 들어온 요청을 resolver가 적절한 skill과 memory와 tool로 보내며, 실행 결과를 eval과 feedback loop로 다시 개선하는 구조를 갖췄는가다.</p>
+<p>이 글의 주장은 하나다.</p>
+<blockquote>
+<p>AI-native 회사의 본질은 모델 도입이 아니라 업무 라우팅 구조의 재설계다.</p>
+</blockquote>
+<p>회사는 더 이상 사람과 부서만으로 움직이지 않는다. 앞으로의 회사는 skill, resolver, memory, eval이 연결된 workflow operating system에 가까워진다.</p>
+<h2 id="기존-회사는-왜-open-loop에-머무르는가">기존 회사는 왜 open-loop에 머무르는가<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#기존-회사는-왜-open-loop에-머무르는가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>전통적인 회사의 문제는 일이 없다는 것이 아니다. 오히려 정보와 일이 너무 많다. 회의가 있고, Slack이 있고, 문서가 있고, 고객 통화가 있고, 개인 메모와 스프레드시트가 있다. 하지만 이 정보가 다음 실행으로 매끄럽게 이어지지 않는다.</p>
+<p>회의에서 나온 결정은 문서에 남지 않고, 고객 피드백은 제품 backlog로 연결되지 않으며, 한 번 실패한 대응은 다음 응대 기준으로 바뀌지 않는다. 사람들은 계속 바쁘지만, 회사가 배운 것이 시스템에 축적되지는 않는다.</p>
+<p>Diana Hu가 말한 open-loop company는 이런 상태에 가깝다. 입력과 실행은 있지만, 결과가 다시 판단 기준과 업무 절차로 돌아오는 루프가 약하다. AI-native 회사가 바꾸려는 것은 바로 이 지점이다. 단순히 AI가 답을 더 빨리 쓰게 만드는 것이 아니라, 회사가 배운 것을 다음 실행에 반영하는 속도를 높이는 것이다.</p>
+<h2 id="회사가-실행-가능한-시스템이-되기-위한-네-가지-층">회사가 실행 가능한 시스템이 되기 위한 네 가지 층<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#회사가-실행-가능한-시스템이-되기-위한-네-가지-층" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Open-loop 회사를 closed-loop 회사로 바꾸려면 단순히 더 좋은 챗봇을 붙이는 것으로는 부족하다. 회사 안의 반복 업무를 agent가 실행할 수 있는 단위로 만들고, 어떤 상황에서 어떤 업무 능력을 불러야 하는지 정하고, 이전 실행에서 배운 것을 다시 사용하며, 결과가 좋은지 나쁜지 판단하는 기준을 가져야 한다.</p>
+<p>여기서 필요한 구성요소가 네 가지다.</p>
+<ul>
+<li>반복 업무를 실행 가능한 능력으로 바꾸는 <strong>skill</strong></li>
+<li>요청을 적절한 실행 경로로 보내는 <strong>resolver</strong></li>
+<li>조직이 배운 것을 다시 불러오는 <strong>memory</strong></li>
+<li>품질과 판단 기준을 시스템에 넣는 <strong>eval</strong></li>
+</ul>
+<p>이 네 가지는 따로 떨어진 개념이 아니다. 함께 묶일 때 회사의 workflow operating system이 된다.</p>
+<h2 id="skill-반복-업무를-실행-가능한-능력으로-만들기">Skill: 반복 업무를 실행 가능한 능력으로 만들기<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#skill-반복-업무를-실행-가능한-능력으로-만들기" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>가장 먼저 바뀌어야 하는 것은 업무를 바라보는 단위다. 전통적인 회사에서는 “이 일은 누가 잘하는가”를 묻는다. AI-native 회사에서는 한 단계 더 나아가 “그 사람이 반복해서 잘하는 방식을 실행 가능한 skill로 만들 수 있는가”를 묻는다.</p>
+<p>Skill은 반복 가능한 업무 능력이다. 단순히 프롬프트 하나를 저장해두는 것이 아니라, 특정 상황에서 어떤 입력을 받고, 어떤 도구를 쓰고, 어떤 순서로 판단하며, 어떤 형식으로 결과를 내야 하는지 정리한 업무 playbook에 가깝다.</p>
+<p>예를 들어 이런 것들이 skill이 될 수 있다.</p>
+<ul>
+<li>고객 인터뷰 요약하기</li>
+<li>회의록에서 의사결정 추출하기</li>
+<li>코드 리뷰하기</li>
+<li>논문 읽고 핵심 주장 정리하기</li>
+<li>가격 비교표 만들기</li>
+<li>계약 리스크 체크하기</li>
+<li>리포트 초안 작성하기</li>
+<li>Slack 공유문으로 바꾸기</li>
+</ul>
+<p>영상에서 Garry는 YC의 office hour 대화를 수천 건의 transcript에서 추출해 <code>/Office Hours</code> skill로 만들었다고 설명한다. 창업 아이디어를 볼 때 YC 파트너들이 반복해서 묻는 질문, 예를 들어 “문제가 무엇인가”, “고객은 누구인가”, “그걸 어떻게 아는가”, “무엇을 만들 것인가” 같은 판단 루틴을 skill로 압축한 것이다.</p>
+<p>좋은 skill에는 보통 다음이 들어간다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>언제 이 skill을 쓰는가</span></span>
+<span data-line><span>어떤 입력을 받는가</span></span>
+<span data-line><span>어떤 도구와 출처를 쓰는가</span></span>
+<span data-line><span>어떤 순서로 판단하는가</span></span>
+<span data-line><span>어떤 출력 형식을 지키는가</span></span>
+<span data-line><span>무엇을 하면 안 되는가</span></span>
+<span data-line><span>결과를 어떻게 검증하는가</span></span></code></pre></figure>
+<p>즉 skill은 “AI에게 잘 부탁하는 문장”이 아니다. 조직의 반복 업무를 실행 가능한 playbook으로 바꾸는 일이다.</p>
+<p>하지만 skill이 많아질수록 새로운 문제가 생긴다. 고객 인터뷰 요약 skill, 코드 리뷰 skill, 계약 리스크 점검 skill, 보고서 작성 skill이 모두 준비되어 있다고 해도, 매번 모든 skill을 한꺼번에 불러올 수는 없다.</p>
+<p>어떤 요청에는 어떤 skill이 필요한지 판단하는 별도의 계층이 필요하다. 여기서 resolver가 등장한다.</p>
+<h2 id="resolver-ai-native-회사의-새로운-조직도">Resolver: AI-native 회사의 새로운 조직도<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#resolver-ai-native-회사의-새로운-조직도" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Resolver라는 말은 낯설지만, 역할은 직관적이다. 어떤 요청이 들어왔을 때 그 일이 무엇인지 판단하고, 적절한 skill, tool, memory, 사람 검토 절차로 보내는 업무 라우터다.</p>
+<p>사람 조직에도 비슷한 구조가 있다. 법무 이슈는 법무팀으로 가고, 장애는 인프라팀으로 가며, 고객 불만은 CS나 PM에게 전달된다. 차이는 AI-native 회사에서 라우팅 대상이 사람만이 아니라는 점이다. 특정 skill, agent, database, memory, eval, human approval gate가 모두 라우팅 대상이 된다.</p>
+<p>Garry Tan이 “a resolver is the org chart”라고 말한 이유가 여기에 있다. AI-native 조직의 조직도는 사람 이름으로만 구성되지 않는다. 무엇을 할 수 있는가, 언제 불러야 하는가, 어떤 정보와 검토 절차가 필요한가가 함께 적힌 실행 지도에 가깝다.</p>
+<p>Garry가 든 예시는 Claude.md가 지나치게 커지는 문제다. 모든 지침을 하나의 파일에 계속 넣다 보면 어느 순간 40,000 tokens, 40,000 lines처럼 비대해진다. changelog 작성 규칙, PR 리뷰 규칙, 고객 이메일 톤, 회의록 요약 방식, 리서치 저장 규칙, 위험 판단 기준이 한꺼번에 들어간다.</p>
+<p>이 모든 지침을 매번 agent의 context에 넣으면 비효율적이다. 더 큰 문제는 충돌이다. 어떤 규칙은 오래됐고, 어떤 규칙은 특정 상황에서만 맞으며, 어떤 규칙은 지금 요청과 전혀 관련이 없다.</p>
+<p>Resolver는 이 문제를 푼다. “changelog를 쓸 때만 changelog 지침을 로드하라”처럼 필요한 순간에 필요한 지침을 불러오게 만든다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>요청 입력</span></span>
+<span data-line><span>→ 요청의 성격 판단</span></span>
+<span data-line><span>→ 관련 skill 선택</span></span>
+<span data-line><span>→ 필요한 memory만 로드</span></span>
+<span data-line><span>→ 적절한 tool 연결</span></span>
+<span data-line><span>→ 필요한 경우 human review로 라우팅</span></span>
+<span data-line><span>→ 결과 저장 및 eval</span></span></code></pre></figure>
+<p>이 구조에서 resolver는 AI 조직의 업무 라우터다. 사람 조직에서 매니저가 “이 일은 누구에게 맡겨야 하는가”를 판단했다면, agent 조직에서는 resolver가 “이 일은 어떤 skill과 memory와 tool로 처리해야 하는가”를 판단한다.</p>
+<p>그래서 AI-native 회사는 조직도가 아니라 resolver로 움직인다고 말할 수 있다.</p>
+<p>Resolver가 제대로 작동하려면 단순히 skill 목록만 알아서는 부족하다. 같은 요청이라도 고객의 맥락, 과거 의사결정, 도메인 규칙, 이전 실패 사례에 따라 다른 판단이 필요하기 때문이다. 그래서 resolver의 다음 조건은 memory다. 회사가 이전에 배운 것을 agent가 다시 읽을 수 있어야 한다.</p>
+<h2 id="memory-회사가-배운-것을-다시-쓰는-장치">Memory: 회사가 배운 것을 다시 쓰는 장치<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#memory-회사가-배운-것을-다시-쓰는-장치" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>AI-native 회사에서 memory는 단순 로그 저장소가 아니다. 로그는 과거를 보관하지만, memory는 다음 실행을 바꾼다.</p>
+<p>사람 조직에서는 중요한 정보가 자주 사람 머릿속에 머문다. 어떤 고객이 어떤 맥락을 갖고 있는지, 어떤 판단이 과거에 실패했는지, 어떤 문서가 최신인지, 어떤 예외가 있었는지 알기 어렵다. 담당자가 바뀌면 맥락도 함께 사라진다.</p>
+<p>AI-native 회사는 이 정보를 agent가 읽을 수 있는 형태로 남긴다.</p>
+<ul>
+<li>고객의 맥락</li>
+<li>과거 의사결정</li>
+<li>반복되는 실패 사례</li>
+<li>도메인 규칙</li>
+<li>선호하는 출력 형식</li>
+<li>검증된 출처</li>
+<li>이전 실행 결과</li>
+</ul>
+<p>이런 것들이 memory에 남아야 한다. 그래야 같은 실수를 반복하지 않고, 이전 실행의 결과가 다음 실행의 입력이 된다.</p>
+<p>하지만 기억만으로는 충분하지 않다. 이전 실행을 저장했다고 해서 다음 실행이 자동으로 좋아지는 것은 아니다. 무엇이 좋은 결과였고 무엇이 실패였는지 판단하는 기준이 있어야 한다. 이 기준이 없으면 memory는 쌓이지만 학습은 일어나지 않는다.</p>
+<p>그래서 AI-native 회사에는 eval이 필요하다.</p>
+<h2 id="eval-taste를-시스템에-넣는-방법">Eval: taste를 시스템에 넣는 방법<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#eval-taste를-시스템에-넣는-방법" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Eval은 AI-native 조직에서 가장 과소평가되기 쉬운 층이다. 많은 팀이 먼저 자동화를 만들고, 결과가 어느 정도 나오면 나중에 평가 기준을 붙이려고 한다. 하지만 실제로는 반대에 가깝다. 무엇이 좋은 결과인지 정의하지 못하면, agent가 더 많이 실행될수록 더 많은 불확실성이 쌓인다.</p>
+<p>Diana Hu가 강조한 taste도 이 지점과 연결된다. 그는 agentic system에서 AI slop을 피하려면 위임할 수 없는 것이 taste라고 말한다. 코드나 산출물 생성 비용은 낮아지지만, 무엇이 좋은지 나쁜지 구별하는 taste는 사라지지 않고, 그 taste가 eval로 시스템 안에 들어가야 한다는 주장이다.</p>
+<p>AI 결과물의 품질은 generic benchmark만으로 판단할 수 없다. 영상에서도 “generic benchmarks won’t make it whether your product works”라고 말한다. MMLU 같은 공개 벤치마크가 높다고 해서 고객 응대가 좋은 것은 아니다. 코드를 많이 만들 수 있다고 해서 제품이 좋아지는 것도 아니다.</p>
+<p>실제 업무에서는 다른 질문이 중요하다.</p>
+<ul>
+<li>사용자의 지시를 지켰는가?</li>
+<li>도메인 규칙을 어기지 않았는가?</li>
+<li>고객 신뢰를 해치지 않았는가?</li>
+<li>출처가 명확한가?</li>
+<li>위험한 확정 표현을 피했는가?</li>
+<li>비즈니스 목표에 맞는가?</li>
+<li>사람이 검토해야 할 부분을 제대로 넘겼는가?</li>
+</ul>
+<p>이것이 eval이다. AI-native 조직은 taste를 개인의 감각에만 맡기지 않고, 반복해서 확인 가능한 기준으로 바꿔야 한다.</p>
+<p>Skill, resolver, memory, eval이 연결되면 비로소 한 번의 실행이 다음 실행을 바꿀 수 있다. 여기서 중요한 운영 방식이 skillify다. 잘한 일을 개인의 성과로만 남기지 않고, 조직의 반복 가능한 실행 능력으로 컴파일하는 과정이다.</p>
+<h2 id="skillify-잘한-일을-시스템으로-컴파일하기">Skillify: 잘한 일을 시스템으로 컴파일하기<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#skillify-잘한-일을-시스템으로-컴파일하기" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>AI-native 회사의 중요한 습관은 잘한 일을 그냥 지나치지 않는 것이다. 어떤 사람이 고객 인터뷰를 잘 요약했거나, 복잡한 계약 리스크를 잘 짚었거나, 좋은 투자 메모를 썼다면 전통적인 조직에서는 “그 사람이 잘한다”로 끝나기 쉽다.</p>
+<p>AI-native 조직에서는 그 방식을 추출한다. 어떤 입력을 봤는지, 어떤 질문을 던졌는지, 어떤 판단 기준을 적용했는지, 어떤 출력을 만들었는지 기록한다. 그리고 그것을 다음에도 호출 가능한 skill로 만든다. 이 과정이 skillify다.</p>
+<p>Garry는 “save this article” 같은 작업을 한 번 해보고, 입력과 출력을 보며 원하는 상태에 도달하면 <code>skillify</code>한다고 설명한다. 하지만 여기서 멈추면 안 된다. skill과 code를 쓰는 것은 일부일 뿐이고, unit test, LLM eval, integration test, resolver trigger, smoke test까지 붙어야 실제로 반복 가능한 시스템이 된다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>한 번 잘 수행한 업무</span></span>
+<span data-line><span>→ 절차를 정리</span></span>
+<span data-line><span>→ skill 문서화</span></span>
+<span data-line><span>→ trigger 정의</span></span>
+<span data-line><span>→ 테스트 작성</span></span>
+<span data-line><span>→ eval 작성</span></span>
+<span data-line><span>→ resolver에 연결</span></span>
+<span data-line><span>→ 다음부터 자동 호출</span></span></code></pre></figure>
+<p>이 과정이 중요한 이유는 간단하다. AI-native 회사는 일을 잘하는 개인에게만 의존하지 않는다. 잘한 일을 조직의 실행 능력으로 남긴다.</p>
+<p>이렇게 보면 closed-loop는 별도의 추상 개념이 아니다. 업무가 실행되고, 결과가 평가되고, 성공과 실패가 memory에 남고, skill과 resolver가 업데이트되는 구조 전체가 closed-loop다. 회사가 배운 것이 다음 실행으로 돌아오는 순간, AI-native 조직은 단순 자동화를 넘어 운영체제에 가까워진다.</p>
+<h2 id="closed-loop-company-회사가-배운-것을-다음-실행에-반영하는-구조">Closed-loop company: 회사가 배운 것을 다음 실행에 반영하는 구조<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#closed-loop-company-회사가-배운-것을-다음-실행에-반영하는-구조" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Closed-loop 회사는 정보가 흘러가기만 하는 회사가 아니라, 실행 결과가 다시 시스템을 고치는 회사다.</p>
+<p><img src="./assets/ai-native-company-resolver/resolver-loop-diagram.png" alt="입력, resolver, skill, memory, eval, skillify가 순환하는 AI-native 회사 운영 루프"/></p>
+<p>업무 artifact가 수집되고, agent가 그것을 읽고, 다음 action을 제안하거나 실행한다. 결과는 eval로 측정되고, 실패 trace는 memory에 남으며, 필요한 경우 skill과 resolver rule이 수정된다. 이 루프가 짧아질수록 회사는 더 빨리 배운다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>업무 artifact 수집</span></span>
+<span data-line><span>→ agent가 읽음</span></span>
+<span data-line><span>→ 다음 action 제안 또는 실행</span></span>
+<span data-line><span>→ 결과 측정</span></span>
+<span data-line><span>→ 실패 trace 저장</span></span>
+<span data-line><span>→ eval 개선</span></span>
+<span data-line><span>→ skill 개선</span></span>
+<span data-line><span>→ resolver 업데이트</span></span></code></pre></figure>
+<p>중요한 것은 자동화 그 자체가 아니다. 피드백 루프가 짧아지는 것이다.</p>
+<p>좋은 AI-native 회사는 “AI가 대신 일하는 회사”라기보다 “회사가 배운 것을 다음 실행에 반영하는 속도가 빠른 회사”에 가깝다.</p>
+<h2 id="vertical-agent는-왜-workflow-operating-system이어야-하는가">Vertical agent는 왜 workflow operating system이어야 하는가<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#vertical-agent는-왜-workflow-operating-system이어야-하는가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>이 구조가 특히 중요해지는 곳은 vertical agent다. 금융, 법률, 부동산, 물류, 의료 행정 같은 영역에서는 단순 질의응답만으로 좋은 제품을 만들기 어렵다. 문서가 많고, 데이터 출처가 중요하며, 판단 기준이 복잡하고, 사람 검토가 필요한 지점이 분명히 존재한다.</p>
+<p>그래서 vertical agent는 챗봇이라기보다 특정 도메인의 workflow operating system에 가까워야 한다. 사용자의 질문을 받아 그럴듯한 답을 생성하는 것만으로는 부족하다. 요청의 성격을 파악하고, 필요한 skill을 호출하고, 신뢰할 수 있는 source를 확인하고, 위험한 판단은 human gate로 넘기며, 결과를 eval로 검증해야 한다.</p>
+<p>예를 들어 부동산 상담 agent를 만든다고 해보자. 좋은 agent는 단순히 “이 매물 어때요?”에 답하는 챗봇이어서는 안 된다. 최소한 다음과 같은 업무 능력이 분리되어야 한다.</p>
+<ul>
+<li>사용자 조건을 정리하는 intake skill</li>
+<li>매물 설명을 구조화하는 listing parser</li>
+<li>실거래가와 주변 가격을 비교하는 price comps skill</li>
+<li>교통, 생활권, 개발계획을 보는 neighborhood skill</li>
+<li>권리관계와 계약 리스크를 점검하는 risk review skill</li>
+<li>최종 상담 메모를 작성하는 writer skill</li>
+<li>사람이 반드시 확인해야 할 항목을 넘기는 human gate</li>
+<li>잘못된 판단을 잡아내는 eval set</li>
+</ul>
+<p>이때 resolver는 요청의 성격을 보고 적절한 skill을 호출한다.</p>
+<p>사용자가 “전세 보증금이 안전한지 봐줘”라고 하면 단순 요약 skill을 부르면 안 된다. 계약 단계, 보증금, 선순위 권리, 등기부, 보증보험 가능성, 주변 시세, 추가 확인 질문을 다루는 risk review workflow로 보내야 한다.</p>
+<p>사용자가 “이 동네 살기 어때?”라고 하면 권리 리스크가 아니라 생활권, 교통, 학교, 편의시설, 소음, 개발계획을 보는 neighborhood workflow로 보내야 한다.</p>
+<p>이 차이를 만드는 것이 resolver다.</p>
+<p>Vertical agent의 경쟁력은 모델 자체보다 도메인 workflow를 얼마나 잘 구조화했는가에서 나온다. 어떤 source를 믿을지, 어떤 판단은 보류해야 할지, 어떤 결과는 사람에게 넘겨야 할지, 어떤 실패를 eval로 남길지 정리되어 있어야 한다.</p>
+<p>그렇다면 실제로 이런 시스템은 어떻게 설계해야 할까. 추상적으로 “resolver가 필요하다”거나 “eval을 붙여야 한다”고 말하는 것만으로는 부족하다. 업무를 어떤 단위로 쪼개고, skill card에는 무엇을 넣고, resolver map은 어떻게 만들며, human gate와 eval은 어디에 둘지 정해야 한다.</p>
+<h2 id="업무-라우터와-skill-system은-어떻게-설계해야-하나">업무 라우터와 skill system은 어떻게 설계해야 하나<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#업무-라우터와-skill-system은-어떻게-설계해야-하나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>AI-native workflow는 한 번에 거대한 agent를 만드는 방식으로 시작하면 실패하기 쉽다. 먼저 반복되는 요청을 작게 나누고, 각 요청을 skill로 만들고, resolver가 어떤 조건에서 어떤 skill을 부를지 정해야 한다.</p>
+<p>실무적으로는 다음 순서가 가장 안전하다.</p>
+<h3 id="1-먼저-업무를-요청-단위로-쪼갠다">1. 먼저 업무를 요청 단위로 쪼갠다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#1-먼저-업무를-요청-단위로-쪼갠다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>조직의 모든 일을 한 번에 agent에게 맡기려고 하면 실패한다. 먼저 반복되는 요청을 모아야 한다.</p>
+<p>예를 들면 이런 식이다.</p>
+<ul>
+<li>고객 질문에 답하기</li>
+<li>문서에서 핵심 정보 추출하기</li>
+<li>리스크 항목 점검하기</li>
+<li>가격이나 수치를 비교하기</li>
+<li>회의록에서 action item 뽑기</li>
+<li>최종 보고서 초안 작성하기</li>
+</ul>
+<p>좋은 단위는 “한 사람이 반복해서 처리하던 일”이다. 너무 크면 자동화하기 어렵고, 너무 작으면 resolver가 복잡해진다.</p>
+<h3 id="2-각-업무를-skill-card로-만든다">2. 각 업무를 skill card로 만든다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#2-각-업무를-skill-card로-만든다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>업무 단위가 정해지면 각각을 skill card로 만든다. 여기에는 최소한 다음이 들어가야 한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Skill name</span></span>
+<span data-line><span>- 언제 호출되는가</span></span>
+<span data-line><span>- 어떤 입력이 필요한가</span></span>
+<span data-line><span>- 어떤 출처를 믿을 수 있는가</span></span>
+<span data-line><span>- 어떤 tool을 사용할 수 있는가</span></span>
+<span data-line><span>- 어떤 순서로 처리하는가</span></span>
+<span data-line><span>- 출력 형식은 무엇인가</span></span>
+<span data-line><span>- 금지해야 할 행동은 무엇인가</span></span>
+<span data-line><span>- 어떤 경우 human review로 넘기는가</span></span>
+<span data-line><span>- 결과 품질은 어떻게 평가하는가</span></span></code></pre></figure>
+<p>이때 중요한 것은 “잘 써줘”가 아니라 “어떤 조건에서 어떻게 처리할지”를 적는 것이다. skill은 문체 지시가 아니라 업무 playbook이어야 한다.</p>
+<h3 id="3-resolver-map을-만든다">3. Resolver map을 만든다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#3-resolver-map을-만든다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>그다음 resolver map을 만든다. 이것은 요청과 skill을 연결하는 라우팅 표다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>요청 유형 → 호출할 skill → 필요한 memory/tool → human gate 여부</span></span></code></pre></figure>
+<p>예시는 이렇다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>YouTube 링크 분석</span></span>
+<span data-line><span>→ transcript-analysis skill</span></span>
+<span data-line><span>→ transcript fetch tool, source note memory</span></span>
+<span data-line><span>→ human gate 없음</span></span>
+<span data-line> </span>
+<span data-line><span>계약 리스크 질문</span></span>
+<span data-line><span>→ risk-review skill</span></span>
+<span data-line><span>→ 공식 데이터 source, checklist memory</span></span>
+<span data-line><span>→ human gate 필요</span></span>
+<span data-line> </span>
+<span data-line><span>블로그 초안 요청</span></span>
+<span data-line><span>→ publishing-outline skill + writer skill</span></span>
+<span data-line><span>→ style memory, source transcript</span></span>
+<span data-line><span>→ human review 필요</span></span></code></pre></figure>
+<p>처음부터 복잡한 classifier를 만들 필요는 없다. 초기 resolver는 사람이 읽을 수 있는 라우팅 규칙이면 충분하다. 중요한 것은 “이 요청은 왜 이 skill로 가는가”가 설명 가능해야 한다는 점이다.</p>
+<h3 id="4-memory를-업무별로-나눈다">4. Memory를 업무별로 나눈다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#4-memory를-업무별로-나눈다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>모든 memory를 항상 불러오면 resolver를 둔 의미가 없다. memory도 업무별로 나눠야 한다.</p>
+<ul>
+<li>사용자 선호 memory</li>
+<li>도메인 규칙 memory</li>
+<li>출처/데이터 source memory</li>
+<li>실패 사례 memory</li>
+<li>출력 스타일 memory</li>
+<li>프로젝트별 context memory</li>
+</ul>
+<p>Resolver는 요청을 보고 필요한 memory만 불러와야 한다. 예를 들어 글쓰기 요청에는 스타일 memory가 중요하지만, 리스크 검토에는 도메인 규칙과 공식 출처 memory가 중요하다.</p>
+<h3 id="5-human-gate를-명시한다">5. Human gate를 명시한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#5-human-gate를-명시한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>모든 업무를 agent가 끝까지 처리하면 안 된다. 특히 vertical domain에서는 사람 검토가 필요한 지점이 있다.</p>
+<ul>
+<li>법률/세무/투자 판단</li>
+<li>계약 체결 여부</li>
+<li>금전 거래</li>
+<li>고객에게 발송되는 최종 메시지</li>
+<li>출처가 불확실한 데이터 기반 판단</li>
+<li>리스크 등급이 높은 경우</li>
+</ul>
+<p>좋은 resolver는 자동화할 일뿐 아니라 멈춰야 할 지점도 안다. AI-native 조직에서 human gate는 예외 처리가 아니라 설계 요소다.</p>
+<h3 id="6-eval을-나중이-아니라-처음부터-붙인다">6. Eval을 나중이 아니라 처음부터 붙인다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#6-eval을-나중이-아니라-처음부터-붙인다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Skill system이 실패하는 이유는 대부분 eval이 없기 때문이다. agent가 무언가를 만들었는데 좋은지 나쁜지 판정 기준이 없다.</p>
+<p>각 skill에는 최소한 이런 eval 질문이 붙어야 한다.</p>
+<ul>
+<li>필요한 입력을 모두 확인했는가?</li>
+<li>출처를 구분했는가?</li>
+<li>확정하면 안 되는 것을 확정하지 않았는가?</li>
+<li>출력 형식을 지켰는가?</li>
+<li>사람에게 넘겨야 할 항목을 넘겼는가?</li>
+<li>이전 실패 사례를 반복하지 않았는가?</li>
+</ul>
+<p>eval은 거창한 benchmark일 필요가 없다. 처음에는 체크리스트여도 된다. 중요한 것은 실패를 다음 skill 개선으로 되돌리는 루프다.</p>
+<h3 id="7-마지막으로-skillify-loop를-운영한다">7. 마지막으로 skillify loop를 운영한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#7-마지막으로-skillify-loop를-운영한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>한 번 처리하고 끝내면 AI-native가 아니다. 반복되는 성공과 실패를 skill system에 반영해야 한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>실행</span></span>
+<span data-line><span>→ 결과 검토</span></span>
+<span data-line><span>→ 실패/성공 trace 저장</span></span>
+<span data-line><span>→ skill 수정</span></span>
+<span data-line><span>→ resolver rule 수정</span></span>
+<span data-line><span>→ eval 추가</span></span>
+<span data-line><span>→ 다음 실행에 반영</span></span></code></pre></figure>
+<p>이 루프가 돌아가기 시작하면 회사의 업무 방식이 바뀐다. 사람의 노하우가 개인에게만 머무르지 않고, agent가 호출할 수 있는 실행 자산으로 쌓인다.</p>
+<h2 id="ai-native-회사의-moat는-workflow에-있다">AI-native 회사의 moat는 workflow에 있다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ai-native-회사의-moat는-workflow에-있다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>모델은 계속 좋아질 것이다. 더 긴 context, 더 빠른 추론, 더 강한 coding 능력이 나올 것이다. 하지만 모든 회사가 비슷한 모델을 쓸 수 있다면, 장기적인 차이는 모델 접근권에서만 생기지 않는다.</p>
+<p>차이는 workflow에 쌓인다.</p>
+<ul>
+<li>어떤 업무를 skill로 만들었는가</li>
+<li>어떤 요청을 어떤 skill로 라우팅하는가</li>
+<li>어떤 memory를 쌓고 있는가</li>
+<li>어떤 eval로 품질을 관리하는가</li>
+<li>어떤 human gate를 두는가</li>
+<li>어떤 고객 피드백이 다음 실행에 반영되는가</li>
+</ul>
+<p>이것들이 쌓이면 회사만의 agent operating system이 된다.</p>
+<p>AI-native 회사의 moat는 “우리도 GPT를 쓴다”가 아니다. 우리 업무가 얼마나 실행 가능한 형태로 구조화되어 있는가다.</p>
+<h2 id="결론-회사는-점점-실행-가능한-시스템이-된다">결론: 회사는 점점 실행 가능한 시스템이 된다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#결론-회사는-점점-실행-가능한-시스템이-된다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>AI-native 회사는 사람을 없애는 회사가 아니다. 사람의 판단과 업무 절차를 더 명확한 시스템으로 바꾸는 회사다.</p>
+<p>반복 업무는 skill이 되고, 업무 배정은 resolver가 하며, 조직의 기억은 memory에 남는다. 품질 기준은 eval로 표현되고, 실패는 다음 실행을 고치는 데이터가 된다. 이 구조가 돌아가기 시작하면 회사는 단순히 AI를 사용하는 조직이 아니라, 스스로의 업무 방식을 계속 개선하는 실행 시스템이 된다.</p>
+<p>앞으로의 회사는 “AI를 얼마나 많이 쓰는가”만으로 나뉘지 않을 것이다. 더 중요한 질문은 이것이다.</p>
+<blockquote>
+<p>우리 회사의 업무는 agent가 실행하고 개선할 수 있는 형태로 구조화되어 있는가?</p>
+</blockquote>
+<p>이 질문에 답할 수 있는 회사가 AI-native 회사다.</p>
+<h2 id="faq">FAQ<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#faq" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="ai-native-회사는-ai-도구를-쓰는-회사와-무엇이-다른가">AI-native 회사는 AI 도구를 쓰는 회사와 무엇이 다른가?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ai-native-회사는-ai-도구를-쓰는-회사와-무엇이-다른가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>AI 도구를 쓰는 회사는 기존 업무 위에 AI를 얹는다. AI-native 회사는 업무 자체를 agent가 실행 가능한 skill, resolver, memory, eval 구조로 재설계한다.</p>
+<h3 id="resolver는-ai-agent에서-무엇을-뜻하나">Resolver는 AI agent에서 무엇을 뜻하나?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#resolver는-ai-agent에서-무엇을-뜻하나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Resolver는 업무 라우터다. 들어온 요청의 성격을 판단하고 적절한 skill, tool, memory, human gate로 보내는 계층이다.</p>
+<h3 id="skillify는-무엇인가">Skillify는 무엇인가?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#skillify는-무엇인가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Skillify는 한 번 잘 수행한 업무를 재사용 가능한 skill로 바꾸는 과정이다. 단순 prompt 저장이 아니라 trigger, test, eval, resolver 연결까지 포함한다.</p>
+<h3 id="ai-native-조직에서-eval은-왜-중요한가">AI-native 조직에서 eval은 왜 중요한가?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ai-native-조직에서-eval은-왜-중요한가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Eval은 조직의 taste와 품질 기준을 시스템에 넣는 방법이다. generic benchmark가 아니라 실제 제품과 도메인에서 좋은 결과인지 판단하는 기준이 필요하다.</p>
+<h3 id="vertical-ai-agent의-핵심-경쟁력은-무엇인가">Vertical AI agent의 핵심 경쟁력은 무엇인가?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#vertical-ai-agent의-핵심-경쟁력은-무엇인가" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Vertical AI agent의 경쟁력은 모델 자체보다 도메인 workflow를 얼마나 잘 구조화했는가에서 나온다. 어떤 source를 믿고, 어떤 판단을 보류하며, 언제 사람에게 넘길지 정리되어 있어야 한다.</p>
+<blockquote>
+<p>Source note: 이 글은 YC의 Garry Tan과 Diana Hu가 Stanford 강의에서 설명한 skill, resolver, memory, eval, closed-loop company 개념을 바탕으로 썼다. 다만 단순 영상 요약이 아니라, vertical agent와 workflow operating system 설계 관점에서 해석을 덧붙였다.</p>
+</blockquote></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-6" aria-expanded="true"><h3>목차</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#ai-native-회사는-조직도가-아니라-요청을-해결하는-시스템으로-움직인다" data-for="ai-native-회사는-조직도가-아니라-요청을-해결하는-시스템으로-움직인다">AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다</a></li><li class="depth-1"><a href="#기존-회사는-왜-open-loop에-머무르는가" data-for="기존-회사는-왜-open-loop에-머무르는가">기존 회사는 왜 open-loop에 머무르는가</a></li><li class="depth-1"><a href="#회사가-실행-가능한-시스템이-되기-위한-네-가지-층" data-for="회사가-실행-가능한-시스템이-되기-위한-네-가지-층">회사가 실행 가능한 시스템이 되기 위한 네 가지 층</a></li><li class="depth-1"><a href="#skill-반복-업무를-실행-가능한-능력으로-만들기" data-for="skill-반복-업무를-실행-가능한-능력으로-만들기">Skill: 반복 업무를 실행 가능한 능력으로 만들기</a></li><li class="depth-1"><a href="#resolver-ai-native-회사의-새로운-조직도" data-for="resolver-ai-native-회사의-새로운-조직도">Resolver: AI-native 회사의 새로운 조직도</a></li><li class="depth-1"><a href="#memory-회사가-배운-것을-다시-쓰는-장치" data-for="memory-회사가-배운-것을-다시-쓰는-장치">Memory: 회사가 배운 것을 다시 쓰는 장치</a></li><li class="depth-1"><a href="#eval-taste를-시스템에-넣는-방법" data-for="eval-taste를-시스템에-넣는-방법">Eval: taste를 시스템에 넣는 방법</a></li><li class="depth-1"><a href="#skillify-잘한-일을-시스템으로-컴파일하기" data-for="skillify-잘한-일을-시스템으로-컴파일하기">Skillify: 잘한 일을 시스템으로 컴파일하기</a></li><li class="depth-1"><a href="#closed-loop-company-회사가-배운-것을-다음-실행에-반영하는-구조" data-for="closed-loop-company-회사가-배운-것을-다음-실행에-반영하는-구조">Closed-loop company: 회사가 배운 것을 다음 실행에 반영하는 구조</a></li><li class="depth-1"><a href="#vertical-agent는-왜-workflow-operating-system이어야-하는가" data-for="vertical-agent는-왜-workflow-operating-system이어야-하는가">Vertical agent는 왜 workflow operating system이어야 하는가</a></li><li class="depth-1"><a href="#업무-라우터와-skill-system은-어떻게-설계해야-하나" data-for="업무-라우터와-skill-system은-어떻게-설계해야-하나">업무 라우터와 skill system은 어떻게 설계해야 하나</a></li><li class="depth-2"><a href="#1-먼저-업무를-요청-단위로-쪼갠다" data-for="1-먼저-업무를-요청-단위로-쪼갠다">1. 먼저 업무를 요청 단위로 쪼갠다</a></li><li class="depth-2"><a href="#2-각-업무를-skill-card로-만든다" data-for="2-각-업무를-skill-card로-만든다">2. 각 업무를 skill card로 만든다</a></li><li class="depth-2"><a href="#3-resolver-map을-만든다" data-for="3-resolver-map을-만든다">3. Resolver map을 만든다</a></li><li class="depth-2"><a href="#4-memory를-업무별로-나눈다" data-for="4-memory를-업무별로-나눈다">4. Memory를 업무별로 나눈다</a></li><li class="depth-2"><a href="#5-human-gate를-명시한다" data-for="5-human-gate를-명시한다">5. Human gate를 명시한다</a></li><li class="depth-2"><a href="#6-eval을-나중이-아니라-처음부터-붙인다" data-for="6-eval을-나중이-아니라-처음부터-붙인다">6. Eval을 나중이 아니라 처음부터 붙인다</a></li><li class="depth-2"><a href="#7-마지막으로-skillify-loop를-운영한다" data-for="7-마지막으로-skillify-loop를-운영한다">7. 마지막으로 skillify loop를 운영한다</a></li><li class="depth-1"><a href="#ai-native-회사의-moat는-workflow에-있다" data-for="ai-native-회사의-moat는-workflow에-있다">AI-native 회사의 moat는 workflow에 있다</a></li><li class="depth-1"><a href="#결론-회사는-점점-실행-가능한-시스템이-된다" data-for="결론-회사는-점점-실행-가능한-시스템이-된다">결론: 회사는 점점 실행 가능한 시스템이 된다</a></li><li class="depth-1"><a href="#faq" data-for="faq">FAQ</a></li><li class="depth-2"><a href="#ai-native-회사는-ai-도구를-쓰는-회사와-무엇이-다른가" data-for="ai-native-회사는-ai-도구를-쓰는-회사와-무엇이-다른가">AI-native 회사는 AI 도구를 쓰는 회사와 무엇이 다른가?</a></li><li class="depth-2"><a href="#resolver는-ai-agent에서-무엇을-뜻하나" data-for="resolver는-ai-agent에서-무엇을-뜻하나">Resolver는 AI agent에서 무엇을 뜻하나?</a></li><li class="depth-2"><a href="#skillify는-무엇인가" data-for="skillify는-무엇인가">Skillify는 무엇인가?</a></li><li class="depth-2"><a href="#ai-native-조직에서-eval은-왜-중요한가" data-for="ai-native-조직에서-eval은-왜-중요한가">AI-native 조직에서 eval은 왜 중요한가?</a></li><li class="depth-2"><a href="#vertical-ai-agent의-핵심-경쟁력은-무엇인가" data-for="vertical-ai-agent의-핵심-경쟁력은-무엇인가">Vertical AI agent의 핵심 경쟁력은 무엇인가?</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="./postscript.js" type="module" data-persist="true"></script></html>
