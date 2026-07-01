@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr"><head><title>테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto Sans KR:wght@400;700&amp;family=Noto Sans KR:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="google-site-verification" content="z4Nq-epWJy6nnCYzF9ctaHXmf4rh5X6lsR6QzzjseOg"/><meta name="og:site_name" content="Sunjae blog"/><meta property="og:title" content="테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기"/><meta name="twitter:description" content="Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다."/><meta property="og:description" content="Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다."/><meta property="og:image:alt" content="Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다."/><meta property="og:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:url" content="https://sunjae-k.github.io/static/og-image.png"/><meta name="twitter:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="sunjae-k.github.io"/><meta property="og:url" content="https://sunjae-k.github.io/google-tabfm-tabular-foundation-model"/><meta property="twitter:url" content="https://sunjae-k.github.io/google-tabfm-tabular-foundation-model"/><link rel="icon" href="./static/icon.png"/><meta name="description" content="Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기","description":"Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다.","url":"https://sunjae-k.github.io/google-tabfm-tabular-foundation-model","mainEntityOfPage":{"@type":"WebPage","@id":"https://sunjae-k.github.io/google-tabfm-tabular-foundation-model"},"image":["https://sunjae-k.github.io/static/og-image.png"],"datePublished":"2026-06-30T15:00:00.000Z","dateModified":"2026-06-30T15:00:00.000Z","author":{"@type":"Person","name":"Sunjae Kim"},"publisher":{"@type":"Person","name":"Sunjae Kim"},"inLanguage":"ko-KR"}</script><link href="./index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL1VzZXJzL3N1bmphZS9wcm9qZWN0cy9zdW5qYWUtay5naXRodWIuaW8vcXVhcnR6L2NvbXBvbmVudHMvc3R5bGVzIiwic291cmNlcyI6WyJtZXJtYWlkLmlubGluZS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFHRjtFQUNFOzs7QUFLRjtFQUNFO0VBQ0E7OztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFJSjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTs7QUFJRjtFQUNFO0VBQ0E7RUFDQSIsInNvdXJjZXNDb250ZW50IjpbIi5leHBhbmQtYnV0dG9uIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbG9hdDogcmlnaHQ7XG4gIHBhZGRpbmc6IDAuNHJlbTtcbiAgbWFyZ2luOiAwLjNyZW07XG4gIHJpZ2h0OiAwOyAvLyBOT1RFOiByaWdodCB3aWxsIGJlIHNldCBpbiBtZXJtYWlkLmlubGluZS50c1xuICBjb2xvcjogdmFyKC0tZ3JheSk7XG4gIGJvcmRlci1jb2xvcjogdmFyKC0tZGFyayk7XG4gIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgYm9yZGVyOiAxcHggc29saWQ7XG4gIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgb3BhY2l0eTogMDtcbiAgdHJhbnNpdGlvbjogMC4ycztcblxuICAmID4gc3ZnIHtcbiAgICBmaWxsOiB2YXIoLS1saWdodCk7XG4gICAgZmlsdGVyOiBjb250cmFzdCgwLjMpO1xuICB9XG5cbiAgJjpob3ZlciB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGJvcmRlci1jb2xvcjogdmFyKC0tc2Vjb25kYXJ5KTtcbiAgfVxuXG4gICY6Zm9jdXMge1xuICAgIG91dGxpbmU6IDA7XG4gIH1cbn1cblxucHJlIHtcbiAgJjpob3ZlciA+IC5leHBhbmQtYnV0dG9uIHtcbiAgICBvcGFjaXR5OiAxO1xuICAgIHRyYW5zaXRpb246IDAuMnM7XG4gIH1cbn1cblxuI21lcm1haWQtY29udGFpbmVyIHtcbiAgcG9zaXRpb246IGZpeGVkO1xuICBjb250YWluOiBsYXlvdXQ7XG4gIHotaW5kZXg6IDk5OTtcbiAgbGVmdDogMDtcbiAgdG9wOiAwO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogMTAwdmg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIGRpc3BsYXk6IG5vbmU7XG4gIGJhY2tkcm9wLWZpbHRlcjogYmx1cig0cHgpO1xuICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuNSk7XG5cbiAgJi5hY3RpdmUge1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgfVxuXG4gICYgPiAjbWVybWFpZC1zcGFjZSB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gICAgYm9yZGVyLXJhZGl1czogNXB4O1xuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICB0b3A6IDUwJTtcbiAgICBsZWZ0OiA1MCU7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7XG4gICAgaGVpZ2h0OiA4MHZoO1xuICAgIHdpZHRoOiA4MHZ3O1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG5cbiAgICAmID4gLm1lcm1haWQtY29udGVudCB7XG4gICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAwIDA7XG4gICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gMC4xcyBlYXNlO1xuICAgICAgb3ZlcmZsb3c6IHZpc2libGU7XG4gICAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICAgIG1pbi13aWR0aDogMjAwcHg7XG5cbiAgICAgIHByZSB7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgfVxuXG4gICAgICBzdmcge1xuICAgICAgICBtYXgtd2lkdGg6IG5vbmU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgIH1cbiAgICB9XG5cbiAgICAmID4gLm1lcm1haWQtY29udHJvbHMge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgYm90dG9tOiAyMHB4O1xuICAgICAgcmlnaHQ6IDIwcHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgZ2FwOiA4cHg7XG4gICAgICBwYWRkaW5nOiA4cHg7XG4gICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwgMCwgMCwgMC4xKTtcbiAgICAgIHotaW5kZXg6IDI7XG5cbiAgICAgIC5tZXJtYWlkLWNvbnRyb2wtYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHBhZGRpbmc6IDA7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgICAgY29sb3I6IHZhcigtLWRhcmspO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgICBmb250LWZhbWlseTogdmFyKC0tYm9keUZvbnQpO1xuICAgICAgICB0cmFuc2l0aW9uOiBhbGwgMC4ycyBlYXNlO1xuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIH1cblxuICAgICAgICAmOmFjdGl2ZSB7XG4gICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKDFweCk7XG4gICAgICAgIH1cblxuICAgICAgICAvLyBTdHlsZSB0aGUgcmVzZXQgYnV0dG9uIGRpZmZlcmVudGx5XG4gICAgICAgICY6bnRoLWNoaWxkKDIpIHtcbiAgICAgICAgICB3aWR0aDogYXV0bztcbiAgICAgICAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="./prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("./static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://sunjae-k.github.io/index.xml"/></head><body data-slug="google-tabfm-tabular-foundation-model"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href=".">Sunjae blog</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>검색</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="검색어를 입력하세요" placeholder="검색어를 입력하세요"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="다크 모드"><title>다크 모드</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="라이트 모드"><title>라이트 모드</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="리더 모드"><title>리더 모드</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><nav class="left-nav desktop-only" aria-label="Site navigation"><p class="left-nav__tagline">AI Agent, RAG, local-first AI를<br/>운영·검증·문서 구조 관점에서 읽습니다.</p><div class="left-nav__section"><p class="left-nav__label">Topics</p><a href="/topics#ai-agent-operations">AI Agent Operations</a><a href="/topics#rag--document-operations">RAG / Document Operations</a><a href="/topics#product-ai--ux--infra">Product AI / UX / Infra</a><a href="/topics#urban--spatial-ai">Urban / Spatial AI</a><a href="/topics#ai-visual--knowledge-artifacts">AI Visual / Knowledge Artifacts</a></div></nav></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="./">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</a></div></nav><h1 class="article-title">테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</h1><p show-comma="true" class="content-meta"><time datetime="2026-06-30T15:00:00.000Z">2026년 7월 01일</time><span>18 min read</span></p><ul class="tags"><li><a href="./tags/tabular-ml" class="internal tag-link">tabular-ml</a></li><li><a href="./tags/foundation-model" class="internal tag-link">foundation-model</a></li><li><a href="./tags/tabfm" class="internal tag-link">tabfm</a></li><li><a href="./tags/google-research" class="internal tag-link">google-research</a></li><li><a href="./tags/automl" class="internal tag-link">automl</a></li><li><a href="./tags/bigquery" class="internal tag-link">bigquery</a></li></ul></div></div><article class="popover-hint"><h1 id="테이블-데이터에도-gpt-같은-모델이-올까-google-tabfm-쉽게-보기">테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#테이블-데이터에도-gpt-같은-모델이-올까-google-tabfm-쉽게-보기" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>요즘 “foundation model”이라는 말은 주로 텍스트와 이미지에서 들립니다. 글을 쓰고, 이미지를 만들고, 긴 문서를 읽는 모델은 빠르게 익숙해졌습니다. 그런데 기업 예측 업무의 많은 부분을 차지하는 <strong>테이블 데이터</strong>는 여전히 조금 다른 세계에 남아 있습니다. 데이터를 정리하고, feature를 만들고, XGBoost나 LightGBM 같은 모델을 학습하고, 튜닝하고, 검증하는 방식입니다.</p>
+<p>Google Research가 공개한 <strong>TabFM</strong>은 이 흐름에 다른 질문을 던집니다.</p>
+<blockquote>
+<p>테이블 데이터도 매번 새로 학습할 대상이 아니라, 모델이 읽어야 할 context로 볼 수 있지 않을까?</p>
+</blockquote>
+<p>이 글에서는 TabFM을 “XGBoost를 대체할 새 모델”로 보기보다, 테이블 ML의 사용 방식이 어떻게 바뀔 수 있는지 보여주는 실험으로 살펴보려고 합니다. 결론부터 말하면, TabFM은 당장 기존 GBDT 계열 모델을 밀어낸다기보다 <strong>테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로도 바꿔볼 수 있다</strong>는 가능성을 보여주는 시도에 가깝다고 생각합니다.</p>
+<p><img src="./assets/google-tabfm-tabular-foundation-model/hero.png" alt="기존 테이블 ML workflow와 TabFM식 context 기반 예측 UX 비교"/>
+<em>그림: 기존 테이블 ML은 데이터셋마다 학습·튜닝을 반복하는 흐름에 가깝고, TabFM식 접근은 train/test row를 context로 넣어 예측하는 UX에 가깝다.</em></p>
+<hr/>
+<h2 id="기존-테이블-ml은-강하지만-반복이-많다">기존 테이블 ML은 강하지만, 반복이 많다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#기존-테이블-ml은-강하지만-반복이-많다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>테이블 데이터는 기업 예측 업무의 기본 재료입니다. 고객 이탈 예측, 사기 탐지, 수요 예측, 신용 평가, 가격 추정, 리스크 스코어링 같은 문제는 대부분 row와 column으로 정리된 데이터에서 출발합니다.</p>
+<p>이 영역에서는 오랫동안 XGBoost, LightGBM, CatBoost, Random Forest 같은 supervised tree 기반 모델이 강했습니다. 이유도 분명합니다. 상대적으로 적은 데이터에서도 잘 작동하고, 숫자형·범주형 feature를 실용적으로 다룰 수 있으며, 실무에서 검증된 운영 경험도 많습니다.</p>
+<p>하지만 실무에서 피로를 만드는 지점은 모델 성능 그 자체만은 아닙니다. 새 데이터셋이 올 때마다 비슷한 과정을 다시 밟아야 한다는 점이 더 큰 비용이 됩니다.</p>
+<ul>
+<li>결측치와 이상치를 처리하고</li>
+<li>범주형 변수를 인코딩하고</li>
+<li>도메인 feature를 만들고</li>
+<li>모델을 고르고</li>
+<li>hyperparameter를 튜닝하고</li>
+<li>cross-validation으로 검증하고</li>
+<li>배포 후 다시 모니터링합니다</li>
+</ul>
+<p>Google Research 글도 이 지점을 병목으로 봅니다. XGBoost를 한 번 <code>.fit()</code> 하는 일이 어려운 것이 아니라, 그 앞뒤에 붙는 반복적인 feature engineering과 tuning 과정이 비용이라는 것입니다.</p>
+<p>그래서 TabFM이 던지는 질문은 “더 강한 모델을 하나 더 만들 수 있는가”에 그치지 않습니다. “데이터셋이 바뀔 때마다 매번 모델링 프로젝트를 다시 시작해야 하는가”에 더 가깝습니다.</p>
+<hr/>
+<h2 id="tabfm의-핵심-테이블을-context로-읽는다">TabFM의 핵심: 테이블을 context로 읽는다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tabfm의-핵심-테이블을-context로-읽는다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>TabFM은 이름 그대로 <strong>tabular foundation model</strong>을 지향합니다. Google Research의 설명에 따르면 TabFM은 classification과 regression을 위한 zero-shot foundation model입니다.</p>
+<p>핵심 아이디어는 단순합니다. 모델을 새로 맞추는 대신, 모델에게 예시와 문제를 함께 보여주는 것입니다.</p>
+<p>기존 방식에서는 새 데이터셋이 생기면 그 데이터셋에 맞춰 모델 parameter를 학습합니다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>새 데이터셋 → 전처리/feature engineering → 모델 학습/튜닝 → 예측</span></span></code></pre></figure>
+<p>TabFM은 이 문제를 <strong>in-context learning</strong>으로 바꿉니다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>historical train rows + labels + target test rows</span></span>
+<span data-line><span>→ 하나의 context</span></span>
+<span data-line><span>→ 모델이 row/column 관계를 inference time에 해석</span></span>
+<span data-line><span>→ prediction</span></span></code></pre></figure>
+<p>즉, 모델 weight를 매번 업데이트하지 않고, train row와 test row를 하나의 입력 context로 넣어 예측하게 만드는 방식입니다. 비유하자면 “이런 예시들이 있고, 이제 이 row의 값을 맞혀봐”라는 문제를 테이블 형태로 주는 셈입니다.</p>
+<p>이 점에서 TabFM은 LLM의 zero-shot 또는 in-context learning과 닮아 있습니다. 다만 TabFM을 LLM과 동일한 모델로 보면 안 됩니다. 텍스트를 생성하는 모델이 아니라, 테이블 형태의 classification/regression을 풀기 위해 설계된 모델입니다.</p>
+<hr/>
+<h2 id="테이블은-문장처럼-한-줄로-읽을-수-없다">테이블은 문장처럼 한 줄로 읽을 수 없다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#테이블은-문장처럼-한-줄로-읽을-수-없다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>여기서 한 가지 오해를 피해야 합니다. TabFM은 단순히 테이블을 문자열로 바꿔서 LLM에 넣는 접근이 아닙니다. 테이블 데이터는 생각보다 다루기 어렵습니다.</p>
+<p>일반적인 language model은 1차원 sequence를 처리합니다. 문장은 왼쪽에서 오른쪽으로 이어지고, 단어 순서가 의미에 큰 영향을 줍니다. 반면 테이블은 다릅니다.</p>
+<ul>
+<li>row 순서를 바꿔도 데이터셋의 의미가 바뀌지 않는 경우가 많고</li>
+<li>column 순서를 바꿔도 본질은 유지되며</li>
+<li>숫자형, 범주형, 혼합 feature가 함께 있고</li>
+<li>feature 간 interaction이 예측 성능에 중요합니다</li>
+</ul>
+<p>그래서 테이블은 단순히 “문자열로 펼쳐서 language model에 넣으면 되는” 데이터가 아닙니다.</p>
+<p>Google Research 글은 TabFM이 TabPFN, TabICL 같은 선행 접근의 장점을 결합한 hybrid design을 쓴다고 설명합니다. 원문 기준으로는 row와 column 방향의 attention, row compression, compressed row representation 위에서의 in-context learning이 핵심 구성으로 소개됩니다.</p>
+<p>여기서 중요한 점은 세부 구조 자체보다 방향입니다. TabFM은 테이블을 단순한 feature vector 묶음으로만 보지 않고, row와 column 사이의 관계를 context 안에서 해석하려고 합니다.</p>
+<p><img src="./assets/google-tabfm-tabular-foundation-model/tabfm-architecture.png" alt="TabFM architecture: training rows and test row are processed through alternating row/column attention, row compression, and in-context learning."/>
+<em>그림: TabFM architecture. train row와 test row를 함께 context로 보고, row/column attention → row compression → in-context learning으로 label을 예측하는 흐름을 보여준다. 출처: Google Research Blog.</em></p>
+<hr/>
+<h2 id="실제-기업-테이블-데이터가-부족한-문제를-synthetic-data로-우회한다">실제 기업 테이블 데이터가 부족한 문제를 synthetic data로 우회한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#실제-기업-테이블-데이터가-부족한-문제를-synthetic-data로-우회한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>TabFM에서 또 하나 흥미로운 부분은 모델 구조만이 아니라 학습 데이터입니다.</p>
+<p>foundation model을 만들려면 대규모의 다양한 데이터가 필요합니다. 텍스트나 이미지는 공개 웹 데이터가 많습니다. 하지만 기업용 테이블 데이터는 사정이 다릅니다.</p>
+<p>산업용 테이블은 보통 다음 특징을 갖습니다.</p>
+<ul>
+<li>schema가 회사마다 다르고</li>
+<li>비공개 업무 로직이 섞여 있으며</li>
+<li>개인정보나 민감정보를 포함할 수 있고</li>
+<li>공개 데이터셋으로 대규모 수집하기 어렵습니다</li>
+</ul>
+<p>Google Research 글에 따르면 TabFM은 이 문제를 <strong>대규모 synthetic table pretraining</strong>으로 우회합니다. structural causal model과 다양한 random function을 이용해 수많은 synthetic dataset을 만들고, 그 위에서 모델을 학습시키는 방식입니다.</p>
+<p>이 지점은 TabFM 자체를 넘어 더 넓은 패턴으로 볼 수 있습니다. 공개 데이터를 대량으로 모으기 어려운 도메인에서는 실제 데이터를 그대로 모으는 대신, 도메인의 구조적 생성 과정을 흉내 내는 synthetic corpus를 만들어 foundation model을 학습시키려는 시도가 늘어날 수 있습니다. 테이블 ML에서 foundation model을 만들려면 “모델 구조”만큼이나 “어떤 세계를 학습 데이터로 보여줄 것인가”가 중요해지는 셈입니다.</p>
+<hr/>
+<h2 id="성능은-흥미롭지만-과장해서-읽으면-안-된다">성능은 흥미롭지만, 과장해서 읽으면 안 된다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#성능은-흥미롭지만-과장해서-읽으면-안-된다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Google은 TabFM을 TabArena benchmark에서 평가했다고 설명합니다. 원문 기준으로 TabArena는 classification dataset 38개, regression dataset 13개를 포함하고, Elo score 기반 head-to-head 방식으로 모델을 비교합니다.</p>
+<p>Google Research는 TabFM이 TabArena에서 튜닝된 전통 ML 모델들과 경쟁하거나 일부 설정에서는 앞서는 결과를 보였다고 소개합니다. 이 결과는 분명 흥미롭습니다. 다만 이 글에서 가장 조심해야 할 지점도 여기입니다. 여기서 바로 “XGBoost가 끝났다”고 말하면 과장입니다.</p>
+<p>먼저, TabArena는 living benchmark입니다. 2026년 7월 1일 확인 기준으로는 흥미로운 결과지만, leaderboard의 수치와 순위는 시간이 지나며 바뀔 수 있습니다. 따라서 특정 시점의 순위를 고정된 결론처럼 말하기보다, “현재 공개된 benchmark에서 이런 신호가 보인다” 정도로 읽는 편이 안전합니다.</p>
+<p>또 하나 중요한 구분이 있습니다. <strong>TabFM과 TabFM-Ensemble은 같은 것으로 읽으면 안 됩니다.</strong> Google Research Blog 기준으로 TabFM-Ensemble은 32-way ensemble, feature crosses/SVD, NNLS, classification task의 Platt scaling을 포함한 구성입니다. 따라서 ensemble 결과를 기본 TabFM 단일 모델의 성능처럼 말하면 안 됩니다.</p>
+<p><img src="./assets/google-tabfm-tabular-foundation-model/tabarena-results.png" alt="TabArena results from Google Research Blog comparing TabFM, TabFM-Ensemble, and other tabular models."/>
+<em>그림: Google Research Blog에 공개된 TabArena 결과 예시. 2026년 7월 1일 확인 기준의 참고 자료이며, TabArena는 living benchmark이므로 수치와 순위는 바뀔 수 있다.</em></p>
+<p>실무에서 봐야 할 질문도 benchmark 순위보다 많습니다.</p>
+<ul>
+<li>잘 튜닝한 XGBoost, LightGBM, CatBoost와 비교하면 어떤가?</li>
+<li>데이터 크기별 성능은 어떻게 달라지는가?</li>
+<li>high-cardinality categorical feature에서도 잘 버티는가?</li>
+<li>dirty schema, missing value, out-of-distribution table에 강한가?</li>
+<li>inference latency와 cost는 감당 가능한가?</li>
+<li>calibration은 충분히 믿을 만한가?</li>
+<li>feature importance나 설명가능성이 필요한 업무에서 쓸 수 있는가?</li>
+<li>HF model artifact / TabFM Model license가 실제 사용 목적과 맞는가?</li>
+</ul>
+<p>이 질문에 답하기 전까지 TabFM은 “대체재”라기보다 “실험해볼 만한 새 baseline 후보”에 더 가깝습니다.</p>
+<hr/>
+<h2 id="라이선스도-조심해서-봐야-한다">라이선스도 조심해서 봐야 한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#라이선스도-조심해서-봐야-한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>성능만큼 현실적인 제약도 있습니다. 공개 자료를 볼 때 특히 주의할 부분은 license입니다.</p>
+<p>GitHub repository의 code license는 Apache-2.0으로 확인됩니다. 하지만 Hugging Face에 공개된 <code>google/tabfm-1.0.0-pytorch</code> model card는 <code>tabfm-non-commercial-v1.0</code> license를 표시하고 있습니다.</p>
+<p>해당 license는 HF에 공개된 TabFM Model artifact를 non-commercial, non-production use로 제공한다고 설명합니다. 다시 말해 code license만 보고 상용 production에 바로 사용할 수 있다고 판단하면 안 됩니다.</p>
+<p>실무 적용을 검토한다면 최소한 다음을 분리해서 봐야 합니다.</p>
+<ul>
+<li>GitHub code license</li>
+<li>Hugging Face에 공개된 TabFM Model license</li>
+<li>inference code, parameters, model artifact 등 TabFM Model 구성요소의 사용 조건</li>
+<li>commercial license 필요 여부</li>
+<li>운영 시스템 또는 최종 사용자 접점에서의 사용 가능성</li>
+</ul>
+<p>특히 회사 제품, 고객 산출물, 수익화 서비스, 운영 의사결정 파이프라인에 직접 넣는 용도라면 별도 법무/라이선스 확인이 필요합니다.</p>
+<hr/>
+<h2 id="실무에서는-어디에-먼저-놓아볼-수-있을까">실무에서는 어디에 먼저 놓아볼 수 있을까?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#실무에서는-어디에-먼저-놓아볼-수-있을까" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>그렇다면 지금 단계에서 TabFM은 어디에 놓아볼 수 있을까요?</p>
+<p>가장 자연스러운 위치는 “최종 모델”보다 <strong>빠른 baseline</strong>입니다. 데이터 과학자가 feature engineering과 tuning에 들어가기 전에, 이 데이터셋이 어느 정도 예측 가능한지 빠르게 감을 보는 용도입니다.</p>
+<p>예를 들면 다음과 같은 상황입니다.</p>
+<ul>
+<li>새 테이블 데이터셋의 feasibility를 빠르게 보고 싶을 때</li>
+<li>feature engineering 전 rough baseline이 필요할 때</li>
+<li>AutoML을 돌리기 전에 초기 성능 감을 보고 싶을 때</li>
+<li>여러 데이터셋을 빠르게 훑어야 할 때</li>
+<li>기존 GBDT 모델과 disagreement가 큰 case를 찾고 싶을 때</li>
+</ul>
+<p>Google이 BigQuery <code>AI.PREDICT</code> 통합을 예고한 점도 이 방향과 맞닿아 있습니다. 향후 기업 데이터 웨어하우스에 있는 테이블 데이터에 대해 SQL 한 줄로 classification/regression을 호출할 수 있게 된다면, 예측 모델의 UX는 꽤 달라질 수 있습니다.</p>
+<p>다만 이 역시 현재 시점에서는 조심해서 써야 합니다. 실제 availability, region, pricing, quota, production 사용 조건은 Google Cloud 문서 기준으로 별도 확인이 필요합니다. “SQL-native prediction UX로 갈 수 있다”는 방향성으로 이해하는 편이 안전합니다.</p>
+<hr/>
+<h2 id="결론-xgboost의-종말보다-테이블-ml-ux-변화의-신호">결론: XGBoost의 종말보다, 테이블 ML UX 변화의 신호<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#결론-xgboost의-종말보다-테이블-ml-ux-변화의-신호" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>TabFM을 가장 과장해서 읽는 방법은 “이제 XGBoost는 필요 없다”고 말하는 것입니다. 하지만 지금 단계에서 그 결론은 성급합니다.</p>
+<p>TabFM은 XGBoost를 당장 대체하는 모델이라기보다, 테이블 ML에도 foundation model식 UX가 들어올 수 있다는 신호에 가깝습니다. 성능, 비용, latency, 설명가능성, 라이선스, governance를 모두 검증해야 하지만, 방향 자체는 흥미롭습니다.</p>
+<p>앞으로의 질문은 단순히 “leaderboard에서 누가 이겼는가”만은 아닐 것 같습니다. 테이블 예측을 매번 학습·튜닝하는 프로젝트로 볼 것인지, 아니면 기업 데이터 인프라 안에서 context 기반으로 호출하는 기능으로 볼 것인지. TabFM은 그 질문을 꽤 선명하게 보여주는 사례입니다.</p>
+<hr/>
+<h2 id="참고-자료">참고 자료<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#참고-자료" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ul>
+<li>Google Research Blog, “Introducing TabFM: A zero-shot foundation model for tabular data”</li>
+<li>GitHub: <code>google-research/tabfm</code></li>
+<li>Hugging Face: <code>google/tabfm-1.0.0-pytorch</code></li>
+<li>TabArena leaderboard</li>
+</ul></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-14" aria-expanded="true"><h3>목차</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#테이블-데이터에도-gpt-같은-모델이-올까-google-tabfm-쉽게-보기" data-for="테이블-데이터에도-gpt-같은-모델이-올까-google-tabfm-쉽게-보기">테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</a></li><li class="depth-1"><a href="#기존-테이블-ml은-강하지만-반복이-많다" data-for="기존-테이블-ml은-강하지만-반복이-많다">기존 테이블 ML은 강하지만, 반복이 많다</a></li><li class="depth-1"><a href="#tabfm의-핵심-테이블을-context로-읽는다" data-for="tabfm의-핵심-테이블을-context로-읽는다">TabFM의 핵심: 테이블을 context로 읽는다</a></li><li class="depth-1"><a href="#테이블은-문장처럼-한-줄로-읽을-수-없다" data-for="테이블은-문장처럼-한-줄로-읽을-수-없다">테이블은 문장처럼 한 줄로 읽을 수 없다</a></li><li class="depth-1"><a href="#실제-기업-테이블-데이터가-부족한-문제를-synthetic-data로-우회한다" data-for="실제-기업-테이블-데이터가-부족한-문제를-synthetic-data로-우회한다">실제 기업 테이블 데이터가 부족한 문제를 synthetic data로 우회한다</a></li><li class="depth-1"><a href="#성능은-흥미롭지만-과장해서-읽으면-안-된다" data-for="성능은-흥미롭지만-과장해서-읽으면-안-된다">성능은 흥미롭지만, 과장해서 읽으면 안 된다</a></li><li class="depth-1"><a href="#라이선스도-조심해서-봐야-한다" data-for="라이선스도-조심해서-봐야-한다">라이선스도 조심해서 봐야 한다</a></li><li class="depth-1"><a href="#실무에서는-어디에-먼저-놓아볼-수-있을까" data-for="실무에서는-어디에-먼저-놓아볼-수-있을까">실무에서는 어디에 먼저 놓아볼 수 있을까?</a></li><li class="depth-1"><a href="#결론-xgboost의-종말보다-테이블-ml-ux-변화의-신호" data-for="결론-xgboost의-종말보다-테이블-ml-ux-변화의-신호">결론: XGBoost의 종말보다, 테이블 ML UX 변화의 신호</a></li><li class="depth-1"><a href="#참고-자료" data-for="참고-자료">참고 자료</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="./postscript.js" type="module" data-persist="true"></script></html>

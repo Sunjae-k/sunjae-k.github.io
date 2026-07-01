@@ -6,6 +6,12 @@
       <description>최근 10 건 on Sunjae blog</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
+    <title>테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</title>
+    <link>https://sunjae-k.github.io/google-tabfm-tabular-foundation-model</link>
+    <guid>https://sunjae-k.github.io/google-tabfm-tabular-foundation-model</guid>
+    <description><![CDATA[ Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다. ]]></description>
+    <pubDate>Tue, 30 Jun 2026 15:00:00 GMT</pubDate>
+  </item><item>
     <title>AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까</title>
     <link>https://sunjae-k.github.io/agent-quality-loop</link>
     <guid>https://sunjae-k.github.io/agent-quality-loop</guid>
@@ -59,12 +65,6 @@
     <guid>https://sunjae-k.github.io/topics</guid>
     <description><![CDATA[ Sunjae blog의 공개 글을 AI Agent 운영, RAG 문서 운영, 제품 AI, 도시·공간 AI, 시각 지식 산출물 주제로 묶은 읽기 목차. ]]></description>
     <pubDate>Mon, 22 Jun 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>AI Agent의 문제는 환각이 아니라 경계 없는 단정이다</title>
-    <link>https://sunjae-k.github.io/agent-quality-evidence-boundary</link>
-    <guid>https://sunjae-k.github.io/agent-quality-evidence-boundary</guid>
-    <description><![CDATA[ AI Agent 품질 문제를 환각 하나로 묶지 않고, 근거 경계, 표현 등급, 이슈 분류, 다층 검증, 회귀 샘플링으로 운영하는 실무 프레임. ]]></description>
-    <pubDate>Sun, 14 Jun 2026 15:00:00 GMT</pubDate>
   </item>
     </channel>
   </rss>
