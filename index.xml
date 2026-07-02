@@ -6,6 +6,12 @@
       <description>최근 10 건 on Sunjae blog</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
+    <title>Sunjae blog</title>
+    <link>https://sunjae-k.github.io/</link>
+    <guid>https://sunjae-k.github.io/</guid>
+    <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
+    <pubDate>Wed, 01 Jul 2026 15:00:00 GMT</pubDate>
+  </item><item>
     <title>테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</title>
     <link>https://sunjae-k.github.io/google-tabfm-tabular-foundation-model</link>
     <guid>https://sunjae-k.github.io/google-tabfm-tabular-foundation-model</guid>
@@ -47,12 +53,6 @@
     <guid>https://sunjae-k.github.io/rag-is-document-operations</guid>
     <description><![CDATA[ RAG가 실패할 때 모델 교체보다 먼저 문서 파싱, 구조 보존, chunking, provenance, retrieval·citation 평가를 점검해야 하는 이유. ]]></description>
     <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>Sunjae blog</title>
-    <link>https://sunjae-k.github.io/</link>
-    <guid>https://sunjae-k.github.io/</guid>
-    <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
-    <pubDate>Mon, 22 Jun 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>프롬프트 엔지니어링 다음은 루프 엔지니어링이다</title>
     <link>https://sunjae-k.github.io/loop-engineering</link>
