@@ -6,22 +6,28 @@
       <description>최근 10 건 on Sunjae blog</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
+    <title>GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화</title>
+    <link>https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability</link>
+    <guid>https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability</guid>
+    <description><![CDATA[ Google Search Central 공식 문서를 바탕으로 GEO와 SEO의 관계를 정리하고, 개인 블로그에 적용할 AI 검색 시대의 발행 운영 기준을 제안한다. ]]></description>
+    <pubDate>Mon, 06 Jul 2026 15:00:00 GMT</pubDate>
+  </item><item>
     <title>Sunjae blog</title>
     <link>https://sunjae-k.github.io/</link>
     <guid>https://sunjae-k.github.io/</guid>
     <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
-    <pubDate>Sun, 05 Jul 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>MCP는 API를 대체하지 않는다</title>
-    <link>https://sunjae-k.github.io/mcp-is-not-api-replacement</link>
-    <guid>https://sunjae-k.github.io/mcp-is-not-api-replacement</guid>
-    <description><![CDATA[ MCP와 API의 차이는 호출 방식보다 클라이언트가 누구인지에 있다. API는 시스템 통합을 위한 인터페이스이고, MCP는 모델에게 기능을 안전하게 위임하기 위한 인터페이스다. ]]></description>
-    <pubDate>Sun, 05 Jul 2026 15:00:00 GMT</pubDate>
+    <pubDate>Mon, 06 Jul 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>Topics</title>
     <link>https://sunjae-k.github.io/topics</link>
     <guid>https://sunjae-k.github.io/topics</guid>
     <description><![CDATA[ Sunjae blog의 공개 글을 AI Agent 운영, RAG 문서 운영, 제품 AI, 도시·공간 AI, 시각 지식 산출물 주제로 묶은 읽기 목차. ]]></description>
+    <pubDate>Mon, 06 Jul 2026 15:00:00 GMT</pubDate>
+  </item><item>
+    <title>MCP는 API를 대체하지 않는다</title>
+    <link>https://sunjae-k.github.io/mcp-is-not-api-replacement</link>
+    <guid>https://sunjae-k.github.io/mcp-is-not-api-replacement</guid>
+    <description><![CDATA[ MCP와 API의 차이는 호출 방식보다 클라이언트가 누구인지에 있다. API는 시스템 통합을 위한 인터페이스이고, MCP는 모델에게 기능을 안전하게 위임하기 위한 인터페이스다. ]]></description>
     <pubDate>Sun, 05 Jul 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</title>
@@ -58,12 +64,6 @@
     <link>https://sunjae-k.github.io/llm-agent-address-search</link>
     <guid>https://sunjae-k.github.io/llm-agent-address-search</guid>
     <description><![CDATA[ 주소 검색에서 LLM을 모든 요청에 붙이는 대신, 실패 로그를 읽는 에이전트로 라우터·테스트·fallback 기준을 개선해 LLM 호출을 줄이는 운영 루프. ]]></description>
-    <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>RAG가 안 될 때, 모델보다 먼저 봐야 할 것</title>
-    <link>https://sunjae-k.github.io/rag-is-document-operations</link>
-    <guid>https://sunjae-k.github.io/rag-is-document-operations</guid>
-    <description><![CDATA[ RAG가 실패할 때 모델 교체보다 먼저 문서 파싱, 구조 보존, chunking, provenance, retrieval·citation 평가를 점검해야 하는 이유. ]]></description>
     <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
   </item>
     </channel>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr"><head><title>GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto Sans KR:wght@400;700&amp;family=Noto Sans KR:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="google-site-verification" content="z4Nq-epWJy6nnCYzF9ctaHXmf4rh5X6lsR6QzzjseOg"/><meta name="og:site_name" content="Sunjae blog"/><meta property="og:title" content="GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화"/><meta name="twitter:description" content="Google Search Central 공식 문서를 바탕으로 GEO와 SEO의 관계를 정리하고, 개인 블로그에 적용할 AI 검색 시대의 발행 운영 기준을 제안한다."/><meta property="og:description" content="Google Search Central 공식 문서를 바탕으로 GEO와 SEO의 관계를 정리하고, 개인 블로그에 적용할 AI 검색 시대의 발행 운영 기준을 제안한다."/><meta property="og:image:alt" content="Google Search Central 공식 문서를 바탕으로 GEO와 SEO의 관계를 정리하고, 개인 블로그에 적용할 AI 검색 시대의 발행 운영 기준을 제안한다."/><meta property="og:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:url" content="https://sunjae-k.github.io/static/og-image.png"/><meta name="twitter:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="sunjae-k.github.io"/><meta property="og:url" content="https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability"/><meta property="twitter:url" content="https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability"/><link rel="icon" href="./static/icon.png"/><meta name="description" content="Google Search Central 공식 문서를 바탕으로 GEO와 SEO의 관계를 정리하고, 개인 블로그에 적용할 AI 검색 시대의 발행 운영 기준을 제안한다."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화","description":"Google Search Central 공식 문서를 바탕으로 GEO와 SEO의 관계를 정리하고, 개인 블로그에 적용할 AI 검색 시대의 발행 운영 기준을 제안한다.","url":"https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability","mainEntityOfPage":{"@type":"WebPage","@id":"https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability"},"image":["https://sunjae-k.github.io/static/og-image.png"],"datePublished":"2026-07-06T15:00:00.000Z","dateModified":"2026-07-06T15:00:00.000Z","author":{"@type":"Person","name":"Sunjae Kim"},"publisher":{"@type":"Person","name":"Sunjae Kim"},"inLanguage":"ko-KR"}</script><link href="./index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL1VzZXJzL3N1bmphZS9wcm9qZWN0cy9zdW5qYWUtay5naXRodWIuaW8vcXVhcnR6L2NvbXBvbmVudHMvc3R5bGVzIiwic291cmNlcyI6WyJtZXJtYWlkLmlubGluZS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFHRjtFQUNFOzs7QUFLRjtFQUNFO0VBQ0E7OztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFJSjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTs7QUFJRjtFQUNFO0VBQ0E7RUFDQSIsInNvdXJjZXNDb250ZW50IjpbIi5leHBhbmQtYnV0dG9uIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbG9hdDogcmlnaHQ7XG4gIHBhZGRpbmc6IDAuNHJlbTtcbiAgbWFyZ2luOiAwLjNyZW07XG4gIHJpZ2h0OiAwOyAvLyBOT1RFOiByaWdodCB3aWxsIGJlIHNldCBpbiBtZXJtYWlkLmlubGluZS50c1xuICBjb2xvcjogdmFyKC0tZ3JheSk7XG4gIGJvcmRlci1jb2xvcjogdmFyKC0tZGFyayk7XG4gIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgYm9yZGVyOiAxcHggc29saWQ7XG4gIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgb3BhY2l0eTogMDtcbiAgdHJhbnNpdGlvbjogMC4ycztcblxuICAmID4gc3ZnIHtcbiAgICBmaWxsOiB2YXIoLS1saWdodCk7XG4gICAgZmlsdGVyOiBjb250cmFzdCgwLjMpO1xuICB9XG5cbiAgJjpob3ZlciB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGJvcmRlci1jb2xvcjogdmFyKC0tc2Vjb25kYXJ5KTtcbiAgfVxuXG4gICY6Zm9jdXMge1xuICAgIG91dGxpbmU6IDA7XG4gIH1cbn1cblxucHJlIHtcbiAgJjpob3ZlciA+IC5leHBhbmQtYnV0dG9uIHtcbiAgICBvcGFjaXR5OiAxO1xuICAgIHRyYW5zaXRpb246IDAuMnM7XG4gIH1cbn1cblxuI21lcm1haWQtY29udGFpbmVyIHtcbiAgcG9zaXRpb246IGZpeGVkO1xuICBjb250YWluOiBsYXlvdXQ7XG4gIHotaW5kZXg6IDk5OTtcbiAgbGVmdDogMDtcbiAgdG9wOiAwO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogMTAwdmg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIGRpc3BsYXk6IG5vbmU7XG4gIGJhY2tkcm9wLWZpbHRlcjogYmx1cig0cHgpO1xuICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuNSk7XG5cbiAgJi5hY3RpdmUge1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgfVxuXG4gICYgPiAjbWVybWFpZC1zcGFjZSB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gICAgYm9yZGVyLXJhZGl1czogNXB4O1xuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICB0b3A6IDUwJTtcbiAgICBsZWZ0OiA1MCU7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7XG4gICAgaGVpZ2h0OiA4MHZoO1xuICAgIHdpZHRoOiA4MHZ3O1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG5cbiAgICAmID4gLm1lcm1haWQtY29udGVudCB7XG4gICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAwIDA7XG4gICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gMC4xcyBlYXNlO1xuICAgICAgb3ZlcmZsb3c6IHZpc2libGU7XG4gICAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICAgIG1pbi13aWR0aDogMjAwcHg7XG5cbiAgICAgIHByZSB7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgfVxuXG4gICAgICBzdmcge1xuICAgICAgICBtYXgtd2lkdGg6IG5vbmU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgIH1cbiAgICB9XG5cbiAgICAmID4gLm1lcm1haWQtY29udHJvbHMge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgYm90dG9tOiAyMHB4O1xuICAgICAgcmlnaHQ6IDIwcHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgZ2FwOiA4cHg7XG4gICAgICBwYWRkaW5nOiA4cHg7XG4gICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwgMCwgMCwgMC4xKTtcbiAgICAgIHotaW5kZXg6IDI7XG5cbiAgICAgIC5tZXJtYWlkLWNvbnRyb2wtYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHBhZGRpbmc6IDA7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgICAgY29sb3I6IHZhcigtLWRhcmspO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgICBmb250LWZhbWlseTogdmFyKC0tYm9keUZvbnQpO1xuICAgICAgICB0cmFuc2l0aW9uOiBhbGwgMC4ycyBlYXNlO1xuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIH1cblxuICAgICAgICAmOmFjdGl2ZSB7XG4gICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKDFweCk7XG4gICAgICAgIH1cblxuICAgICAgICAvLyBTdHlsZSB0aGUgcmVzZXQgYnV0dG9uIGRpZmZlcmVudGx5XG4gICAgICAgICY6bnRoLWNoaWxkKDIpIHtcbiAgICAgICAgICB3aWR0aDogYXV0bztcbiAgICAgICAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="./prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("./static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://sunjae-k.github.io/index.xml"/></head><body data-slug="google-seo-geo-ai-search-discoverability"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href=".">Sunjae blog</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>검색</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="검색어를 입력하세요" placeholder="검색어를 입력하세요"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="다크 모드"><title>다크 모드</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="라이트 모드"><title>라이트 모드</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="리더 모드"><title>리더 모드</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><nav class="left-nav desktop-only" aria-label="Site navigation"><p class="left-nav__tagline">AI Agent, RAG, local-first AI를<br/>운영·검증·문서 구조 관점에서 읽습니다.</p><div class="left-nav__section"><p class="left-nav__label">Topics</p><a href="/topics#ai-agent-operations">AI Agent Operations</a><a href="/topics#rag--document-operations">RAG / Document Operations</a><a href="/topics#product-ai--ux--infra">Product AI / UX / Infra</a><a href="/topics#urban--spatial-ai">Urban / Spatial AI</a><a href="/topics#ai-visual--knowledge-artifacts">AI Visual / Knowledge Artifacts</a></div></nav></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="./">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화</a></div></nav><h1 class="article-title">GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화</h1><p show-comma="true" class="content-meta"><time datetime="2026-07-06T15:00:00.000Z">2026년 7월 07일</time><span>34 min read</span></p><ul class="tags"><li><a href="./tags/seo" class="internal tag-link">seo</a></li><li><a href="./tags/geo" class="internal tag-link">geo</a></li><li><a href="./tags/aeo" class="internal tag-link">aeo</a></li><li><a href="./tags/google-search" class="internal tag-link">google-search</a></li><li><a href="./tags/ai-search" class="internal tag-link">ai-search</a></li></ul></div></div><article class="popover-hint"><h1 id="geo는-seo를-대체하지-않는다-google-문서로-보는-ai-검색-최적화">GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#geo는-seo를-대체하지-않는다-google-문서로-보는-ai-검색-최적화" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<h2 id="먼저-정리하면">먼저 정리하면<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#먼저-정리하면" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ul>
+<li>Google Search Central 문서 기준으로 SEO는 여전히 유효하다.</li>
+<li>AEO나 GEO는 Google 검색 관점에서 기존 SEO와 분리된 별도 체계라기보다, 생성형 AI 검색 환경까지 포함한 검색 최적화의 확장에 가깝다.</li>
+<li>Google의 생성형 AI 검색 기능은 RAG와 query fan-out을 사용하지만, 여전히 Google의 색인, 핵심 검색 순위 시스템, 품질 시스템에 기반한다.</li>
+<li>그래서 이 블로그에서 SEO/GEO는 키워드 삽입이 아니라 <strong>발행 운영</strong>에 가깝게 다루려 한다. 독자 질문, 고유한 관점, 검색 가능한 구조, 발행 후 관찰 루프를 남기는 일이다.</li>
+</ul>
+<p>요즘 SEO 이야기를 하면 AEO, GEO라는 말이 자연스럽게 따라붙습니다. 검색결과 페이지가 링크 목록 중심에서 AI Overview, AI Mode, 답변형 검색으로 넓어지고 있으니 “기존 SEO는 끝났고 이제 GEO를 해야 한다”는 주장도 자주 보입니다.</p>
+<p>그런데 Google Search Central의 공식 문서를 따라 읽어보면 결론은 조금 다릅니다. Google은 생성형 AI 검색에 맞춘 최적화를 설명하지만, 그것을 기존 SEO와 완전히 분리된 새 게임으로 보지 않습니다. 생성형 AI 검색도 Google 검색의 일부이고, 좋은 SEO의 기본 원칙이 계속 중요하다고 설명합니다.</p>
+<p>이 글은 Google 공식 문서 8개를 바탕으로 SEO, AEO, GEO의 관계를 정리한 뒤, 이 블로그에 적용할 운영 기준까지 내려보려는 글입니다. 결론부터 말하면, <strong>GEO는 SEO를 대체하는 별도 기법이 아니라 생성형 AI 검색 환경까지 포함한 discoverability 운영</strong>에 가깝습니다.</p>
+<p><img src="./assets/google-seo-geo-ai-search-discoverability/hero.png" alt="개인 블로그 글이 검색 크롤링, AI 검색의 query fan-out, 근거 카드와 연결되는 discoverability 구조"/>
+<em>그림: SEO/GEO를 별도 기법으로 보기보다, 글이 검색 시스템과 AI 검색 표면에서 발견되고 이해되고 참조되는 구조로 보는 관점.</em></p>
+<h2 id="seo는-여전히-crawl-index-serve의-문제다">SEO는 여전히 crawl, index, serve의 문제다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#seo는-여전히-crawl-index-serve의-문제다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Google 검색의 기본 흐름은 단순합니다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>crawl → index → serve</span></span></code></pre></figure>
+<p>Googlebot이 웹페이지와 리소스를 발견하고 다운로드합니다. 그 다음 페이지의 텍스트, 이미지, 동영상, title, alt 속성 등을 분석해 색인을 만듭니다. 사용자가 검색하면 색인 안에서 관련성과 품질이 높은 결과를 반환합니다.</p>
+<p>이 흐름은 생성형 AI 검색이 등장했다고 사라지지 않습니다. 오히려 AI 검색에서도 더 중요해집니다. AI가 답변을 만들려면 먼저 검색 시스템이 접근할 수 있는 웹페이지와 신뢰할 만한 근거가 있어야 하기 때문입니다.</p>
+<p>그래서 “AI 검색 최적화”를 말하기 전에 먼저 확인해야 할 것은 여전히 기본기입니다.</p>
+<ul>
+<li>Googlebot이 URL과 주요 리소스에 접근할 수 있는가?</li>
+<li>본문 텍스트가 DOM에서 읽히는가?</li>
+<li>중요한 콘텐츠가 이미지나 JavaScript 뒤에만 숨어 있지 않은가?</li>
+<li>페이지마다 고유한 title과 description이 있는가?</li>
+<li>canonical, noindex, robots.txt, sitemap, redirect가 의도대로 되어 있는가?</li>
+<li>내부 링크와 URL 구조가 사람이 보기에도 이해 가능한가?</li>
+</ul>
+<p>생성형 AI 검색은 이 기본기를 우회하는 지름길이 아닙니다. Google이 페이지를 발견하고 이해하고 평가할 수 있어야 AI 검색 표면에서도 근거로 쓰일 가능성이 생깁니다.</p>
+<h2 id="google은-aeogeo를-seo의-대체물로-보지-않는다">Google은 AEO/GEO를 SEO의 대체물로 보지 않는다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#google은-aeogeo를-seo의-대체물로-보지-않는다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Google의 생성형 AI 검색 최적화 문서는 AEO와 GEO라는 용어를 인정합니다. AEO는 Answer Engine Optimization, GEO는 Generative Engine Optimization을 뜻할 수 있습니다.</p>
+<p>하지만 Google 검색 관점에서 중요한 문장은 따로 있습니다. 생성형 AI 검색에 최적화하는 것도 검색 환경에 최적화하는 것이므로, 여전히 SEO의 일부라는 설명입니다.</p>
+<p>이 말은 “GEO라는 단어를 쓰면 안 된다”는 뜻은 아닙니다. 다만 Google 검색을 기준으로 보면 GEO를 기존 SEO 바깥의 완전히 다른 기술처럼 다루기 어렵다는 뜻에 가깝습니다.</p>
+<p>정리하면 이렇게 볼 수 있습니다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>SEO 기본 원칙</span></span>
+<span data-line><span>= helpful/trustworthy people-first content</span></span>
+<span data-line><span>+ crawl/index/render access</span></span>
+<span data-line><span>+ information architecture</span></span>
+<span data-line><span>+ title/snippet/metadata/assets</span></span>
+<span data-line><span>+ Search Console observation</span></span>
+<span data-line> </span>
+<span data-line><span>GEO/AEO 대응</span></span>
+<span data-line><span>= 위 원칙을 AI Overview, AI Mode, RAG, query fan-out 환경에 맞게 확장</span></span>
+<span data-line><span>≠ 별도의 llms.txt, 억지 chunking, mention, schema 중심 접근</span></span></code></pre></figure>
+<p>즉, GEO의 핵심은 “AI에게 잘 보이는 비밀 신호”를 찾는 일이 아닙니다. 사람이 읽어도 유용하고, 검색 시스템이 접근해도 이해 가능하며, AI 답변이 근거로 삼아도 맥락이 보존되는 페이지를 만드는 일에 가깝습니다.</p>
+<h2 id="생성형-ai-검색은-rag와-query-fan-out을-쓴다">생성형 AI 검색은 RAG와 query fan-out을 쓴다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#생성형-ai-검색은-rag와-query-fan-out을-쓴다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Google 문서에서 흥미로운 부분은 생성형 AI 검색의 작동 방식을 비교적 직접적으로 설명한다는 점입니다. 핵심은 두 가지입니다.</p>
+<p>첫째, <strong>RAG / 검색 증강 생성</strong>입니다. Google의 생성형 AI 검색 기능은 핵심 검색 순위 시스템으로 색인에서 관련성 있고 최신인 웹페이지를 검색하고, 그 페이지의 구체적인 정보를 검토해 답변과 클릭 가능한 링크를 구성합니다.</p>
+<p>둘째, <strong>query fan-out</strong>입니다. 모델이 사용자의 질문을 처리하기 위해 여러 관련 검색어를 동시에 생성하고, 추가 검색 결과를 가져오는 방식입니다.</p>
+<p>이 설명은 GEO 논의에서 중요합니다. AI 검색은 단순히 사용자의 문장 하나와 정확히 일치하는 페이지를 찾는 방식이 아닙니다. 질문을 여러 하위 질의로 펼치고, 관련 근거를 다시 찾고, 그 결과를 종합합니다.</p>
+<p>그렇다고 해서 검색어 변형마다 얇은 페이지를 대량으로 만들라는 뜻은 아닙니다. Google은 검색어와 페이지 내용이 정확히 일치하지 않아도 관련성을 이해하는 능력이 개선되었다고 설명합니다. 팬아웃 쿼리별 thin page를 만드는 전략은 장기적으로 좋은 콘텐츠 전략이 되기 어렵고, 조작 목적이라면 스팸 정책 문제로도 이어질 수 있습니다.</p>
+<p>생성형 AI 검색에서 더 중요한 것은 한 페이지 안에 주제의 맥락, 근거, 관점, 구조가 충분히 남아 있는지입니다.</p>
+<h2 id="ai-검색에서도-결국-중요한-것은-people-first-content다">AI 검색에서도 결국 중요한 것은 people-first content다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ai-검색에서도-결국-중요한-것은-people-first-content다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Google의 helpful content 문서는 검색엔진을 위한 콘텐츠보다 사람에게 유용하고 신뢰할 수 있는 콘텐츠를 강조합니다. 핵심 질문은 꽤 직접적입니다.</p>
+<ul>
+<li>고유한 정보, 보고, 조사, 분석을 제공하는가?</li>
+<li>단순 복사나 재작성보다 중요한 가치와 독창성을 더했는가?</li>
+<li>제목이 과장 없이 내용을 정확히 요약하는가?</li>
+<li>신뢰할 수 있는 출처, 작성자, 전문성 배경이 보이는가?</li>
+<li>독자가 목적을 달성하기에 충분한 지식과 만족스러운 경험을 얻는가?</li>
+</ul>
+<p>이 기준은 AI 검색에서도 거의 그대로 이어집니다. AI 답변에 인용되거나 참조되려면, 페이지가 단순히 키워드를 포함하는 수준을 넘어야 합니다. 흔한 요약보다 한 단계 더 들어간 설명, 직접 경험, 전문성, 고유한 관점이 있어야 합니다.</p>
+<p>특히 E-E-A-T에서 Google이 가장 중요하게 보는 축은 Trust, 즉 신뢰성입니다. E-E-A-T 자체가 단일 순위 요소는 아니지만, Google은 우수한 E-E-A-T를 갖춘 콘텐츠를 식별하기 위해 여러 신호를 사용한다고 설명합니다.</p>
+<p>그래서 생성형 AI 검색 시대의 콘텐츠 운영은 “AI가 좋아할 문장 형식”을 찾는 문제라기보다, 다음 질문에 더 가깝습니다.</p>
+<blockquote>
+<p>이 페이지는 누가, 어떤 근거로, 어떤 경험과 관점에서, 어떤 한계 안에서 말하고 있는가?</p>
+</blockquote>
+<p>이 질문에 답하지 못하면 SEO든 GEO든 오래 버티기 어렵다고 생각합니다.</p>
+<h2 id="이걸-블로그에-적용하면-어떨까">이걸 블로그에 적용하면 어떨까<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#이걸-블로그에-적용하면-어떨까" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>여기까지가 Google 문서 기준의 정리입니다. 그런데 이 글을 단순히 “Google은 이렇게 말한다”에서 끝내면 별로 남는 게 없습니다. 더 중요한 질문은 이겁니다. <strong>그럼 이걸 블로그에 적용하면 어떻게 달라질까?</strong></p>
+<p>내가 보기에는 SEO/GEO를 별도의 기술 작업으로 떼어놓기보다, 글을 만드는 방식 안에 넣는 편이 더 자연스럽습니다. 독자 질문을 먼저 잡고, 내 콘텐츠가 가진 관점과 사례를 정리하고, 검색 가능한 구조로 발행한 뒤, Search Console로 실제 발견 과정을 관찰하는 식입니다.</p>
+<h3 id="1-키워드보다-독자-질문을-먼저-잡는다">1. 키워드보다 독자 질문을 먼저 잡는다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#1-키워드보다-독자-질문을-먼저-잡는다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>글을 시작할 때 “어떤 키워드를 넣을까?”보다 먼저 물어야 할 질문은 “이 글은 어떤 독자 질문에 답하는가?”입니다.</p>
+<p>예를 들어 내가 자주 쓰는 agent 글을 생각해보면, <code>AI Agent</code>라는 단어를 넣는 것만으로는 부족합니다. 독자는 보통 더 구체적인 질문으로 들어옵니다.</p>
+<ul>
+<li>AI Agent를 어떻게 평가할까?</li>
+<li>RAG 시스템에서 문서 구조가 왜 중요할까?</li>
+<li>도시 데이터와 AI 모델을 어떻게 연결할까?</li>
+<li>작은 모델이나 local-first 구조는 어떤 제품 상황에서 유리할까?</li>
+</ul>
+<p>글의 제목, 첫 문단, H2/H3는 이런 질문을 따라가야 합니다. 검색어는 독자 질문을 드러내는 표현으로 쓰고, 본문은 그 질문을 실제로 풀어주는 구조가 되어야 합니다.</p>
+<h3 id="2-제목은-멋보다-명확성을-우선한다">2. 제목은 멋보다 명확성을 우선한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#2-제목은-멋보다-명확성을-우선한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>개인 블로그 글은 멋있는 제목을 붙이고 싶어지기 쉽습니다. 하지만 검색과 AI 검색을 함께 생각하면 제목은 먼저 내용을 정확히 설명해야 합니다.</p>
+<p>좋은 제목은 세 가지를 보여줍니다.</p>
+<ul>
+<li>다루는 대상: <code>RAG</code>, <code>AI Agent</code>, <code>도시 AI</code>, <code>문서 처리</code>, <code>로컬 모델</code></li>
+<li>독자 질문: <code>왜 중요한가</code>, <code>어떻게 평가할까</code>, <code>무엇이 실패를 만든가</code></li>
+<li>글의 관점: <code>운영</code>, <code>품질</code>, <code>구조</code>, <code>실험</code>, <code>체크리스트</code></li>
+</ul>
+<p>이 글의 제목도 그래서 <code>GEO는 SEO를 대체하지 않는다</code>를 앞에 두었습니다. “GEO와 SEO의 관계”를 찾는 독자가 먼저 이해할 수 있어야 하기 때문입니다.</p>
+<h3 id="3-slug와-description은-검색결과에서-읽힌다고-생각한다">3. slug와 description은 검색결과에서 읽힌다고 생각한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#3-slug와-description은-검색결과에서-읽힌다고-생각한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>slug는 사람이 읽을 수 있는 영어/키워드 구조가 좋습니다. <code>post-20260707</code>보다 <code>google-seo-geo-ai-search-discoverability</code>가 낫습니다. URL만 봐도 글의 주제가 대략 보여야 하기 때문입니다.</p>
+<p>Description은 검색 snippet처럼 보여도 의미가 통해야 합니다. “좋은 글입니다” 같은 소개가 아니라, 이 페이지가 무엇을 설명하고 어디까지 다루는지를 1–2문장으로 말해야 합니다.</p>
+<p>이 기준은 AI 검색에서도 도움이 된다고 생각합니다. title, description, heading은 검색결과의 클릭 전 판단뿐 아니라 페이지의 주제와 구조를 이해하는 표면이 되기 때문입니다.</p>
+<h3 id="4-h2h3만-훑어도-답변-흐름이-보여야-한다">4. H2/H3만 훑어도 답변 흐름이 보여야 한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#4-h2h3만-훑어도-답변-흐름이-보여야-한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>좋은 heading은 목차 장식이 아닙니다. 독자가 본문을 다 읽기 전에 “이 글이 내 질문에 답하겠구나”를 판단하게 해주는 구조입니다.</p>
+<p>그래서 H2/H3는 감성적인 문장보다 질문과 답변 흐름에 가까워야 합니다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>문제 제기</span></span>
+<span data-line><span>→ 공식 기준</span></span>
+<span data-line><span>→ 작동 방식</span></span>
+<span data-line><span>→ 오해와 반례</span></span>
+<span data-line><span>→ 내 콘텐츠에 적용해보기</span></span>
+<span data-line><span>→ 체크리스트</span></span></code></pre></figure>
+<p>이런 구조가 있으면 사람도 읽기 쉽고, 검색 시스템도 페이지가 어떤 하위 주제를 다루는지 이해하기 쉬워집니다.</p>
+<h3 id="5-내부-용어만-쓰지-않고-외부-독자의-표현을-함께-둔다">5. 내부 용어만 쓰지 않고 외부 독자의 표현을 함께 둔다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#5-내부-용어만-쓰지-않고-외부-독자의-표현을-함께-둔다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>내 콘텐츠에는 AI Agent, RAG, 문서 운영, 도시 AI, 시각 자료 같은 주제가 자주 등장합니다. 이런 글은 내가 편하게 쓰는 표현만으로 밀고 가면 검색 가능한 표면이 약해집니다.</p>
+<p>예를 들어 글의 실제 주제가 agent 평가라면 <code>평가 루프</code>, <code>에이전트 품질</code>, <code>LLM 테스트</code>, <code>도구 사용 검증</code> 같은 외부 독자가 찾을 만한 표현을 함께 둬야 합니다. RAG 글이라면 <code>문서 구조</code>, <code>인용</code>, <code>검색 품질</code>, <code>retrieval QA</code> 같은 표현이 필요할 수 있습니다. 도시 AI 글이라면 <code>공간 데이터</code>, <code>GeoAI</code>, <code>도메인 prior</code>, <code>공간 설명가능성</code>처럼 독자가 검색할 단어를 자연스럽게 연결해야 합니다. 내 안에서는 같은 문제를 가리키는 말이어도, 검색하는 사람에게는 전혀 다른 입구가 될 수 있기 때문입니다.</p>
+<p>핵심은 keyword stuffing이 아닙니다. 내부에서 쓰는 이름과 외부 독자가 찾는 말을 같은 글 안에서 자연스럽게 번역해주는 것입니다.</p>
+<h3 id="6-이미지와-도표는-파일명보다-주변-설명이-중요하다">6. 이미지와 도표는 파일명보다 주변 설명이 중요하다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#6-이미지와-도표는-파일명보다-주변-설명이-중요하다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>이미지, 도표, 영상은 그 자체로 충분하지 않습니다. Google 문서 기준으로도 이미지와 동영상은 주변 텍스트, alt text, 설명이 중요합니다.</p>
+<p>그래서 내 글에 도표를 넣는다면 단순히 예쁜 그림으로 두지 않는 편이 좋겠습니다. 도표 앞뒤에 다음이 있어야 합니다.</p>
+<ul>
+<li>이 그림이 어떤 질문에 답하는지</li>
+<li>본문 논지에서 어떤 역할을 하는지</li>
+<li>이미지 안의 핵심 축이나 비교 기준이 무엇인지</li>
+<li>이미지 없이도 의미가 통하는 텍스트 설명이 있는지</li>
+</ul>
+<p>AI 검색 환경에서도 이 원칙은 중요하다고 생각합니다. 검색 시스템과 독자가 이미지를 이해하려면, 이미지 주변에 해석 가능한 문맥이 있어야 하기 때문입니다.</p>
+<h3 id="7-발행-후-search-console로-관찰하고-업데이트한다">7. 발행 후 Search Console로 관찰하고 업데이트한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#7-발행-후-search-console로-관찰하고-업데이트한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>SEO/GEO를 발행 전 체크리스트로만 보면 반쪽입니다. Google 문서는 Search Console을 통해 색인 상태, 검색어, 노출, 클릭, 문제를 관찰하라고 말합니다.</p>
+<p>개인 블로그에서도 발행 후 다음을 봐야 합니다.</p>
+<ul>
+<li>색인되었는가?</li>
+<li>어떤 검색어로 노출되는가?</li>
+<li>제목과 description이 실제 검색 의도와 맞는가?</li>
+<li>클릭은 적지만 노출이 있는 글은 무엇인가?</li>
+<li>오래된 글에서 업데이트하거나 합칠 글은 무엇인가?</li>
+</ul>
+<p>즉, 발행은 끝이 아니라 관찰 루프의 시작입니다. SEO/GEO는 글을 공개하는 순간 끝나는 작업이 아니라, 글이 발견되고 읽히고 업데이트되는 과정을 관리하는 일에 가깝습니다.</p>
+<h2 id="피해야-할-geo-과장">피해야 할 GEO 과장<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#피해야-할-geo-과장" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Google 공식 문서를 기준으로 보면, GEO라는 이름으로 유통되는 조언 중에는 조심해야 할 것들이 있습니다.</p>
+<p>첫째, <strong>불필요한 AI 전용 텍스트 파일</strong>입니다. Google 문서는 <code>llms.txt</code> 같은 파일을 생성형 AI 검색 최적화의 필수 수단으로 보지 않습니다.</p>
+<p>둘째, <strong>억지 chunking</strong>입니다. AI가 읽기 좋게 만든다는 이유로 콘텐츠를 기계적으로 잘게 쪼개는 방식은 독자 경험을 망칠 수 있습니다. 구조는 필요하지만, 구조가 독자의 이해를 해치면 본말이 바뀝니다.</p>
+<p>셋째, <strong>진정성 없는 mention 추구</strong>입니다. 브랜드나 글이 여기저기 언급되면 좋을 수는 있지만, 그것을 조작하거나 무리하게 만들면 신뢰보다 노이즈가 커집니다.</p>
+<p>넷째, <strong>구조화 데이터 과몰입</strong>입니다. 구조화 데이터는 리치 결과 전략의 일부로 유용할 수 있습니다. 하지만 Google 문서 기준으로 생성형 AI 검색에 반드시 필요한 특별 schema가 따로 있는 것은 아닙니다.</p>
+<p>다섯째, <strong>팬아웃 쿼리별 thin page 대량 생산</strong>입니다. query fan-out을 들었다고 해서 모든 검색어 변형마다 별도 페이지를 만들 필요는 없습니다. 오히려 고유한 가치가 없는 대량 페이지는 스팸 정책 리스크를 만들 수 있습니다.</p>
+<h2 id="블로그-글을-설계하는-순서">블로그 글을 설계하는 순서<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#블로그-글을-설계하는-순서" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>SEO/GEO를 함께 고려한다면, 글을 쓰는 순서를 바꾸는 것이 좋습니다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>검색 키워드 수집</span></span>
+<span data-line><span>→ 키워드별 문장 삽입</span></span>
+<span data-line><span>→ 발행</span></span></code></pre></figure>
+<p>이 아니라,</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>독자 문제 정의</span></span>
+<span data-line><span>→ 고유한 경험/전문성/관점 정리</span></span>
+<span data-line><span>→ 답변 가능한 구조 설계</span></span>
+<span data-line><span>→ crawlable page로 발행</span></span>
+<span data-line><span>→ title/description/heading/asset context 정리</span></span>
+<span data-line><span>→ Search Console로 관찰하고 업데이트</span></span></code></pre></figure>
+<p>에 가깝습니다.</p>
+<p><img src="./assets/google-seo-geo-ai-search-discoverability/discoverability-loop.png" alt="독자 질문에서 시작해 글 구조화, 검색 가능한 발행, AI 검색 참조, Search Console 관찰과 업데이트로 이어지는 SEO/GEO 발행 루프"/>
+<em>그림: SEO/GEO를 발행 전 체크리스트가 아니라, 독자 질문에서 시작해 관찰과 업데이트로 돌아오는 루프로 보는 방식.</em></p>
+<p>이 글을 예로 들면 검색 의도는 대략 세 가지입니다.</p>
+<ol>
+<li>“GEO와 SEO는 무엇이 다른가?”를 알고 싶은 사람</li>
+<li>“AI 검색 최적화는 기존 SEO와 다른가?”를 확인하려는 사람</li>
+<li>“Google 공식 문서 기준으로 GEO 조언을 어떻게 검증해야 하나?”를 찾는 사람</li>
+</ol>
+<p>그래서 제목에는 <code>GEO</code>, <code>SEO</code>, <code>Google 문서</code>, <code>AI 검색 최적화</code>를 넣었습니다. slug는 사람이 읽을 수 있게 <code>google-seo-geo-ai-search-discoverability</code>로 잡았습니다. description은 검색결과 snippet처럼 읽혀도 글의 범위가 보이도록 썼습니다. H2는 개념 정의보다 독자의 질문 흐름을 따라가도록 구성했습니다.</p>
+<p>이런 설계는 keyword stuffing이 아닙니다. 독자가 실제로 묻는 질문을 제목, 설명, 섹션 구조에 반영하는 일입니다. 본문은 자연스럽게 읽혀야 하고, 각 섹션은 검색어보다 문제 해결 흐름을 따라야 합니다.</p>
+<h2 id="실무-체크리스트">실무 체크리스트<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#실무-체크리스트" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Google 공식 문서 기준으로 SEO/GEO를 함께 점검한다면, 최소한 아래 항목은 볼 수 있습니다.</p>
+<h3 id="글을-쓰기-전">글을 쓰기 전<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#글을-쓰기-전" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled/> 이 글이 답하는 독자 질문이 분명한가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 단순 요약이 아니라 고유한 경험, 분석, 관점이 있는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 내부에서 쓰는 말과 외부 독자가 검색할 표현을 함께 정리했는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 이 글을 새로 써야 하는지, 기존 글을 업데이트하거나 합치는 편이 나은지 판단했는가?</li>
+</ul>
+<h3 id="글을-발행하기-전">글을 발행하기 전<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#글을-발행하기-전" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled/> 제목이 과장 없이 콘텐츠를 정확히 요약하는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> slug가 사람이 읽을 수 있고 주제를 설명하는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> description이 검색 snippet처럼 보여도 의미가 통하는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> H2/H3만 훑어도 글의 답변 흐름이 보이는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 본문 텍스트가 HTML/DOM에서 접근 가능한가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 이미지, 도표, 동영상에 주변 설명과 alt-like 설명이 있는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> canonical, noindex, robots.txt, sitemap 상태가 의도와 맞는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 구조화 데이터나 AI 전용 파일에 과도하게 기대고 있지 않은가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> AI 도구나 외부 SEO/GEO 서비스의 주장을 Google 공식 문서와 대조했는가?</li>
+</ul>
+<h3 id="발행한-뒤">발행한 뒤<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#발행한-뒤" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<ul class="contains-task-list">
+<li class="task-list-item"><input type="checkbox" disabled/> Search Console에서 색인 상태를 확인했는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 실제 노출 검색어가 글의 의도와 맞는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 노출은 있지만 클릭이 적은 글의 제목/description을 점검했는가?</li>
+<li class="task-list-item"><input type="checkbox" disabled/> 오래된 글을 업데이트, 병합, 삭제할 기준을 세웠는가?</li>
+</ul>
+<h2 id="자주-묻는-질문">자주 묻는 질문<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#자주-묻는-질문" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="geo는-seo를-대체하나요">GEO는 SEO를 대체하나요?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#geo는-seo를-대체하나요" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Google 검색 관점에서는 대체한다고 보기 어렵습니다. Google은 생성형 AI 검색 최적화도 검색 환경 최적화의 일부로 설명합니다. 따라서 GEO는 별도 기법이라기보다 AI Overview, AI Mode, RAG, query fan-out 환경까지 포함해 SEO를 확장해서 운영하는 관점에 가깝습니다.</p>
+<h3 id="aeo와-geo는-같은-말인가요">AEO와 GEO는 같은 말인가요?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#aeo와-geo는-같은-말인가요" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>완전히 같은 말은 아닙니다. AEO는 보통 답변 엔진 최적화, GEO는 생성형 엔진 최적화를 뜻합니다. 다만 Google 검색 안에서는 둘 다 생성형 AI 검색 환경에서 콘텐츠가 발견되고 이해되고 참조될 수 있게 하는 SEO의 확장으로 보는 편이 안전합니다.</p>
+<h3 id="google-ai-검색은-어떤-방식으로-웹페이지를-사용하나요">Google AI 검색은 어떤 방식으로 웹페이지를 사용하나요?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#google-ai-검색은-어떤-방식으로-웹페이지를-사용하나요" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Google 문서는 생성형 AI 검색이 RAG와 query fan-out을 사용한다고 설명합니다. 핵심 검색 순위 시스템을 통해 색인에서 관련성 있고 최신인 웹페이지를 찾고, 사용자의 질문을 여러 관련 검색어로 확장해 추가 결과를 가져온 뒤 답변과 링크를 구성합니다.</p>
+<h3 id="llmstxt나-ai-전용-파일을-만들면-geo에-도움이-되나요">llms.txt나 AI 전용 파일을 만들면 GEO에 도움이 되나요?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#llmstxt나-ai-전용-파일을-만들면-geo에-도움이-되나요" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Google 공식 문서 기준으로는 생성형 AI 검색 최적화의 필수 요소로 보기 어렵습니다. 먼저 Googlebot이 접근 가능한 페이지, 명확한 콘텐츠 구조, 고유한 정보, 신뢰 가능한 근거, title/description/asset context, Search Console 관찰 같은 기본기를 점검하는 편이 좋습니다.</p>
+<h3 id="ai로-만든-콘텐츠는-google-검색에서-불리한가요">AI로 만든 콘텐츠는 Google 검색에서 불리한가요?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#ai로-만든-콘텐츠는-google-검색에서-불리한가요" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>Google은 AI 사용 자체보다 콘텐츠의 품질, 정확성, 독창성, 사용자 가치, 스팸 정책 준수를 봅니다. 생성형 AI가 주제 조사나 구조화에 도움을 줄 수는 있지만, 사용자 가치 없이 대량 페이지를 만드는 방식은 문제가 될 수 있습니다.</p>
+<h3 id="구조화-데이터는-ai-검색-최적화에-필수인가요">구조화 데이터는 AI 검색 최적화에 필수인가요?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#구조화-데이터는-ai-검색-최적화에-필수인가요" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>구조화 데이터는 리치 결과와 검색 표현을 돕는 유용한 수단일 수 있습니다. 하지만 Google 문서 기준으로 생성형 AI 검색을 위한 특별 schema가 필수라고 보기는 어렵습니다. 구조화 데이터보다 먼저 콘텐츠의 신뢰성, 페이지 접근성, 제목과 섹션 구조, 근거 맥락을 점검해야 합니다.</p>
+<h3 id="개인-블로그에서도-search-console을-봐야-하나요">개인 블로그에서도 Search Console을 봐야 하나요?<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#개인-블로그에서도-search-console을-봐야-하나요" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>가능하면 보는 편이 좋습니다. 검색 최적화는 발행 전 제목과 구조를 정하는 일에서 끝나지 않습니다. 색인 여부, 실제 노출 검색어, 클릭률, 오래된 글의 업데이트 필요성을 보면서 글을 조정해야 운영이 됩니다.</p>
+<h2 id="결론-geo는-discoverability-운영이다">결론: GEO는 discoverability 운영이다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#결론-geo는-discoverability-운영이다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>GEO라는 말은 앞으로도 계속 쓰일 것 같습니다. AI 검색 표면이 커지고, 사용자가 링크 목록보다 답변을 먼저 보는 경험도 늘어날 가능성이 큽니다.</p>
+<p>하지만 Google 공식 문서 기준으로 보면, GEO를 기존 SEO와 완전히 분리된 새 규칙처럼 보는 것은 조심해야 합니다. 생성형 AI 검색도 색인과 순위 시스템, 품질 시스템, 웹페이지의 근거에 기대고 있습니다. 그러면 운영의 중심도 크게 달라지지 않습니다.</p>
+<p>좋은 콘텐츠를 만들고, 페이지를 검색 가능한 구조로 발행하고, 제목과 설명과 섹션을 독자의 질문에 맞게 정리하고, 이미지와 동영상에 맥락을 붙이고, Search Console로 관찰하고, 오래된 글을 업데이트하는 일.</p>
+<p>그 작업 전체가 SEO이고, 생성형 AI 검색까지 포함하면 GEO라고 불릴 수 있습니다. 이름은 달라져도 핵심은 비슷합니다. 검색엔진과 AI보다 먼저, 독자가 신뢰할 수 있는 페이지를 만드는 것입니다.</p>
+<p>그래서 이 블로그의 SEO/GEO 기준도 키워드 삽입이 아니라 발행 운영에 가깝게 잡으려 합니다. 글마다 독자 질문, 고유한 관점, 명확한 제목과 설명, 검색 가능한 본문 구조, 발행 후 관찰 루프를 남기는 것. 그게 지금 기준에서 가장 덜 요란하고 오래 가는 최적화라고 생각합니다.</p>
+<h2 id="sources">Sources<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#sources" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ul>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/how-search-works?hl=ko" class="external">Google 검색의 작동 방식에 대한 상세 가이드<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — crawl, index, serve 흐름 확인.</li>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/creating-helpful-content?hl=ko" class="external">유용하고 신뢰할 수 있는 사용자 중심 콘텐츠 제작하기<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — helpful content, E-E-A-T, trust 기준 확인.</li>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/ai-optimization-guide?hl=ko" class="external">Google 검색의 생성형 AI 기능에 맞게 웹사이트 최적화하기<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — AEO/GEO 관계, RAG, query fan-out, AI 검색 최적화 기준 확인.</li>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/using-gen-ai-content?hl=ko" class="external">웹사이트에서 생성형 AI 콘텐츠를 사용하는 방법에 관한 Google 검색 안내<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — AI 생성/지원 콘텐츠에 대한 품질과 스팸 정책 경계 확인.</li>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/get-started?hl=ko" class="external">웹사이트 검색엔진 최적화 유지관리<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — Search Console 관찰과 유지관리 기준 확인.</li>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/get-started-developers?hl=ko" class="external">Google 검색 시작하기: 개발자 가이드<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — crawl/index/render와 개발자 관점의 기술 SEO 기준 확인.</li>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/do-i-need-seo?hl=ko" class="external">검색엔진 최적화가 필요한가요?<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — SEO 업체/서비스 판단 기준 확인.</li>
+<li>Google Search Central: <a href="https://developers.google.com/search/docs/fundamentals/third-party-seo?hl=ko" class="external">서드 파티 검색엔진 최적화 도구, 서비스, 조언 사용에 관한 Google 검색 안내<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — 서드파티 SEO/AEO/GEO 조언 검증 기준 확인.</li>
+</ul>
+<p>이 글은 위 공개 문서를 바탕으로 SEO, AEO, GEO의 관계를 재구성한 해석입니다. 실제 검색 성과나 AI 답변 노출은 사이트 상태, 색인 상태, 경쟁 문서, 사용자 질의, Search Console 데이터에 따라 달라질 수 있습니다.</p></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-14" aria-expanded="true"><h3>목차</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#geo는-seo를-대체하지-않는다-google-문서로-보는-ai-검색-최적화" data-for="geo는-seo를-대체하지-않는다-google-문서로-보는-ai-검색-최적화">GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화</a></li><li class="depth-1"><a href="#먼저-정리하면" data-for="먼저-정리하면">먼저 정리하면</a></li><li class="depth-1"><a href="#seo는-여전히-crawl-index-serve의-문제다" data-for="seo는-여전히-crawl-index-serve의-문제다">SEO는 여전히 crawl, index, serve의 문제다</a></li><li class="depth-1"><a href="#google은-aeogeo를-seo의-대체물로-보지-않는다" data-for="google은-aeogeo를-seo의-대체물로-보지-않는다">Google은 AEO/GEO를 SEO의 대체물로 보지 않는다</a></li><li class="depth-1"><a href="#생성형-ai-검색은-rag와-query-fan-out을-쓴다" data-for="생성형-ai-검색은-rag와-query-fan-out을-쓴다">생성형 AI 검색은 RAG와 query fan-out을 쓴다</a></li><li class="depth-1"><a href="#ai-검색에서도-결국-중요한-것은-people-first-content다" data-for="ai-검색에서도-결국-중요한-것은-people-first-content다">AI 검색에서도 결국 중요한 것은 people-first content다</a></li><li class="depth-1"><a href="#이걸-블로그에-적용하면-어떨까" data-for="이걸-블로그에-적용하면-어떨까">이걸 블로그에 적용하면 어떨까</a></li><li class="depth-2"><a href="#1-키워드보다-독자-질문을-먼저-잡는다" data-for="1-키워드보다-독자-질문을-먼저-잡는다">1. 키워드보다 독자 질문을 먼저 잡는다</a></li><li class="depth-2"><a href="#2-제목은-멋보다-명확성을-우선한다" data-for="2-제목은-멋보다-명확성을-우선한다">2. 제목은 멋보다 명확성을 우선한다</a></li><li class="depth-2"><a href="#3-slug와-description은-검색결과에서-읽힌다고-생각한다" data-for="3-slug와-description은-검색결과에서-읽힌다고-생각한다">3. slug와 description은 검색결과에서 읽힌다고 생각한다</a></li><li class="depth-2"><a href="#4-h2h3만-훑어도-답변-흐름이-보여야-한다" data-for="4-h2h3만-훑어도-답변-흐름이-보여야-한다">4. H2/H3만 훑어도 답변 흐름이 보여야 한다</a></li><li class="depth-2"><a href="#5-내부-용어만-쓰지-않고-외부-독자의-표현을-함께-둔다" data-for="5-내부-용어만-쓰지-않고-외부-독자의-표현을-함께-둔다">5. 내부 용어만 쓰지 않고 외부 독자의 표현을 함께 둔다</a></li><li class="depth-2"><a href="#6-이미지와-도표는-파일명보다-주변-설명이-중요하다" data-for="6-이미지와-도표는-파일명보다-주변-설명이-중요하다">6. 이미지와 도표는 파일명보다 주변 설명이 중요하다</a></li><li class="depth-2"><a href="#7-발행-후-search-console로-관찰하고-업데이트한다" data-for="7-발행-후-search-console로-관찰하고-업데이트한다">7. 발행 후 Search Console로 관찰하고 업데이트한다</a></li><li class="depth-1"><a href="#피해야-할-geo-과장" data-for="피해야-할-geo-과장">피해야 할 GEO 과장</a></li><li class="depth-1"><a href="#블로그-글을-설계하는-순서" data-for="블로그-글을-설계하는-순서">블로그 글을 설계하는 순서</a></li><li class="depth-1"><a href="#실무-체크리스트" data-for="실무-체크리스트">실무 체크리스트</a></li><li class="depth-2"><a href="#글을-쓰기-전" data-for="글을-쓰기-전">글을 쓰기 전</a></li><li class="depth-2"><a href="#글을-발행하기-전" data-for="글을-발행하기-전">글을 발행하기 전</a></li><li class="depth-2"><a href="#발행한-뒤" data-for="발행한-뒤">발행한 뒤</a></li><li class="depth-1"><a href="#자주-묻는-질문" data-for="자주-묻는-질문">자주 묻는 질문</a></li><li class="depth-2"><a href="#geo는-seo를-대체하나요" data-for="geo는-seo를-대체하나요">GEO는 SEO를 대체하나요?</a></li><li class="depth-2"><a href="#aeo와-geo는-같은-말인가요" data-for="aeo와-geo는-같은-말인가요">AEO와 GEO는 같은 말인가요?</a></li><li class="depth-2"><a href="#google-ai-검색은-어떤-방식으로-웹페이지를-사용하나요" data-for="google-ai-검색은-어떤-방식으로-웹페이지를-사용하나요">Google AI 검색은 어떤 방식으로 웹페이지를 사용하나요?</a></li><li class="depth-2"><a href="#llmstxt나-ai-전용-파일을-만들면-geo에-도움이-되나요" data-for="llmstxt나-ai-전용-파일을-만들면-geo에-도움이-되나요">llms.txt나 AI 전용 파일을 만들면 GEO에 도움이 되나요?</a></li><li class="depth-2"><a href="#ai로-만든-콘텐츠는-google-검색에서-불리한가요" data-for="ai로-만든-콘텐츠는-google-검색에서-불리한가요">AI로 만든 콘텐츠는 Google 검색에서 불리한가요?</a></li><li class="depth-2"><a href="#구조화-데이터는-ai-검색-최적화에-필수인가요" data-for="구조화-데이터는-ai-검색-최적화에-필수인가요">구조화 데이터는 AI 검색 최적화에 필수인가요?</a></li><li class="depth-2"><a href="#개인-블로그에서도-search-console을-봐야-하나요" data-for="개인-블로그에서도-search-console을-봐야-하나요">개인 블로그에서도 Search Console을 봐야 하나요?</a></li><li class="depth-1"><a href="#결론-geo는-discoverability-운영이다" data-for="결론-geo는-discoverability-운영이다">결론: GEO는 discoverability 운영이다</a></li><li class="depth-1"><a href="#sources" data-for="sources">Sources</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="./postscript.js" type="module" data-persist="true"></script></html>
