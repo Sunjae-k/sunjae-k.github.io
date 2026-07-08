@@ -36,6 +36,7 @@ These pages are useful first reads for understanding the blog's core viewpoint.
 
 ## Recent and topical entry points
 
+- [문서를 파싱한 다음, Agent는 무엇을 기억해야 할까](https://sunjae-k.github.io/knowhere-document-memory)
 - [GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화](https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability)
 - [MCP는 API를 대체하지 않는다](https://sunjae-k.github.io/mcp-is-not-api-replacement)
 - [테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기](https://sunjae-k.github.io/google-tabfm-tabular-foundation-model)
