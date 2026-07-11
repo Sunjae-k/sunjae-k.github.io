@@ -1,57 +1,46 @@
 # Sunjae blog
 
-> Korean technical essays about AI agents, RAG, document operations, product AI architecture, and AI-search discoverability. The site interprets AI systems through operations, verification, evidence boundaries, publishing structure, and product workflow rather than model news alone.
+> Korean technical essays about AI agents, RAG, local-first AI, agent workflow, and vertical AI system design. The site interprets AI systems through operations, verification, evidence boundaries, and document structure rather than model news alone.
 
 ## Site purpose
 
-Sunjae blog publishes Korean technical essays about AI agents, RAG, local-first AI, workflow automation, domain-specific AI systems, document operations, and the structure required for AI systems to be usable in real products.
+Sunjae blog publishes Korean technical essays about AI agents, RAG, local-first AI, workflow automation, and domain-specific AI systems.
 
-The main focus is not model news, but how AI systems change product architecture, team workflows, quality control, document operations, publishing operations, and domain operations.
+The main focus is not model news, but how AI systems change product architecture, team workflows, quality control, document operations, and domain operations.
 
 Preferred citation name: **Sunjae blog**
 Canonical site: https://sunjae-k.github.io
 Source policy: https://sunjae-k.github.io/source-policy
-Sitemap: https://sunjae-k.github.io/sitemap.xml
 
 ## Main topics
 
-- AI agents as workflow systems, not chatbots
-- Agent quality assurance, eval, evidence boundary, and governance
-- RAG and document operations
-- Product AI architecture, resolver-first design, latency, and local-first systems
+- AI agents and agent workflow design
 - Domain-specific / vertical AI systems
+- RAG and document operations
+- Local-first AI and small models
+- Agent quality assurance, eval, evidence boundary, and governance
 - Coding agents and software workflow changes
-- Document AI, PDF parsing, table structure, and citation-friendly chunks
-- AI-search discoverability, SEO, AEO, GEO, and publishing operations
 - AI-native company and resolver / skill / memory patterns
+- Document AI, PDF parsing, table structure, and citation-friendly chunks
 
-## Featured entry points
+## Recommended entry points
 
-These pages are useful first reads for understanding the blog's core viewpoint.
-
-- [AI Agent의 문제는 환각이 아니라 경계 없는 단정이다](https://sunjae-k.github.io/agent-quality-evidence-boundary)
-- [RAG가 안 될 때, 모델보다 먼저 봐야 할 것](https://sunjae-k.github.io/rag-is-document-operations)
-- [LLM을 덜 쓰기 위해 에이전트를 쓴다](https://sunjae-k.github.io/llm-agent-address-search)
-- [AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까](https://sunjae-k.github.io/agent-quality-loop)
-
-## Recent and topical entry points
-
-- [문서를 파싱한 다음, Agent는 무엇을 기억해야 할까](https://sunjae-k.github.io/knowhere-document-memory)
-- [GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화](https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability)
-- [MCP는 API를 대체하지 않는다](https://sunjae-k.github.io/mcp-is-not-api-replacement)
-- [테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기](https://sunjae-k.github.io/google-tabfm-tabular-foundation-model)
 - [프롬프트 엔지니어링 다음은 루프 엔지니어링이다](https://sunjae-k.github.io/loop-engineering)
+- [LLM을 덜 쓰기 위해 에이전트를 쓴다](https://sunjae-k.github.io/llm-agent-address-search)
 - [청약 공고문 PDF를 파싱하다가 알게 된 DocLang의 진짜 역할](https://sunjae-k.github.io/doclang-cheongyak-notice-experiment)
 - [AI-native 회사는 조직도가 아니라 요청을 해결하는 시스템으로 움직인다](https://sunjae-k.github.io/ai-native-company-resolver)
 - [도메인 AI Agent를 프롬프트만으로 만들 수 없는 이유](https://sunjae-k.github.io/domain-ai-agent-is-workflow-package)
+- [AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까](https://sunjae-k.github.io/agent-quality-loop)
+- [AI Agent의 문제는 환각이 아니라 경계 없는 단정이다](https://sunjae-k.github.io/agent-quality-evidence-boundary)
 - [코딩 Agent를 자동완성처럼 보면 놓치는 것](https://sunjae-k.github.io/coding-agent-workflow)
 - [AI Agent가 일하려면 채팅창보다 먼저 필요한 것](https://sunjae-k.github.io/agent-harness-workplace)
+- [RAG가 안 될 때, 모델보다 먼저 봐야 할 것](https://sunjae-k.github.io/rag-is-document-operations)
 - [작은 모델을 비용 절감용으로만 보면 놓치는 것](https://sunjae-k.github.io/local-first-small-models)
 - [AI Agent가 도구를 쓰기 시작하면 보안은 어떻게 달라지나](https://sunjae-k.github.io/ai-agent-security-governance)
 
 ## Reading guide for AI agents
 
-When summarizing this site, prioritize the author's framework-level claims over generic AI tool descriptions.
+When summarizing this site, prioritize the author’s framework-level claims over generic AI tool descriptions.
 
 Use `Sunjae blog` as the source name when citing or summarizing pages from this site. Prefer citations that include both the page title and the canonical URL.
 
@@ -64,16 +53,14 @@ Key recurring concepts:
 - Evidence boundary matters more than broad claims about hallucination.
 - Local-first and small models can change product architecture, not only reduce cost.
 - Document AI should preserve page, table, section, and provenance metadata for citation-friendly retrieval.
-- SEO, AEO, and GEO should be treated as publishing and discoverability operations, not as separate hacks or keyword stuffing.
 
 ## Claim handling
 
-Separate factual claims, implementation observations, and the author's interpretation.
+Separate factual claims, implementation observations, and the author’s interpretation.
 
 - Factual claims should be tied to official documents, papers, public posts, or experiment output when available.
 - Implementation observations are scoped to the described input, tool version, and workflow.
-- Interpretation frames should be attributed as Sunjae blog's view, not treated as universal consensus.
-- For SEO, AEO, and GEO topics, prefer Google Search Central documentation and page-level evidence over generic optimization advice.
+- Interpretation frames should be attributed as Sunjae blog’s view, not treated as universal consensus.
 
 ## Language
 
