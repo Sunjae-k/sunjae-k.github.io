@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr"><head><title>GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto Sans KR:wght@400;700&amp;family=Noto Sans KR:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="google-site-verification" content="z4Nq-epWJy6nnCYzF9ctaHXmf4rh5X6lsR6QzzjseOg"/><meta name="og:site_name" content="Sunjae blog"/><meta property="og:title" content="GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기"/><meta name="twitter:description" content="새 모델 도입을 설정 변경이 아닌 대표 workload 평가로 다루고, reasoning effort와 prompt diet, tool routing을 분리해 비교하는 운영 원칙을 정리했다."/><meta property="og:description" content="새 모델 도입을 설정 변경이 아닌 대표 workload 평가로 다루고, reasoning effort와 prompt diet, tool routing을 분리해 비교하는 운영 원칙을 정리했다."/><meta property="og:image:alt" content="새 모델 도입을 설정 변경이 아닌 대표 workload 평가로 다루고, reasoning effort와 prompt diet, tool routing을 분리해 비교하는 운영 원칙을 정리했다."/><meta property="og:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:url" content="https://sunjae-k.github.io/static/og-image.png"/><meta name="twitter:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="sunjae-k.github.io"/><meta property="og:url" content="https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet"/><meta property="twitter:url" content="https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet"/><link rel="icon" href="./static/icon.png"/><meta name="description" content="새 모델 도입을 설정 변경이 아닌 대표 workload 평가로 다루고, reasoning effort와 prompt diet, tool routing을 분리해 비교하는 운영 원칙을 정리했다."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기","description":"새 모델 도입을 설정 변경이 아닌 대표 workload 평가로 다루고, reasoning effort와 prompt diet, tool routing을 분리해 비교하는 운영 원칙을 정리했다.","url":"https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet","mainEntityOfPage":{"@type":"WebPage","@id":"https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet"},"image":["https://sunjae-k.github.io/static/og-image.png"],"datePublished":"2026-07-13T15:00:00.000Z","dateModified":"2026-07-13T15:00:00.000Z","author":{"@type":"Person","name":"Sunjae Kim"},"publisher":{"@type":"Person","name":"Sunjae Kim"},"inLanguage":"ko-KR"}</script><link href="./index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL1VzZXJzL3N1bmphZS9wcm9qZWN0cy9zdW5qYWUtay5naXRodWIuaW8vcXVhcnR6L2NvbXBvbmVudHMvc3R5bGVzIiwic291cmNlcyI6WyJtZXJtYWlkLmlubGluZS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFHRjtFQUNFOzs7QUFLRjtFQUNFO0VBQ0E7OztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFJSjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTs7QUFJRjtFQUNFO0VBQ0E7RUFDQSIsInNvdXJjZXNDb250ZW50IjpbIi5leHBhbmQtYnV0dG9uIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbG9hdDogcmlnaHQ7XG4gIHBhZGRpbmc6IDAuNHJlbTtcbiAgbWFyZ2luOiAwLjNyZW07XG4gIHJpZ2h0OiAwOyAvLyBOT1RFOiByaWdodCB3aWxsIGJlIHNldCBpbiBtZXJtYWlkLmlubGluZS50c1xuICBjb2xvcjogdmFyKC0tZ3JheSk7XG4gIGJvcmRlci1jb2xvcjogdmFyKC0tZGFyayk7XG4gIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgYm9yZGVyOiAxcHggc29saWQ7XG4gIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgb3BhY2l0eTogMDtcbiAgdHJhbnNpdGlvbjogMC4ycztcblxuICAmID4gc3ZnIHtcbiAgICBmaWxsOiB2YXIoLS1saWdodCk7XG4gICAgZmlsdGVyOiBjb250cmFzdCgwLjMpO1xuICB9XG5cbiAgJjpob3ZlciB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGJvcmRlci1jb2xvcjogdmFyKC0tc2Vjb25kYXJ5KTtcbiAgfVxuXG4gICY6Zm9jdXMge1xuICAgIG91dGxpbmU6IDA7XG4gIH1cbn1cblxucHJlIHtcbiAgJjpob3ZlciA+IC5leHBhbmQtYnV0dG9uIHtcbiAgICBvcGFjaXR5OiAxO1xuICAgIHRyYW5zaXRpb246IDAuMnM7XG4gIH1cbn1cblxuI21lcm1haWQtY29udGFpbmVyIHtcbiAgcG9zaXRpb246IGZpeGVkO1xuICBjb250YWluOiBsYXlvdXQ7XG4gIHotaW5kZXg6IDk5OTtcbiAgbGVmdDogMDtcbiAgdG9wOiAwO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogMTAwdmg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIGRpc3BsYXk6IG5vbmU7XG4gIGJhY2tkcm9wLWZpbHRlcjogYmx1cig0cHgpO1xuICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuNSk7XG5cbiAgJi5hY3RpdmUge1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgfVxuXG4gICYgPiAjbWVybWFpZC1zcGFjZSB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gICAgYm9yZGVyLXJhZGl1czogNXB4O1xuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICB0b3A6IDUwJTtcbiAgICBsZWZ0OiA1MCU7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7XG4gICAgaGVpZ2h0OiA4MHZoO1xuICAgIHdpZHRoOiA4MHZ3O1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG5cbiAgICAmID4gLm1lcm1haWQtY29udGVudCB7XG4gICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAwIDA7XG4gICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gMC4xcyBlYXNlO1xuICAgICAgb3ZlcmZsb3c6IHZpc2libGU7XG4gICAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICAgIG1pbi13aWR0aDogMjAwcHg7XG5cbiAgICAgIHByZSB7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgfVxuXG4gICAgICBzdmcge1xuICAgICAgICBtYXgtd2lkdGg6IG5vbmU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgIH1cbiAgICB9XG5cbiAgICAmID4gLm1lcm1haWQtY29udHJvbHMge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgYm90dG9tOiAyMHB4O1xuICAgICAgcmlnaHQ6IDIwcHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgZ2FwOiA4cHg7XG4gICAgICBwYWRkaW5nOiA4cHg7XG4gICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwgMCwgMCwgMC4xKTtcbiAgICAgIHotaW5kZXg6IDI7XG5cbiAgICAgIC5tZXJtYWlkLWNvbnRyb2wtYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHBhZGRpbmc6IDA7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgICAgY29sb3I6IHZhcigtLWRhcmspO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgICBmb250LWZhbWlseTogdmFyKC0tYm9keUZvbnQpO1xuICAgICAgICB0cmFuc2l0aW9uOiBhbGwgMC4ycyBlYXNlO1xuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIH1cblxuICAgICAgICAmOmFjdGl2ZSB7XG4gICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKDFweCk7XG4gICAgICAgIH1cblxuICAgICAgICAvLyBTdHlsZSB0aGUgcmVzZXQgYnV0dG9uIGRpZmZlcmVudGx5XG4gICAgICAgICY6bnRoLWNoaWxkKDIpIHtcbiAgICAgICAgICB3aWR0aDogYXV0bztcbiAgICAgICAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="./prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("./static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://sunjae-k.github.io/index.xml"/></head><body data-slug="gpt-5-6-model-effort-prompt-diet"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href=".">Sunjae blog</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>검색</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="검색어를 입력하세요" placeholder="검색어를 입력하세요"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="다크 모드"><title>다크 모드</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="라이트 모드"><title>라이트 모드</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="리더 모드"><title>리더 모드</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><nav class="left-nav desktop-only" aria-label="Site navigation"><p class="left-nav__tagline">AI Agent, RAG, local-first AI를<br/>운영·검증·문서 구조 관점에서 읽습니다.</p><div class="left-nav__section"><p class="left-nav__label">Topics</p><a href="/topics#ai-agent-operations">AI Agent Operations</a><a href="/topics#rag--document-operations">RAG / Document Operations</a><a href="/topics#product-ai--ux--infra">Product AI / UX / Infra</a><a href="/topics#urban--spatial-ai">Urban / Spatial AI</a><a href="/topics#ai-visual--knowledge-artifacts">AI Visual / Knowledge Artifacts</a></div></nav></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="./">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>GPT 5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기</a></div></nav><h1 class="article-title">GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기</h1><p show-comma="true" class="content-meta"><time datetime="2026-07-13T15:00:00.000Z">2026년 7월 14일</time><span>29 min read</span></p><ul class="tags"><li><a href="./tags/gpt-5-6" class="internal tag-link">gpt-5-6</a></li><li><a href="./tags/reasoning-effort" class="internal tag-link">reasoning-effort</a></li><li><a href="./tags/prompt-engineering" class="internal tag-link">prompt-engineering</a></li><li><a href="./tags/evaluation" class="internal tag-link">evaluation</a></li><li><a href="./tags/agent-operations" class="internal tag-link">agent-operations</a></li></ul></div></div><article class="popover-hint"><h1 id="gpt-56-가이드를-읽으며-다시-정한-것-effort를-올리기-전에-프롬프트부터-줄여보기">GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#gpt-56-가이드를-읽으며-다시-정한-것-effort를-올리기-전에-프롬프트부터-줄여보기" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>새 모델이 나오면 두 가지부터 하고 싶어진다. reasoning effort를 최고로 올리고, 이전 모델이 놓치던 내용을 프롬프트에 더 자세히 적는 일이다. 모델이 강해졌으니 더 많이 생각하게 하면 더 좋은 답이 나올 것 같고, 아직 불안한 부분은 지시를 한 줄씩 보태면 해결될 것 같다.</p>
+<p>그런데 <a href="https://developers.openai.com/api/docs/guides/latest-model" class="external">OpenAI의 GPT-5.6 model guidance<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>를 읽으며 오히려 반대 순서가 필요하다고 생각했다. 새 모델을 도입할 때 가장 먼저 할 일은 설정을 최대로 올리는 것이 아니다. 지금 쓰는 대표 작업을 그대로 두고 기준 결과를 만든 다음, 모델만 바꿔 비교해야 한다. 그다음에는 effort를 한 단계 낮춰보고, 프롬프트에서 없어도 되는 문장을 덜어내며, tool call이 실제로 필요한 경로에만 놓였는지 확인해야 한다.</p>
+<p>이 글은 GPT-5.6을 독립적으로 벤치마크한 결과가 아니다. 2026년 7월 14일 기준 OpenAI 공식 문서를 읽고, 새 모델의 기본값을 어떤 순서로 정할지 정리한 운영 메모에 가깝다. 핵심은 간단하다.</p>
+<blockquote>
+<p>모델 교체는 이름만 바꾸는 일이 아니라, 대표 작업을 다시 평가하는 일이다. 더 주기 전에 무엇을 줄여도 되는지부터 확인해야 한다.</p>
+</blockquote>
+<p><img src="./assets/gpt-5-6-model-effort-prompt-diet/hero.png" alt="대표 workload를 고정한 채 model, effort, prompt, tools 중 한 변수만 바꿔 비교하는 실험 장치"/></p>
+<p><em>같은 workload를 기준선에 고정하고 model·effort·prompt·tools를 하나씩 비교한다. 여러 변수를 동시에 바꾸면 무엇이 결과를 바꿨는지 알 수 없다.</em></p>
+<h2 id="모델effortprompt를-한꺼번에-바꾸면-아무것도-배우지-못한다">모델·effort·prompt를 한꺼번에 바꾸면 아무것도 배우지 못한다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#모델effortprompt를-한꺼번에-바꾸면-아무것도-배우지-못한다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>새 모델을 시험할 때 흔히 하는 실수는 여러 변수를 동시에 바꾸는 것이다. 모델 버전을 올리고, reasoning effort를 높이고, system prompt를 다시 쓰고, 도구 구성까지 바꾼다. 결과가 좋아지면 새 모델 덕분이라고 생각하기 쉽다. 나빠지면 반대로 모델이 기대에 못 미친다고 결론 내린다.</p>
+<p>하지만 이 비교에서는 무엇이 결과를 바꿨는지 알 수 없다. 모델이 좋아진 것인지, 더 큰 reasoning budget을 쓴 것인지, 프롬프트에 추가한 예시가 특정 작업에만 우연히 맞았는지, 도구 호출 경로가 달라져 근거를 더 많이 가져온 것인지 분리할 수 없기 때문이다.</p>
+<p>공식 가이드는 GPT-5.5나 GPT-5.4에서 GPT-5.6으로 옮길 때 현재 reasoning effort를 기준선으로 유지하고, 대표 작업에서 같은 설정과 한 단계 낮은 설정을 비교하라고 권한다. GPT-5.6이 더 적은 토큰으로 품질을 유지하거나 높일 수 있는 경우가 있지만, 최적 설정은 workload에 달렸다는 설명도 함께 붙는다. 이 단서가 중요하다. 새 모델의 성능을 일반적인 인상으로 판단하지 말고, 내가 실제로 맡길 작업으로 평가해야 한다는 뜻이기 때문이다.</p>
+<p>내가 생각하는 최소 비교 단위는 채팅 몇 번이 아니라 반복해서 등장하는 작업 묶음이다. 짧은 설명, 출처가 있는 문서 분석, 코드 변경, 설계 검토, 여러 도구를 거치는 조사처럼 실패 형태가 다른 작업을 고른다. 각 작업에는 “좋아 보인다”가 아니라 통과 조건을 붙인다. 필요한 근거가 모두 들어갔는지, 금지된 행동을 하지 않았는지, 결과물이 실제로 열리는지, 요청한 형식을 지켰는지처럼 확인 가능한 조건이어야 한다.</p>
+<p>이 기준 결과를 보존한 뒤에야 모델만 바꾼 비교가 의미를 갖는다. 이후 effort, prompt, tool routing을 각각 별도 실험으로 다뤄야 한다. 이 순서를 지키면 새 모델에 대한 감상 대신 어떤 작업에서 무엇이 달라졌는지를 기록할 수 있다.</p>
+<p>대표 작업을 고정한다는 말도 입력 문장 몇 개를 저장한다는 뜻에 그치지 않는다. 같은 자료와 도구 접근 조건을 제공하고, 판정 기준도 함께 보존해야 한다. 한 번은 최신 문서를 열어주고 다음번에는 오래된 요약만 준다면 모델 비교가 아니라 context 비교가 된다. 평가자가 결과를 보고 그때그때 기준을 바꾸는 경우도 마찬가지다. 최소한 필수 사실, 허용 가능한 표현, 실패로 볼 누락, 실제 artifact 확인 방법을 먼저 적어두는 편이 좋다. 완벽한 benchmark를 만들지 못하더라도 비교 중에 평가 기준이 움직이는 일은 줄일 수 있다.</p>
+<h2 id="reasoning-effort는-품질-버튼이-아니라-workload-budget이다">Reasoning effort는 품질 버튼이 아니라 workload budget이다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#reasoning-effort는-품질-버튼이-아니라-workload-budget이다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Reasoning effort는 이름 때문에 오해하기 쉽다. <code>low</code>보다 <code>medium</code>이, <code>medium</code>보다 <code>high</code>가 언제나 더 좋은 답을 줄 것처럼 보인다. 그러나 공식 문서가 권하는 방식은 effort를 품질 등급표로 읽는 것과 다르다.</p>
+<p>GPT-5.6은 <code>none</code>, <code>low</code>, <code>medium</code>, <code>high</code>, <code>xhigh</code>, <code>max</code>를 지원한다. 문서는 <code>medium</code>을 균형 잡힌 시작점으로, <code>low</code>를 지연에 민감한 작업의 후보로 제시한다. <code>high</code>나 <code>xhigh</code>는 더 많은 추론이 측정 가능한 품질 향상을 만들 때 사용하고, <code>max</code>는 품질 우선의 가장 어려운 작업에 남겨두라고 설명한다. 기존에 <code>xhigh</code>를 썼다면 <code>max</code>와 비교해 품질·지연·비용의 균형을 직접 찾는 방식이다.</p>
+<p>여기서 effort는 “정답률을 한 칸 올리는 스위치”라기보다 모델이 탐색과 검증에 사용할 수 있는 workload budget에 가깝다. 결과 품질은 모델과 effort만으로 결정되지 않는다. 작업 난도, 주어진 맥락, 사용할 수 있는 도구, 평가 기준이 함께 작동한다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>quality = f(model, task, context, tools, effort, evaluator)</span></span></code></pre></figure>
+<p>따라서 <code>effort=max</code>는 더 많은 모델 작업을 허용하는 설정이지, 더 나은 결과를 보장하는 약속이 아니다. 짧은 요약에서는 불필요한 지연과 비용만 늘 수 있고, 복잡한 코드 검토에서는 놓치던 결함을 찾는 데 도움이 될 수 있다. 어느 쪽이 맞는지는 미리 정할 수 없다.</p>
+<p>내가 새 모델을 평가한다면 우선 현재 effort를 그대로 둔다. 같은 작업에서 한 단계 낮은 effort를 비교하고, 어려운 소수 작업에만 한 단계 높은 설정을 추가한다. 정확성뿐 아니라 답변 완결성, 근거 보존, 총 토큰, 지연, 비용을 함께 본다. 아직 이 비교를 통제된 환경에서 수행한 것은 아니므로 <code>low</code>가 <code>medium</code>보다 낫다거나, 반대로 높은 effort가 안전하다고 결론 내릴 수는 없다. 지금 정할 수 있는 것은 승자가 아니라 실험 순서다.</p>
+<h2 id="pro-mode와-더-깊게-생각해는-다른-계층의-설정이다">Pro mode와 “더 깊게 생각해”는 다른 계층의 설정이다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#pro-mode와-더-깊게-생각해는-다른-계층의-설정이다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>GPT-5.6의 pro mode도 같은 이유로 프롬프트와 분리해서 봐야 한다. 공식 문서에 따르면 pro는 별도 모델 slug가 아니다. Responses API에서 같은 GPT-5.6 모델을 유지하고 <code>reasoning.mode: &quot;pro&quot;</code>로 설정하는 실행 모드다. reasoning mode와 reasoning effort는 서로 독립적이며, effort를 생략하면 standard와 pro 모두 <code>medium</code>이 기본값이다.</p>
+<p>Pro mode는 답을 반환하기 전에 더 많은 모델 작업을 적용해 어려운 요청의 신뢰도를 높일 수 있다. 대신 지연이 늘고, 그 과정의 토큰도 사용량에 합산된다. 그러므로 routine 작업 전체에 켜기보다 작은 품질 차이가 실제 결과를 바꾸는 복잡한 최적화, 고가치 코드 검토, 명확한 평가 기준이 있는 깊은 분석에서 standard와 비교할 후보에 가깝다.</p>
+<p>중요한 점은 pro mode를 쓰기 위해 프롬프트에 “더 깊게 생각해”, “여러 후보를 만든 뒤 최고의 답을 골라”, “pro처럼 행동해” 같은 문장을 붙일 필요가 없다는 것이다. 공식 가이드는 standard에서 쓰던 outcome-focused prompt를 그대로 유지하라고 안내한다. 목표, 관련 맥락, 제약, 필요한 근거, 성공 기준, 출력 형식을 적고 reasoning mode와 effort는 API 설정에서 다룬다.</p>
+<p>이 구분이 흐려지면 프롬프트가 운영 계약이 아니라 provider-specific control code가 된다. 모델의 역할과 성공 조건을 설명해야 할 자리에 런타임 설정을 흉내 내는 문장이 쌓인다. 나중에 모델이나 provider를 바꾸면 그 문장이 여전히 필요한지 알기 어렵다. 반대로 계층을 나누면 같은 프롬프트를 두고 standard와 pro, 여러 effort를 비교할 수 있다.</p>
+<h2 id="api-비용을-원화로-바꿔보면-effort의-의미가-더-선명해진다">API 비용을 원화로 바꿔보면 effort의 의미가 더 선명해진다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#api-비용을-원화로-바꿔보면-effort의-의미가-더-선명해진다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>API 가격표를 달러로만 보면 설정 차이가 작아 보인다. 하지만 호출량이 쌓이는 운영 환경에서는 model, context 길이, output token이 월 비용을 크게 바꾼다. 2026년 7월 14일 OpenAI 공식 가격표에서 <code>gpt-5.6</code> alias가 연결되는 flagship 모델은 <code>gpt-5.6-sol</code>이다. Standard의 short-context 요금은 100만 토큰당 입력 5달러, cached input 0.5달러, cache write 6.25달러, 출력 30달러다.</p>
+<p>같은 날 공개 환율 데이터의 원·달러 환율은 1달러당 약 1,497원이었다. 아래 표는 계산을 단순하게 하기 위해 <strong>1달러=1,500원</strong>으로 반올림했다. 실제 청구액은 결제 시점 환율, 카드사 환전 방식과 수수료, 세금에 따라 달라질 수 있다.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>모델</th><th style="text-align:right;">입력 100만 토큰</th><th style="text-align:right;">Cached input 100만 토큰</th><th style="text-align:right;">Cache write 100만 토큰</th><th style="text-align:right;">출력 100만 토큰</th></tr></thead><tbody><tr><td><code>gpt-5.6-sol</code></td><td style="text-align:right;">$5 / 약 7,500원</td><td style="text-align:right;">$0.50 / 약 750원</td><td style="text-align:right;">$6.25 / 약 9,375원</td><td style="text-align:right;">$30 / 약 45,000원</td></tr><tr><td><code>gpt-5.6-terra</code></td><td style="text-align:right;">$2.50 / 약 3,750원</td><td style="text-align:right;">$0.25 / 약 375원</td><td style="text-align:right;">$3.125 / 약 4,688원</td><td style="text-align:right;">$15 / 약 22,500원</td></tr><tr><td><code>gpt-5.6-luna</code></td><td style="text-align:right;">$1 / 약 1,500원</td><td style="text-align:right;">$0.10 / 약 150원</td><td style="text-align:right;">$1.25 / 약 1,875원</td><td style="text-align:right;">$6 / 약 9,000원</td></tr></tbody></table></div>
+<p><img src="./assets/gpt-5-6-model-effort-prompt-diet/workload-routing.png" alt="Luna는 대량의 정형 작업을 처리하고, Terra는 여러 자료와 도구를 조합하며, Sol은 복잡한 설계와 검증을 수행하는 작업 라우팅 도식"/></p>
+<p><em>Luna·Terra·Sol을 단순한 가격 등급이 아니라 workload의 형태로 나눈 모습. 이는 공식적인 고정 업무 분류가 아니라 representative workload eval을 시작하기 위한 라우팅 후보다.</em></p>
+<p>예를 들어 한 번의 작업이 cached input을 제외하고 입력 10만 토큰과 출력 2만 토큰을 사용했다고 가정해보자. short-context Standard 기준 예상 비용은 다음과 같다.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>모델</th><th style="text-align:right;">계산</th><th style="text-align:right;">1회 예상 비용</th></tr></thead><tbody><tr><td><code>gpt-5.6-sol</code></td><td style="text-align:right;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.1</span><span class="mord">+</span></span></span></span>30×0.02</td><td style="text-align:right;">$1.10 / 약 1,650원</td></tr><tr><td><code>gpt-5.6-terra</code></td><td style="text-align:right;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2.50</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.1</span><span class="mord">+</span></span></span></span>15×0.02</td><td style="text-align:right;">$0.55 / 약 825원</td></tr><tr><td><code>gpt-5.6-luna</code></td><td style="text-align:right;"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.1</span><span class="mord">+</span></span></span></span>6×0.02</td><td style="text-align:right;">$0.22 / 약 330원</td></tr></tbody></table></div>
+<p>같은 작업을 1,000번 실행하면 단순 환산으로 각각 약 165만원, 82만 5천원, 33만원이 된다. 작은 단가 차이가 반복 호출에서는 운영비 차이로 커진다. 반대로 prompt cache가 실제로 적중하거나 출력 토큰을 줄이면 비용 구조도 달라진다. 따라서 평균 입력·cached input·cache write·출력 토큰을 나눠 기록하지 않고 “호출당 평균 비용”만 보면 최적화 지점을 찾기 어렵다.</p>
+<p>OpenAI 가격표는 short context와 long context의 단가도 구분한다. <code>gpt-5.6-sol</code>의 long-context Standard 요금은 100만 토큰당 입력 10달러, cached input 1달러, cache write 12.50달러, 출력 45달러다. 위와 같은 입력 10만·출력 2만 토큰을 long-context 단가로 계산하면 1회 약 2,850원이다. 다만 실제 요청이 어느 구간으로 청구되는지는 사용한 모델과 context 조건을 공식 가격표에서 다시 확인해야 한다.</p>
+<p>Pro mode에는 별도의 pro 모델 단가가 붙는 방식이 아니다. 공식 가이드에 따르면 pro 과정에서 사용한 토큰이 usage에 합산되고, 선택한 모델의 표준 token rate로 청구된다. 그래서 같은 입력과 최종 출력 길이만 보고 standard와 pro의 비용이 같다고 예상하면 안 된다. Pro가 내부적으로 더 많은 모델 작업을 수행하면 보고되는 토큰 사용량과 총비용도 늘 수 있다.</p>
+<p>이 숫자를 보면 effort를 workload budget으로 다뤄야 하는 이유가 더 분명해진다. 단가만 낮추는 것이 목표는 아니다. 대표 작업의 성공률을 유지하면서 출력 토큰을 어디까지 줄일 수 있는지, 캐시가 실제로 적중하는지, 평가를 거쳐 Terra나 Luna로 옮길 수 있는 작업과 Sol·pro의 추가 비용이 정당화되는 작업을 나누는 것이 핵심이다.</p>
+<h2 id="새-모델일수록-프롬프트를-더-쓰기-전에-덜어낼-부분을-찾는다">새 모델일수록 프롬프트를 더 쓰기 전에 덜어낼 부분을 찾는다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#새-모델일수록-프롬프트를-더-쓰기-전에-덜어낼-부분을-찾는다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>새 모델이 더 잘 이해한다고 들으면 프롬프트를 짧게 써도 된다고 생각할 수 있다. 반대로 실제 운영에서는 기존 규칙을 지우기가 불안해 새 지시만 계속 추가되기도 한다. 한 번 생긴 금지사항은 다른 표현으로 반복되고, 오래된 모델의 약점을 보완하던 workaround가 남고, 지금은 사용하지 않는 도구 설명도 system prompt를 차지한다.</p>
+<p>GPT-5.6 공식 문서는 반복 instruction과 example을 제거하고 tool description을 단순화한 lean prompt를 권한다. OpenAI가 공개한 내부 coding-agent 평가 표본에서는 leaner system prompt 구성들이 평가 점수를 약 10–15% 높이는 동시에 총 토큰을 41–66%, 비용을 33–67% 줄였다고 소개한다. 이는 OpenAI 내부 표본에서 관찰된 방향성 범위이지, 독립 벤치마크 결과는 아니다.</p>
+<p>내 환경에서 독립적으로 재현한 결과가 아니고, “프롬프트는 짧을수록 좋다”는 일반 법칙도 아니다. 공식 문서 역시 이미 작동하는 prompt와 tool set에서 시작해 instruction, example, tool을 한 묶음씩 제거한 뒤 같은 eval을 다시 돌리라고 권한다.</p>
+<p>그래서 prompt diet는 글자 수 줄이기가 아니라 중복과 역할 혼선을 찾는 작업이어야 한다. 먼저 제거 후보를 고른다.</p>
+<ul>
+<li>최신 모델이 기본적으로 수행하는 행동을 여러 번 지시한 문장</li>
+<li>같은 금지사항을 표현만 바꿔 반복한 규칙</li>
+<li>과거 모델의 특정 실패를 우회하려고 넣었지만 지금은 검증되지 않은 workaround</li>
+<li>현재 작업에서 호출할 수 없거나 사용하지 않는 tool description</li>
+<li>제품 요구사항이나 측정된 실패와 연결되지 않은 예시</li>
+<li>“간결하게”, “친절하게”처럼 실제 출력 기준이 모호한 스타일 지시</li>
+</ul>
+<p>반대로 남겨야 할 내용도 분명하다.</p>
+<ul>
+<li>작업의 목표와 acceptance criteria</li>
+<li>사용할 출처와 evidence boundary</li>
+<li>외부 쓰기, 파괴적 작업, 결제처럼 사람이 승인해야 하는 경계</li>
+<li>모델이 추측할 수 없는 domain-specific 사실과 용어</li>
+<li>최종 산출물의 형식과 필수 항목</li>
+<li>완료를 판단할 verification rule</li>
+</ul>
+<p>프롬프트를 줄이면서 이 항목까지 없애면 효율화가 아니라 사양 삭제가 된다. 좋은 prompt diet는 모델이 이미 처리할 수 있는 절차 설명을 걷어내되, 틀렸을 때 실제 피해가 생기는 경계와 성공 기준은 더 또렷하게 남기는 일이라고 생각한다.</p>
+<h2 id="프롬프트는-성격-설명보다-운영-계약에-가깝다">프롬프트는 성격 설명보다 운영 계약에 가깝다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#프롬프트는-성격-설명보다-운영-계약에-가깝다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>에이전트 프롬프트가 길어지는 이유 중 하나는 모든 상황을 자연어로 예외 처리하려 하기 때문이다. “먼저 물어봐라”, “허락 없이 바꾸지 마라”, “하지만 테스트는 실행해라” 같은 문장이 여러 위치에서 충돌한다. 모델은 현재 요청이 읽기인지 변경인지, 안전한 로컬 작업인지 외부 side effect인지 판단하기 어려워진다.</p>
+<p>공식 문서가 제안하는 autonomy와 approval boundary는 더 작고 구조적이다. 이를 운영 계약처럼 압축하면 다음과 같이 정리할 수 있다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>answer / explain / review / diagnose / plan</span></span>
+<span data-line><span>→ 관련 자료를 확인하고 결과를 보고한다. 구현하지 않는다.</span></span>
+<span data-line> </span>
+<span data-line><span>change / build / fix</span></span>
+<span data-line><span>→ 요청 범위의 로컬 변경과 비파괴 검증까지 수행한다.</span></span>
+<span data-line> </span>
+<span data-line><span>external write / destructive action / purchase / material scope expansion</span></span>
+<span data-line><span>→ 명시적 승인을 받는다.</span></span></code></pre></figure>
+<p>이 정책이 모든 환경에서 더 잘 작동한다고 단정할 수는 없다. 다만 같은 승인 규칙을 여러 문장으로 반복하는 것보다, 요청 유형과 허용 범위를 한곳에서 연결하는 편이 평가하기 쉽다. 안전한 로컬 행동과 승인이 필요한 외부 행동도 분리할 수 있다.</p>
+<p>여기서 프롬프트의 역할은 모델에게 성격을 부여하는 것이 아니다. 목표와 근거, 권한, 성공 조건, 결과 형식을 합의하는 것이다. 자율성을 높이고 싶다면 “주도적으로 행동해”를 반복하기보다 어디까지 스스로 진행할 수 있고 어디에서 멈춰야 하는지를 적는 편이 낫다.</p>
+<h2 id="tool-call이-많다고-더-agentic한-것은-아니다">Tool call이 많다고 더 agentic한 것은 아니다<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#tool-call이-많다고-더-agentic한-것은-아니다" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>GPT-5.6 가이드에서 prompt diet와 함께 눈에 들어온 부분은 Programmatic Tool Calling, 즉 PTC의 선택 기준이었다. PTC는 여러 도구 결과를 코드로 처리한 뒤 작은 구조화 결과로 줄일 수 있는 bounded workflow에 적합하다. filtering, joining, ranking, deduplication, aggregation, validation처럼 처리 규칙이 비교적 예측 가능한 단계가 여기에 해당한다.</p>
+<p>반대로 호출이 많거나 병렬이라는 이유만으로 PTC를 택할 필요는 없다. 각 결과가 모델의 다음 판단을 바꾸거나, 중간 결과가 이미 작거나, 행동에 승인이 필요하거나, 원본 citation과 artifact를 보존해야 한다면 direct tool call이 더 적합할 수 있다.</p>
+<p>내가 이 기준을 일반적인 에이전트 운영 언어로 옮기면 다음 네 단계가 된다.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>mechanical reduction → code / programmatic stage</span></span>
+<span data-line><span>semantic judgment    → model</span></span>
+<span data-line><span>approval             → human</span></span>
+<span data-line><span>final verification   → independent gate</span></span></code></pre></figure>
+<p>예를 들어 여러 파일의 metadata를 모아 중복을 제거하고 개수를 계산하는 일은 코드가 잘한다. 어떤 source claim이 과장됐는지, 두 문서가 의미상 충돌하는지는 모델이 판단할 일이다. 외부 발행은 사람의 승인이 필요하다. 마지막으로 “게시가 끝났다”는 주장은 실제 공개 URL이나 receipt를 다시 확인해야 성립한다.</p>
+<p>이 분리는 단지 tool call 수를 줄이기 위한 것이 아니다. 각 단계가 무엇을 책임지는지 명확하게 만든다. 프로그램의 출력이 맞더라도 최종 답변에서 필수 근거나 단서가 빠질 수 있다. 그래서 program output과 사람이 읽는 final answer를 따로 검사해야 한다는 공식 문서의 지침도 중요하다. 호출 횟수나 중간 토큰이 줄었다는 사실은 최종 결과가 기존 eval을 통과할 때만 개선으로 셀 수 있다.</p>
+<h2 id="내가-다음-migration에서-먼저-고정할-체크리스트">내가 다음 migration에서 먼저 고정할 체크리스트<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#내가-다음-migration에서-먼저-고정할-체크리스트" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>결국 새 모델을 잘 도입하는 문제는 최고 설정을 찾는 일이 아니라 비교 가능한 운영 절차를 만드는 일에 가깝다. 지금 기준으로는 다음 순서를 출발점으로 삼으려 한다.</p>
+<ol>
+<li><strong>대표 작업 5–10개를 고정한다.</strong> 쉬운 요약만 고르지 않고 출처 분석, 코드 변경, 설계 검토, 도구 사용처럼 실패 형태가 다른 작업을 섞는다.</li>
+<li><strong>현재 결과를 baseline으로 보존한다.</strong> 모델, effort, prompt, tool set과 함께 성공 여부, 근거, 토큰, 지연, 비용을 기록한다.</li>
+<li><strong>모델만 먼저 바꾼다.</strong> 같은 effort와 같은 outcome-focused prompt로 결과 차이를 본다.</li>
+<li><strong>같은 effort와 한 단계 낮은 effort를 비교한다.</strong> 높은 설정은 어려운 작업에서 측정 가능한 이득이 있는지 확인할 때 추가한다.</li>
+<li><strong>Prompt diet를 별도 실험으로 진행한다.</strong> 반복 instruction, 낡은 workaround, 무관한 example과 verbose tool description을 한 묶음씩 제거한다.</li>
+<li><strong>Tool routing을 task shape에 맞춘다.</strong> 기계적 reduction은 programmatic stage, 의미 판단은 model, 외부 행동은 human approval로 나눈다.</li>
+<li><strong>최종 답변을 독립적으로 검증한다.</strong> 작업 성공, 완결성, 필수 근거, 실제 artifact나 receipt를 확인한다.</li>
+<li><strong>어려운 소수 작업만 pro나 max 후보로 둔다.</strong> standard 대비 품질 또는 신뢰도 향상이 추가 지연과 비용을 정당화하는지 본다.</li>
+<li><strong>변경 이유를 기록한다.</strong> 한두 번의 인상이나 데모 결과만으로 전체 기본값을 올리지 않는다.</li>
+</ol>
+<p>새 모델이 나오면 무엇을 더 켤지부터 고민하기 쉽다. 하지만 더 오래 남는 것은 반대쪽 질문인 것 같다. 기존 workload를 그대로 통과하면서 어느 effort까지 낮출 수 있는가. 어떤 프롬프트 문장은 이제 없어도 되는가. 어느 단계는 모델이 아니라 코드가 처리해야 하는가. 그리고 완료됐다는 말은 무엇으로 확인할 것인가.</p>
+<p>GPT-5.6을 위한 하나의 정답 설정은 아마 없을 것이다. 대신 baseline을 보존하고 변수를 하나씩 바꾸는 절차는 만들 수 있다. 모델이 이미 잘하는 부분은 프롬프트에서 걷어내고, 어려운 작업에만 reasoning budget을 쓰고, 마지막 결과가 실제 기준을 만족했는지 확인하는 것. 새 모델을 도입할 때 내가 먼저 바꾸려는 것은 effort 값보다 이 순서다.</p>
+<h2 id="참고자료">참고자료<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#참고자료" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ul>
+<li>OpenAI, <a href="https://developers.openai.com/api/docs/guides/latest-model" class="external">Using GPT-5.6: model guidance<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — 2026-07-14 확인. 모델·API 기능과 권장사항은 이 시점의 문서 snapshot을 기준으로 작성했다.</li>
+<li>OpenAI, <a href="https://developers.openai.com/api/docs/pricing" class="external">API Pricing<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — 2026-07-14 확인. GPT-5.6 family의 Standard short/long-context 단가는 이 가격표를 기준으로 했다.</li>
+<li>ExchangeRate-API, <a href="https://open.er-api.com/v6/latest/USD" class="external">USD latest exchange rates<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a> — 2026-07-14 00:02 UTC 갱신값 <code>1 USD = 1,496.999138 KRW</code>를 확인하고 본문 계산에서는 1,500원으로 반올림했다.</li>
+</ul></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-16" aria-expanded="true"><h3>목차</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#gpt-56-가이드를-읽으며-다시-정한-것-effort를-올리기-전에-프롬프트부터-줄여보기" data-for="gpt-56-가이드를-읽으며-다시-정한-것-effort를-올리기-전에-프롬프트부터-줄여보기">GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기</a></li><li class="depth-1"><a href="#모델effortprompt를-한꺼번에-바꾸면-아무것도-배우지-못한다" data-for="모델effortprompt를-한꺼번에-바꾸면-아무것도-배우지-못한다">모델·effort·prompt를 한꺼번에 바꾸면 아무것도 배우지 못한다</a></li><li class="depth-1"><a href="#reasoning-effort는-품질-버튼이-아니라-workload-budget이다" data-for="reasoning-effort는-품질-버튼이-아니라-workload-budget이다">Reasoning effort는 품질 버튼이 아니라 workload budget이다</a></li><li class="depth-1"><a href="#pro-mode와-더-깊게-생각해는-다른-계층의-설정이다" data-for="pro-mode와-더-깊게-생각해는-다른-계층의-설정이다">Pro mode와 “더 깊게 생각해”는 다른 계층의 설정이다</a></li><li class="depth-1"><a href="#api-비용을-원화로-바꿔보면-effort의-의미가-더-선명해진다" data-for="api-비용을-원화로-바꿔보면-effort의-의미가-더-선명해진다">API 비용을 원화로 바꿔보면 effort의 의미가 더 선명해진다</a></li><li class="depth-1"><a href="#새-모델일수록-프롬프트를-더-쓰기-전에-덜어낼-부분을-찾는다" data-for="새-모델일수록-프롬프트를-더-쓰기-전에-덜어낼-부분을-찾는다">새 모델일수록 프롬프트를 더 쓰기 전에 덜어낼 부분을 찾는다</a></li><li class="depth-1"><a href="#프롬프트는-성격-설명보다-운영-계약에-가깝다" data-for="프롬프트는-성격-설명보다-운영-계약에-가깝다">프롬프트는 성격 설명보다 운영 계약에 가깝다</a></li><li class="depth-1"><a href="#tool-call이-많다고-더-agentic한-것은-아니다" data-for="tool-call이-많다고-더-agentic한-것은-아니다">Tool call이 많다고 더 agentic한 것은 아니다</a></li><li class="depth-1"><a href="#내가-다음-migration에서-먼저-고정할-체크리스트" data-for="내가-다음-migration에서-먼저-고정할-체크리스트">내가 다음 migration에서 먼저 고정할 체크리스트</a></li><li class="depth-1"><a href="#참고자료" data-for="참고자료">참고자료</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="./postscript.js" type="module" data-persist="true"></script></html>
