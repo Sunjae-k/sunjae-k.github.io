@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr"><head><title>여러 모델의 협업을 하나의 모델처럼 제공한다면</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto Sans KR:wght@400;700&amp;family=Noto Sans KR:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="google-site-verification" content="z4Nq-epWJy6nnCYzF9ctaHXmf4rh5X6lsR6QzzjseOg"/><meta name="og:site_name" content="Sunjae blog"/><meta property="og:title" content="여러 모델의 협업을 하나의 모델처럼 제공한다면"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="여러 모델의 협업을 하나의 모델처럼 제공한다면"/><meta name="twitter:description" content="Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다."/><meta property="og:description" content="Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다."/><meta property="og:image:alt" content="Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다."/><meta property="og:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:url" content="https://sunjae-k.github.io/static/og-image.png"/><meta name="twitter:image" content="https://sunjae-k.github.io/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="sunjae-k.github.io"/><meta property="og:url" content="https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model"/><meta property="twitter:url" content="https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model"/><link rel="icon" href="./static/icon.png"/><meta name="description" content="Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다."/><meta name="generator" content="Quartz"/><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"여러 모델의 협업을 하나의 모델처럼 제공한다면","description":"Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다.","url":"https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model","mainEntityOfPage":{"@type":"WebPage","@id":"https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model"},"image":["https://sunjae-k.github.io/static/og-image.png"],"datePublished":"2026-07-22T15:00:00.000Z","dateModified":"2026-07-22T15:00:00.000Z","author":{"@type":"Person","name":"Sunjae Kim"},"publisher":{"@type":"Person","name":"Sunjae Kim"},"inLanguage":"ko-KR"}</script><link href="./index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL1VzZXJzL3N1bmphZS9wcm9qZWN0cy9zdW5qYWUtay5naXRodWIuaW8vcXVhcnR6L2NvbXBvbmVudHMvc3R5bGVzIiwic291cmNlcyI6WyJtZXJtYWlkLmlubGluZS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFHRjtFQUNFOzs7QUFLRjtFQUNFO0VBQ0E7OztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFJSjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTs7QUFJRjtFQUNFO0VBQ0E7RUFDQSIsInNvdXJjZXNDb250ZW50IjpbIi5leHBhbmQtYnV0dG9uIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbG9hdDogcmlnaHQ7XG4gIHBhZGRpbmc6IDAuNHJlbTtcbiAgbWFyZ2luOiAwLjNyZW07XG4gIHJpZ2h0OiAwOyAvLyBOT1RFOiByaWdodCB3aWxsIGJlIHNldCBpbiBtZXJtYWlkLmlubGluZS50c1xuICBjb2xvcjogdmFyKC0tZ3JheSk7XG4gIGJvcmRlci1jb2xvcjogdmFyKC0tZGFyayk7XG4gIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgYm9yZGVyOiAxcHggc29saWQ7XG4gIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgb3BhY2l0eTogMDtcbiAgdHJhbnNpdGlvbjogMC4ycztcblxuICAmID4gc3ZnIHtcbiAgICBmaWxsOiB2YXIoLS1saWdodCk7XG4gICAgZmlsdGVyOiBjb250cmFzdCgwLjMpO1xuICB9XG5cbiAgJjpob3ZlciB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGJvcmRlci1jb2xvcjogdmFyKC0tc2Vjb25kYXJ5KTtcbiAgfVxuXG4gICY6Zm9jdXMge1xuICAgIG91dGxpbmU6IDA7XG4gIH1cbn1cblxucHJlIHtcbiAgJjpob3ZlciA+IC5leHBhbmQtYnV0dG9uIHtcbiAgICBvcGFjaXR5OiAxO1xuICAgIHRyYW5zaXRpb246IDAuMnM7XG4gIH1cbn1cblxuI21lcm1haWQtY29udGFpbmVyIHtcbiAgcG9zaXRpb246IGZpeGVkO1xuICBjb250YWluOiBsYXlvdXQ7XG4gIHotaW5kZXg6IDk5OTtcbiAgbGVmdDogMDtcbiAgdG9wOiAwO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogMTAwdmg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIGRpc3BsYXk6IG5vbmU7XG4gIGJhY2tkcm9wLWZpbHRlcjogYmx1cig0cHgpO1xuICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuNSk7XG5cbiAgJi5hY3RpdmUge1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgfVxuXG4gICYgPiAjbWVybWFpZC1zcGFjZSB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gICAgYm9yZGVyLXJhZGl1czogNXB4O1xuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICB0b3A6IDUwJTtcbiAgICBsZWZ0OiA1MCU7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7XG4gICAgaGVpZ2h0OiA4MHZoO1xuICAgIHdpZHRoOiA4MHZ3O1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG5cbiAgICAmID4gLm1lcm1haWQtY29udGVudCB7XG4gICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAwIDA7XG4gICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gMC4xcyBlYXNlO1xuICAgICAgb3ZlcmZsb3c6IHZpc2libGU7XG4gICAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICAgIG1pbi13aWR0aDogMjAwcHg7XG5cbiAgICAgIHByZSB7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgfVxuXG4gICAgICBzdmcge1xuICAgICAgICBtYXgtd2lkdGg6IG5vbmU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgIH1cbiAgICB9XG5cbiAgICAmID4gLm1lcm1haWQtY29udHJvbHMge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgYm90dG9tOiAyMHB4O1xuICAgICAgcmlnaHQ6IDIwcHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgZ2FwOiA4cHg7XG4gICAgICBwYWRkaW5nOiA4cHg7XG4gICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwgMCwgMCwgMC4xKTtcbiAgICAgIHotaW5kZXg6IDI7XG5cbiAgICAgIC5tZXJtYWlkLWNvbnRyb2wtYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHBhZGRpbmc6IDA7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgICAgY29sb3I6IHZhcigtLWRhcmspO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgICBmb250LWZhbWlseTogdmFyKC0tYm9keUZvbnQpO1xuICAgICAgICB0cmFuc2l0aW9uOiBhbGwgMC4ycyBlYXNlO1xuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIH1cblxuICAgICAgICAmOmFjdGl2ZSB7XG4gICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKDFweCk7XG4gICAgICAgIH1cblxuICAgICAgICAvLyBTdHlsZSB0aGUgcmVzZXQgYnV0dG9uIGRpZmZlcmVudGx5XG4gICAgICAgICY6bnRoLWNoaWxkKDIpIHtcbiAgICAgICAgICB3aWR0aDogYXV0bztcbiAgICAgICAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="./prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("./static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://sunjae-k.github.io/index.xml"/></head><body data-slug="sakana-fugu-multi-agent-system-as-a-model"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href=".">Sunjae blog</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>검색</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="검색어를 입력하세요" placeholder="검색어를 입력하세요"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="다크 모드"><title>다크 모드</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="라이트 모드"><title>라이트 모드</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="리더 모드"><title>리더 모드</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><nav class="left-nav desktop-only" aria-label="Site navigation"><p class="left-nav__tagline">AI Agent, RAG, local-first AI를<br/>운영·검증·문서 구조 관점에서 읽습니다.</p><div class="left-nav__section"><p class="left-nav__label">Topics</p><a href="/topics#ai-agent-operations">AI Agent Operations</a><a href="/topics#rag--document-operations">RAG / Document Operations</a><a href="/topics#product-ai--ux--infra">Product AI / UX / Infra</a><a href="/topics#urban--spatial-ai">Urban / Spatial AI</a><a href="/topics#ai-visual--knowledge-artifacts">AI Visual / Knowledge Artifacts</a></div></nav></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="./">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>여러 모델의 협업을 하나의 모델처럼 제공한다면</a></div></nav><h1 class="article-title">여러 모델의 협업을 하나의 모델처럼 제공한다면</h1><p show-comma="true" class="content-meta"><time datetime="2026-07-22T15:00:00.000Z">2026년 7월 23일</time><span>18 min read</span></p><ul class="tags"><li><a href="./tags/sakana-fugu" class="internal tag-link">sakana-fugu</a></li><li><a href="./tags/multi-agent-system" class="internal tag-link">multi-agent-system</a></li><li><a href="./tags/llm-router" class="internal tag-link">llm-router</a></li><li><a href="./tags/model-orchestration" class="internal tag-link">model-orchestration</a></li><li><a href="./tags/context-cache" class="internal tag-link">context-cache</a></li></ul></div></div><article class="popover-hint"><p>Sakana는 공식 비교표에서 Fugu와 Fugu Ultra가 일부 코딩·추론·과학·agentic benchmark에서 공개 접근 가능한 프론티어 모델을 앞서거나 경쟁력 있는 결과를 냈다고 보고합니다. 모든 프론티어 모델이나 모든 benchmark를 이겼다는 뜻은 아니며, 독립적으로 검증된 우월성을 뜻하지도 않습니다. 그럼에도 이 표가 눈길을 끈 이유는 결과를 만든 주체가 단일 모델이 아니기 때문입니다. 하나의 모델 API 뒤에서 여러 모델과 전문 Agent가 역할을 나누고, task에 맞춰 참여할 모델을 고르고 전환하며 결과를 만듭니다.</p>
+<p><a href="https://sakana.ai/fugu/" class="external">Sakana Fugu<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>가 내세운 개념은 **“Multi-Agent System as a Model”**입니다. 여러 모델을 연결하는 Gateway를 넘어, 모델들의 협업 자체를 하나의 모델처럼 제공하겠다는 접근입니다.</p>
+<p>이 구조는 모델의 경계를 넓히는 동시에 비용에 관한 질문을 남깁니다. 여러 모델을 동적으로 선택하고 전환할 때, 무엇을 기준으로 효율적이라고 판단해야 할까요. 요청 하나의 가격만 비교하면 충분할까요. 긴 Agent 작업이라면 cache miss와 문맥 재처리까지 포함해 작업을 끝내는 데 든 비용을 봐야 하지 않을까요.</p>
+<blockquote>
+<p>이 글의 중심 질문은 Router가 어떤 모델을 골랐는지가 아니라, 그 선택과 협업을 어떤 비용 단위로 평가할 것인가입니다.</p>
+</blockquote>
+<h2 id="multi-agent-system-as-a-model">Multi-Agent System as a Model<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#multi-agent-system-as-a-model" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Fugu 공식 페이지는 제품을 “A Multi-Agent System, Delivered as One Model”이라고 설명합니다. 다양한 모델 풀을 동적으로 조정하고 orchestration하며, task마다 모델 선택과 전환을 처리한다고 밝힙니다. 외부에서는 이 시스템을 하나의 API로 사용할 수 있습니다.</p>
+<p><img src="https://sakana.ai/assets/fugu_lp/fugu_arch_image.png" alt="Sakana Fugu 공식 제품 아키텍처"/></p>
+<p><em>Sakana의 <a href="https://sakana.ai/fugu/" class="external">Fugu 공식 페이지<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>에 공개된 제품 아키텍처 소개 이미지입니다. 내부 모델·Agent 구성과 성능을 독립적으로 검증한 자료는 아닙니다.</em></p>
+<p><img src="https://sakana.ai/assets/fugu_lp/benchmark-chart.png" alt="Sakana Fugu 공식 benchmark 비교표"/></p>
+<p><em>Sakana 자체 공개 비교표입니다. Fugu 측은 일부 baseline에 provider-reported score를 사용했고, SWE Bench Pro는 mini-swe-agent scaffold를 사용한다고 주석을 답니다. 따라서 독립 재현이나 모든 작업의 일반적 우월성을 증명하는 자료는 아닙니다.</em></p>
+<p>이 성능 비교표를 글의 출발점으로 삼는 이유는 수치만으로 Fugu를 평가하기 위해서가 아닙니다. 표에 나타난 결과가 단일 모델 성능만의 결과가 아니라 모델 선택, Agent coordination, scaffold를 포함한 시스템 결과이기 때문입니다. 그렇다면 비교해야 할 대상도 모델 한 번의 호출 가격에 머물 수 없습니다. 결과를 만드는 동안 든 총 작업 비용과 cache miss, 모델 전환 비용까지 함께 물어야 합니다.</p>
+<p>공식 페이지에 따르면 Fugu는 복수의 전문 모델을 하나의 API로 제공하고, task에 맞춰 모델을 선택하거나 전환합니다. 사용자는 특정 provider나 모델을 Agent pool에서 제외해 데이터, 개인정보, 규제 또는 조직의 요구에 대응할 수도 있습니다. Fugu, Fugu Ultra, Fugu Cyber는 하나의 OpenAI-compatible API를 통해 제공된다고 설명합니다.</p>
+<p>중요한 변화는 호출 방식보다 제품의 경계에 있습니다. 일반적인 모델 API에서는 endpoint 뒤에 하나의 모델이 있다고 생각하기 쉽습니다. Fugu에서는 endpoint 뒤의 실행 주체가 하나의 모델이 아니라 여러 모델과 Agent의 협업입니다. 호출자에게는 그 전체가 하나의 모델 surface로 보입니다.</p>
+<p>따라서 Router의 역할도 달라 보입니다. 입력을 분류해 모델 하나를 고르는 데서 끝나지 않고, task를 수행할 Agent를 구성하고 여러 차례의 협업을 조정하는 orchestration의 일부가 됩니다. “어떤 모델을 호출할까”보다 “어떤 조합과 실행 경로로 결과를 만들까”에 가까운 질문입니다.</p>
+<p>다만 여기서 Fugu의 개별 실험 결과를 multi-agent 구조의 일반적인 우월성으로 확대해서는 안 됩니다. 공식 페이지가 공개한 결과는 Sakana의 자체 평가입니다. 이 글은 Fugu의 범용 성능을 평가하려는 글이 아니라, 여러 모델의 협업을 하나의 모델처럼 제공하는 제품 경계를 살펴보는 architecture reading입니다.</p>
+<h2 id="동적-orchestration은-어떤-비용을-남기나">동적 orchestration은 어떤 비용을 남기나<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#동적-orchestration은-어떤-비용을-남기나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>여러 모델을 task에 따라 선택하고 전환할 수 있다면, 각 단계에 가장 적합한 모델을 배치할 수 있습니다. 반면 실행 경로가 길어질수록 비용을 계산하는 단위는 복잡해집니다.</p>
+<p>Agent 작업은 보통 요청 한 번으로 끝나지 않습니다. 대화와 코드가 쌓이고, 도구 호출 결과를 다음 입력에 포함하며, 중간 결과를 검토하거나 수정합니다. 뒤로 갈수록 앞선 작업의 긴 맥락을 다시 전달해야 할 수 있습니다.</p>
+<p>설명을 위한 상황을 가정해 보겠습니다. 한 모델이 긴 입력을 처리한 뒤 다음 단계에서 더 저렴한 모델로 전환했습니다. 새 요청의 단가는 낮아졌지만 기존 context 또는 prefix cache를 활용하지 못한다면, 긴 입력을 다시 처리하는 비용과 지연이 추가될 수 있습니다. 요청 하나만 보면 절약이지만 작업 전체로 보면 비용이 늘 수도 있습니다.</p>
+<p>이것은 <strong>동적 orchestration에서 검토해야 할 일반적인 비용 질문</strong>이지, Fugu의 실제 동작이나 문제를 설명하는 문장이 아닙니다. Fugu가 모델 사이에서 KV cache를 공유하는지, session affinity를 적용하는지, 전환 비용을 어떤 수식으로 계산하는지, 구체적으로 어떻게 라우팅하는지는 공식 페이지에서 확인되지 않습니다.</p>
+<p>Cache miss의 범위도 구분해야 합니다. Cache miss는 이미 처리한 입력을 다시 계산하면서 생기는 비용과 지연의 문제입니다. 작업 연속성이나 재작업은 상태 보존, 프롬프트 재구성, 도구 이력 전달, 모델 행동과 task 특성까지 포함합니다. Cache miss가 곧 문맥 단절이나 재작업을 뜻하지는 않습니다. 각각을 따로 관측하고 평가해야 합니다.</p>
+<p>그렇다면 동적 orchestration의 경제성을 요청당 모델 가격만으로 평가하기 어렵습니다. 어떤 모델을 몇 번 썼는지뿐 아니라, 전환 과정에서 입력을 얼마나 다시 처리했는지, 재시도와 수정이 얼마나 발생했는지, 최종적으로 원하는 결과를 얻었는지를 함께 봐야 합니다.</p>
+<blockquote>
+<p>작업 완료 비용 = 모델 호출 비용 + 문맥 재처리 비용 + cache miss 비용 + 재시도·수정 비용 + 실패와 지연의 비용</p>
+</blockquote>
+<p>이 식은 Fugu가 공개한 알고리즘이 아닙니다. Multi-Agent System as a Model이라는 제품 경계를 운영 관점에서 읽을 때 사용할 수 있는 설계 프레임입니다.</p>
+<h2 id="cursor는-이-비용을-평가에-어떻게-반영했나">Cursor는 이 비용을 평가에 어떻게 반영했나<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#cursor는-이-비용을-평가에-어떻게-반영했나" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Fugu는 모델들의 동적 협업을 하나의 모델 surface로 제공하는 사례입니다. <a href="https://cursor.com/ko/blog/router" class="external">Cursor Router<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>는 별개의 제품과 문제 맥락에서, 동적 라우팅으로 발생하는 cache 비용을 학습과 평가에 반영했다고 공개한 사례입니다. <strong>Cursor의 설명은 Fugu의 구현을 뒷받침하는 증거가 아닙니다.</strong> 두 사례를 연결하는 지점은 구현의 동일성이 아니라, 모델 선택과 전환을 요청 단가보다 넓은 비용으로 평가해야 한다는 질문입니다.</p>
+<p>Cursor는 모델 실행 전에 요청을 분류한다고 설명합니다. 쿼리와 맥락, 작업 복잡도, 도메인, 모델의 동작 특성을 결합해 후보를 분류합니다. 특히 cache miss로 이어지는 라우팅 사례를 학습 데이터에 포함하고, 프로덕션 평가에서도 라우팅 결정에서 발생한 cache miss 비용을 반영한다고 밝힙니다.</p>
+<p>평가도 요청 한 번에만 머물지 않습니다. Cursor는 실제 대화 환경에서 온라인 A/B 테스트를 진행하고, 사용자 만족도와 생성 코드의 유지율, 커밋당 비용을 함께 본다고 설명합니다. 모델 선택의 결과를 대화와 작업 결과에 가까운 지표로 평가하려는 접근으로 읽을 수 있습니다.</p>
+<p><img src="https://ptht05hbb1ssoooe.public.blob.vercel-storage.com/assets/changelog/cost-per-light.png" alt="Cursor Router의 커밋당 비용 비교 결과"/></p>
+<p><em>출처: <a href="https://cursor.com/ko/blog/router" class="external">Cursor Router 공식 블로그<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a>. Cursor가 자체 공개한 온라인 평가 결과이며, 독립적으로 재현된 결과나 Fugu의 성능·구현을 입증하는 자료가 아닙니다.</em></p>
+<p>Cursor가 공개한 범위에도 경계가 있습니다. 모델이나 provider 사이에서 KV cache를 공유한다는 설명은 없습니다. Session affinity 규칙, 전환 penalty 수식, 구체적인 라우팅 알고리즘 역시 공식 글만으로 확인되지 않습니다. 확인할 수 있는 것은 cache miss로 이어지는 사례를 학습 데이터에 넣고, 운영 평가에 그 비용을 포함했다는 점입니다.</p>
+<h2 id="router와-orchestration을-볼-때-물어야-할-것">Router와 orchestration을 볼 때 물어야 할 것<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#router와-orchestration을-볼-때-물어야-할-것" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Multi-Agent System as a Model은 외부 인터페이스를 단순하게 만듭니다. 그러나 단일 API가 내부 실행까지 단순하다는 뜻은 아닙니다. 여러 모델과 Agent가 협업하는 제품을 평가할 때는 다음 질문을 함께 볼 필요가 있습니다.</p>
+<ol>
+<li>
+<p><strong>모델 선택의 단위는 무엇인가?</strong><br/>
+요청마다 하나의 모델을 고르는지, task를 여러 단계로 나눠 Agent와 모델을 구성하는지 확인해야 합니다.</p>
+</li>
+<li>
+<p><strong>모델 전환 비용을 관측할 수 있는가?</strong><br/>
+전환 전후의 입력 처리량, cache miss, 지연과 호출 비용을 추적할 수 있어야 합니다.</p>
+</li>
+<li>
+<p><strong>세션 상태는 누가 전달하는가?</strong><br/>
+Router 또는 orchestrator가 모든 상태를 가져야 한다는 뜻은 아닙니다. 대화, 도구 이력, 중간 결과를 구성하는 runtime과 모델 선택 계층 사이의 계약이 분명해야 합니다.</p>
+</li>
+<li>
+<p><strong>작업 결과를 어떤 지표로 평가하는가?</strong><br/>
+요청당 가격 외에 완료율, 유지된 결과, 통과한 검증, 재시도 횟수처럼 실제 task에 가까운 지표가 필요합니다.</p>
+</li>
+<li>
+<p><strong>데이터 정책을 모델 풀 전체에 적용할 수 있는가?</strong><br/>
+어떤 provider와 모델이 참여할 수 있는지 통제하고, 개인정보·규제·조직 정책을 실행 경로 전체에서 지킬 수 있어야 합니다.</p>
+</li>
+<li>
+<p><strong>공개되지 않은 구현을 추정하고 있지는 않은가?</strong><br/>
+“동적으로 선택한다”는 설명만으로 cache 공유, session affinity 또는 특정 최적화 알고리즘을 가정해서는 안 됩니다.</p>
+</li>
+</ol>
+<h2 id="하나의-모델처럼-보이는-시스템을-어떻게-평가할까">하나의 모델처럼 보이는 시스템을 어떻게 평가할까<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#하나의-모델처럼-보이는-시스템을-어떻게-평가할까" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>Fugu가 흥미로운 이유는 더 많은 모델을 한 API에 연결했기 때문만은 아닙니다. 복수 모델과 전문 Agent의 협업을 외부에는 하나의 모델처럼 제공하면서, 모델 제품의 경계를 orchestration 시스템으로 넓혔기 때문입니다.</p>
+<p>이 경계가 넓어지면 평가 기준도 함께 넓어져야 합니다. 내부에서 동적 선택과 전환이 일어난다면 가장 싼 요청을 골랐는지만 볼 수 없습니다. Cache miss와 문맥 재처리, 재시도와 최종 결과까지 포함해 작업을 끝내는 데 얼마가 들었는지 물어야 합니다.</p>
+<p>Cursor는 별도의 공개 사례에서 cache miss 비용을 라우팅의 학습과 운영 평가에 포함하고, 대화 환경과 커밋당 비용 같은 결과 지표를 본다고 설명했습니다. 이것이 Fugu의 구현을 말해주지는 않지만, 동적 라우팅을 어떤 비용 단위로 평가할지에 관한 하나의 구체적인 접근을 보여줍니다.</p>
+<p>Router가 단순 Gateway를 넘어 모델들의 협업을 하나의 모델처럼 제공할 수 있을까요. Fugu는 그 가능성을 제품 형태로 제시했습니다. 이제 더 중요한 질문은 내부에 몇 개의 모델이 있는지가 아니라, 그 협업이 실제 작업을 어떤 품질과 총비용으로 끝내는지일 것 같습니다.</p>
+<hr/>
+<h2 id="참고-자료">참고 자료<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#참고-자료" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<ul>
+<li><a href="https://sakana.ai/fugu/" class="external">Sakana Fugu — Multi-Agent System as a Model<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+<li><a href="https://cursor.com/ko/blog/router" class="external">Cursor Router<svg aria-hidden="true" class="external-icon" style="max-width:0.8em;max-height:0.8em;" viewBox="0 0 512 512"><path d="M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"></path></svg></a></li>
+</ul>
+<blockquote>
+<p>이 글은 두 서비스를 직접 설치하거나 성능을 재현한 실험기가 아닙니다. 각 공식 페이지가 공개한 제품 설명과 평가 방식을 비교해 읽은 architecture reading입니다. Fugu의 내부 cache, session affinity, 라우팅 알고리즘과 범용 성능 우월성을 추정하지 않으며, Cursor의 공개 결과를 Fugu 구현의 증거로 사용하지 않습니다.</p>
+</blockquote></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-26" aria-expanded="true"><h3>목차</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-0" class="toc-content overflow"><li class="depth-0"><a href="#multi-agent-system-as-a-model" data-for="multi-agent-system-as-a-model">Multi-Agent System as a Model</a></li><li class="depth-0"><a href="#동적-orchestration은-어떤-비용을-남기나" data-for="동적-orchestration은-어떤-비용을-남기나">동적 orchestration은 어떤 비용을 남기나</a></li><li class="depth-0"><a href="#cursor는-이-비용을-평가에-어떻게-반영했나" data-for="cursor는-이-비용을-평가에-어떻게-반영했나">Cursor는 이 비용을 평가에 어떻게 반영했나</a></li><li class="depth-0"><a href="#router와-orchestration을-볼-때-물어야-할-것" data-for="router와-orchestration을-볼-때-물어야-할-것">Router와 orchestration을 볼 때 물어야 할 것</a></li><li class="depth-0"><a href="#하나의-모델처럼-보이는-시스템을-어떻게-평가할까" data-for="하나의-모델처럼-보이는-시스템을-어떻게-평가할까">하나의 모델처럼 보이는 시스템을 어떻게 평가할까</a></li><li class="depth-0"><a href="#참고-자료" data-for="참고-자료">참고 자료</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="./postscript.js" type="module" data-persist="true"></script></html>

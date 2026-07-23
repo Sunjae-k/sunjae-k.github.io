@@ -6,22 +6,28 @@
       <description>최근 10 건 on Sunjae blog</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
-    <title>GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기</title>
-    <link>https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet</link>
-    <guid>https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet</guid>
-    <description><![CDATA[ 새 모델 도입을 설정 변경이 아닌 대표 workload 평가로 다루고, reasoning effort와 prompt diet, tool routing을 분리해 비교하는 운영 원칙을 정리했다. ]]></description>
-    <pubDate>Mon, 13 Jul 2026 15:00:00 GMT</pubDate>
-  </item><item>
     <title>Sunjae blog</title>
     <link>https://sunjae-k.github.io/</link>
     <guid>https://sunjae-k.github.io/</guid>
     <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
-    <pubDate>Mon, 13 Jul 2026 15:00:00 GMT</pubDate>
+    <pubDate>Wed, 22 Jul 2026 15:00:00 GMT</pubDate>
+  </item><item>
+    <title>여러 모델의 협업을 하나의 모델처럼 제공한다면</title>
+    <link>https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model</link>
+    <guid>https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model</guid>
+    <description><![CDATA[ Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다. ]]></description>
+    <pubDate>Wed, 22 Jul 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>Topics</title>
     <link>https://sunjae-k.github.io/topics</link>
     <guid>https://sunjae-k.github.io/topics</guid>
     <description><![CDATA[ Sunjae blog의 공개 글을 AI Agent 운영, RAG 문서 운영, 제품 AI, 도시·공간 AI, 시각 지식 산출물 주제로 묶은 읽기 목차. ]]></description>
+    <pubDate>Wed, 22 Jul 2026 15:00:00 GMT</pubDate>
+  </item><item>
+    <title>GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기</title>
+    <link>https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet</link>
+    <guid>https://sunjae-k.github.io/gpt-5-6-model-effort-prompt-diet</guid>
+    <description><![CDATA[ 새 모델 도입을 설정 변경이 아닌 대표 workload 평가로 다루고, reasoning effort와 prompt diet, tool routing을 분리해 비교하는 운영 원칙을 정리했다. ]]></description>
     <pubDate>Mon, 13 Jul 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>문서를 파싱한 다음, Agent는 무엇을 기억해야 할까</title>
@@ -58,12 +64,6 @@
     <link>https://sunjae-k.github.io/coding-agent-workflow</link>
     <guid>https://sunjae-k.github.io/coding-agent-workflow</guid>
     <description><![CDATA[ AI 코딩 Agent를 코드 자동완성이 아니라 계획, 패치, 테스트, 실패 로그, 리뷰 근거를 남기는 작업 루프 위임 방식으로 이해하는 글. ]]></description>
-    <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>AI 다이어그램은 프롬프트가 아니라 스킬로 만든다</title>
-    <link>https://sunjae-k.github.io/diagram-design-skill</link>
-    <guid>https://sunjae-k.github.io/diagram-design-skill</guid>
-    <description><![CDATA[ AI 다이어그램을 더 예쁘게 만드는 프롬프트가 아니라, 다이어그램 타입 선택·디자인 기준·렌더링 검증을 스킬로 고정해 읽히는 기술 이미지를 만드는 방법. ]]></description>
     <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
   </item>
     </channel>
