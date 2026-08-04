@@ -10,18 +10,24 @@
     <link>https://sunjae-k.github.io/</link>
     <guid>https://sunjae-k.github.io/</guid>
     <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
-    <pubDate>Wed, 22 Jul 2026 15:00:00 GMT</pubDate>
+    <pubDate>Tue, 04 Aug 2026 15:00:00 GMT</pubDate>
   </item><item>
-    <title>여러 모델의 협업을 하나의 모델처럼 제공한다면</title>
-    <link>https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model</link>
-    <guid>https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model</guid>
-    <description><![CDATA[ Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다. ]]></description>
-    <pubDate>Wed, 22 Jul 2026 15:00:00 GMT</pubDate>
+    <title>OpenAI는 실시간 음성을 어떻게 다시 설계했나</title>
+    <link>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</link>
+    <guid>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</guid>
+    <description><![CDATA[ GPT-Live의 full-duplex interaction과 Realtime API의 event 계약을 통해 OpenAI가 음성 대화를 continuous control loop로 바꾸고 interaction·execution·control plane을 분리하려 한 전략을 살펴본다. ]]></description>
+    <pubDate>Tue, 04 Aug 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>Topics</title>
     <link>https://sunjae-k.github.io/topics</link>
     <guid>https://sunjae-k.github.io/topics</guid>
     <description><![CDATA[ Sunjae blog의 공개 글을 AI Agent 운영, RAG 문서 운영, 제품 AI, 도시·공간 AI, 시각 지식 산출물 주제로 묶은 읽기 목차. ]]></description>
+    <pubDate>Tue, 04 Aug 2026 15:00:00 GMT</pubDate>
+  </item><item>
+    <title>여러 모델의 협업을 하나의 모델처럼 제공한다면</title>
+    <link>https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model</link>
+    <guid>https://sunjae-k.github.io/sakana-fugu-multi-agent-system-as-a-model</guid>
+    <description><![CDATA[ Sakana Fugu의 Multi-Agent System as a Model이 넓힌 모델의 경계와, 동적 orchestration을 작업 완료 비용으로 평가해야 하는 이유를 살펴봅니다. ]]></description>
     <pubDate>Wed, 22 Jul 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>GPT-5.6 가이드를 읽으며 다시 정한 것: effort를 올리기 전에 프롬프트부터 줄여보기</title>
@@ -58,12 +64,6 @@
     <link>https://sunjae-k.github.io/agent-quality-loop</link>
     <guid>https://sunjae-k.github.io/agent-quality-loop</guid>
     <description><![CDATA[ AI Agent의 완료 보고를 그대로 믿지 않고, Spec Review와 Quality Review를 분리해 diff·테스트·로그 같은 검증 증거로 회수하는 Agent Quality Loop. ]]></description>
-    <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>코딩 Agent를 자동완성처럼 보면 놓치는 것</title>
-    <link>https://sunjae-k.github.io/coding-agent-workflow</link>
-    <guid>https://sunjae-k.github.io/coding-agent-workflow</guid>
-    <description><![CDATA[ AI 코딩 Agent를 코드 자동완성이 아니라 계획, 패치, 테스트, 실패 로그, 리뷰 근거를 남기는 작업 루프 위임 방식으로 이해하는 글. ]]></description>
     <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
   </item>
     </channel>
