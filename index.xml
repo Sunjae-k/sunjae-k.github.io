@@ -15,7 +15,7 @@
     <title>OpenAI는 실시간 음성을 어떻게 다시 설계했나</title>
     <link>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</link>
     <guid>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</guid>
-    <description><![CDATA[ GPT-Live의 full-duplex interaction과 Realtime API의 event 계약을 통해 OpenAI가 음성 대화를 continuous control loop로 바꾸고 interaction·execution·control plane을 분리하려 한 전략을 살펴본다. ]]></description>
+    <description><![CDATA[ GPT-Live와 Realtime API의 공개 자료를 바탕으로 OpenAI가 음성 대화의 듣기·응답·중단과 긴 작업을 어떻게 분리해 제어하는지 살펴봅니다. ]]></description>
     <pubDate>Tue, 04 Aug 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>Topics</title>
