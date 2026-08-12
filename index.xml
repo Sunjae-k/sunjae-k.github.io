@@ -12,6 +12,12 @@
     <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
     <pubDate>Tue, 11 Aug 2026 15:00:00 GMT</pubDate>
   </item><item>
+    <title>루프가 끝난 게 아니다: LangGraph의 State 관리에서 Graph Engineering으로</title>
+    <link>https://sunjae-k.github.io/langgraph-state-to-graph-engineering</link>
+    <guid>https://sunjae-k.github.io/langgraph-state-to-graph-engineering</guid>
+    <description><![CDATA[ LangGraph의 State·Node·Edge·Checkpoint 사고가 여러 Agent의 작업 분해, 소유권, 증거와 승인 설계로 어떻게 넓어지는지 살펴봅니다. ]]></description>
+    <pubDate>Tue, 11 Aug 2026 15:00:00 GMT</pubDate>
+  </item><item>
     <title>Topics</title>
     <link>https://sunjae-k.github.io/topics</link>
     <guid>https://sunjae-k.github.io/topics</guid>
@@ -59,12 +65,6 @@
     <guid>https://sunjae-k.github.io/mcp-is-not-api-replacement</guid>
     <description><![CDATA[ MCP와 API의 차이는 호출 방식보다 클라이언트가 누구인지에 있다. API는 시스템 통합을 위한 인터페이스이고, MCP는 모델에게 기능을 안전하게 위임하기 위한 인터페이스다. ]]></description>
     <pubDate>Sun, 05 Jul 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>테이블 데이터에도 GPT 같은 모델이 올까? Google TabFM 쉽게 보기</title>
-    <link>https://sunjae-k.github.io/google-tabfm-tabular-foundation-model</link>
-    <guid>https://sunjae-k.github.io/google-tabfm-tabular-foundation-model</guid>
-    <description><![CDATA[ Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다. ]]></description>
-    <pubDate>Tue, 30 Jun 2026 15:00:00 GMT</pubDate>
   </item>
     </channel>
   </rss>
