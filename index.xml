@@ -10,18 +10,24 @@
     <link>https://sunjae-k.github.io/</link>
     <guid>https://sunjae-k.github.io/</guid>
     <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
-    <pubDate>Tue, 04 Aug 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>OpenAI는 실시간 음성을 어떻게 다시 설계했나</title>
-    <link>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</link>
-    <guid>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</guid>
-    <description><![CDATA[ GPT-Live와 Realtime API의 공개 자료를 바탕으로 OpenAI가 음성 대화의 듣기·응답·중단과 긴 작업을 어떻게 분리해 제어하는지 살펴봅니다. ]]></description>
-    <pubDate>Tue, 04 Aug 2026 15:00:00 GMT</pubDate>
+    <pubDate>Tue, 11 Aug 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>Topics</title>
     <link>https://sunjae-k.github.io/topics</link>
     <guid>https://sunjae-k.github.io/topics</guid>
     <description><![CDATA[ Sunjae blog의 공개 글을 AI Agent 운영, RAG 문서 운영, 제품 AI, 도시·공간 AI, 시각 지식 산출물 주제로 묶은 읽기 목차. ]]></description>
+    <pubDate>Tue, 11 Aug 2026 15:00:00 GMT</pubDate>
+  </item><item>
+    <title>생활권 점수만으로는 왜 실제 보행을 설명할 수 없을까: 접근성·보행환경·행동을 분리하는 법</title>
+    <link>https://sunjae-k.github.io/walkability-vs-walking</link>
+    <guid>https://sunjae-k.github.io/walkability-vs-walking</guid>
+    <description><![CDATA[ 시설 접근성 점수와 실제 보행 행동을 미국 272개 도시권의 위치 데이터 연구로 비교하고, 생활권 지표를 잠재 접근성·보행 마찰·관찰 행동으로 나눠야 하는 이유를 살펴봅니다. ]]></description>
+    <pubDate>Tue, 11 Aug 2026 15:00:00 GMT</pubDate>
+  </item><item>
+    <title>OpenAI는 실시간 음성을 어떻게 다시 설계했나</title>
+    <link>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</link>
+    <guid>https://sunjae-k.github.io/openai-realtime-voice-continuous-interaction</guid>
+    <description><![CDATA[ GPT-Live와 Realtime API의 공개 자료를 바탕으로 OpenAI가 음성 대화의 듣기·응답·중단과 긴 작업을 어떻게 분리해 제어하는지 살펴봅니다. ]]></description>
     <pubDate>Tue, 04 Aug 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>여러 모델의 협업을 하나의 모델처럼 제공한다면</title>
@@ -59,12 +65,6 @@
     <guid>https://sunjae-k.github.io/google-tabfm-tabular-foundation-model</guid>
     <description><![CDATA[ Google Research의 TabFM을 XGBoost 대체재가 아니라 테이블 예측을 학습·튜닝 중심에서 context 기반 예측으로 확장하려는 시도로 해설한다. ]]></description>
     <pubDate>Tue, 30 Jun 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>AI Agent가 “완료했다”고 말했을 때, 무엇을 믿어야 할까</title>
-    <link>https://sunjae-k.github.io/agent-quality-loop</link>
-    <guid>https://sunjae-k.github.io/agent-quality-loop</guid>
-    <description><![CDATA[ AI Agent의 완료 보고를 그대로 믿지 않고, Spec Review와 Quality Review를 분리해 diff·테스트·로그 같은 검증 증거로 회수하는 Agent Quality Loop. ]]></description>
-    <pubDate>Wed, 24 Jun 2026 15:00:00 GMT</pubDate>
   </item>
     </channel>
   </rss>
