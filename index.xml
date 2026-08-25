@@ -6,11 +6,17 @@
       <description>최근 10 건 on Sunjae blog</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
+    <title>Agent Harness를 기능 목록으로 설계하면 놓치는 것</title>
+    <link>https://sunjae-k.github.io/agent-harness-failure-order</link>
+    <guid>https://sunjae-k.github.io/agent-harness-failure-order</guid>
+    <description><![CDATA[ Agent Harness를 도구 목록이 아니라, 실제 작업에서 생기는 실패에 맞춰 경계를 더하는 설계 순서로 읽습니다. ]]></description>
+    <pubDate>Mon, 24 Aug 2026 15:00:00 GMT</pubDate>
+  </item><item>
     <title>Sunjae blog</title>
     <link>https://sunjae-k.github.io/</link>
     <guid>https://sunjae-k.github.io/</guid>
     <description><![CDATA[ AI Agent, RAG, local-first AI를 운영·검증·문서 구조 관점에서 해석하는 Sunjae blog ]]></description>
-    <pubDate>Sat, 22 Aug 2026 15:00:00 GMT</pubDate>
+    <pubDate>Mon, 24 Aug 2026 15:00:00 GMT</pubDate>
   </item><item>
     <title>왜 지금 생성형 영상 AI인가</title>
     <link>https://sunjae-k.github.io/why-generative-video-ai-now</link>
@@ -59,12 +65,6 @@
     <guid>https://sunjae-k.github.io/knowhere-document-memory</guid>
     <description><![CDATA[ DocLang을 문서 구조 계약으로 본 이전 글에 이어, Knowhere를 parser 이후의 document memory backend 관점에서 읽어본다. ]]></description>
     <pubDate>Tue, 07 Jul 2026 15:00:00 GMT</pubDate>
-  </item><item>
-    <title>GEO는 SEO를 대체하지 않는다: Google 문서로 보는 AI 검색 최적화</title>
-    <link>https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability</link>
-    <guid>https://sunjae-k.github.io/google-seo-geo-ai-search-discoverability</guid>
-    <description><![CDATA[ Google Search Central 공식 문서를 바탕으로 GEO와 SEO의 관계를 정리하고, 개인 블로그에 적용할 AI 검색 시대의 발행 운영 기준을 제안한다. ]]></description>
-    <pubDate>Mon, 06 Jul 2026 15:00:00 GMT</pubDate>
   </item>
     </channel>
   </rss>
